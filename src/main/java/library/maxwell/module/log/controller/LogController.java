@@ -41,6 +41,7 @@ public class LogController {
 	@PostMapping("/add-log")
 	public ResponseEntity<?> addLog(@RequestBody LogDto dto){
 		LogEntity logEntity = convertToLogEntity(dto);
+		logRepository.save(logEntity);
 		return ResponseEntity.ok(logEntity);
 	}
 	
