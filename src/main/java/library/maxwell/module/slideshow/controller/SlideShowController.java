@@ -15,14 +15,15 @@ import library.maxwell.module.slideshow.dto.SlideShowDto;
 import library.maxwell.module.slideshow.entity.SlideShowEntity;
 import library.maxwell.module.slideshow.repository.SlideShowRepository;
 import library.maxwell.module.user.entity.UserEntity;
+import library.maxwell.module.user.repository.UserRepository;
 
 @RestController
 @RequestMapping("/slideshow")
 public class SlideShowController {
 	@Autowired
 	private SlideShowRepository slideShowRepository;
-	//@Autowired
-	//private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 	
 	//GET ALL
 	@GetMapping("/get-all-slideshow")
@@ -41,7 +42,9 @@ public class SlideShowController {
 	//POST
 	@PostMapping("/add-slideshow")
 	public ResponseEntity<?> addSlideShow(@RequestBody SlideShowDto dto) {
+		UserEntity userEntity = userRepository.findById(dto.getUserId()).get();
 		SlideShowEntity slideShowEntity = convertToSlideShowEntity(dto);
+		slideShowEntity.setUserEntity(userEntity);
 		slideShowRepository.save(slideShowEntity);
 		return ResponseEntity.ok(slideShowEntity);
 	}
@@ -50,11 +53,12 @@ public class SlideShowController {
 	@PutMapping("/update-slideshow/{idSlideShow}")
 	public ResponseEntity<?> updateSlideShow(@PathVariable Integer idSlideShow,
 			@RequestBody SlideShowDto dto){
-		//UserEntity userEntity = userRepository.findByUserId(dto.userId);
 		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
-		SlideShowEntity updateSlideShow = convertToSlideShowEntity(dto);
-//		SlideShowEntity.setUserId(userEntity);
-		slideShowRepository.save(updateSlideShow);
+		slideShowEntity.setCreatedAt(dto.getCreatedAt());
+		slideShowEntity.setTitle(dto.getTitle());
+		slideShowEntity.setSubTitle(dto.getSubTitle());
+		slideShowEntity.setImg(dto.getImg());
+		slideShowRepository.save(slideShowEntity);
 		return ResponseEntity.ok(slideShowEntity);
 	}
 	
@@ -69,6 +73,7 @@ public class SlideShowController {
 	
 	public SlideShowEntity convertToSlideShowEntity(SlideShowDto dto) {
 		SlideShowEntity slideShowEntity = new SlideShowEntity();
+		slideShowEntity.setCreatedAt(dto.getCreatedAt());
 		slideShowEntity.setTitle(dto.getTitle());
 		slideShowEntity.setSubTitle(dto.getSubTitle());
 		slideShowEntity.setImg(dto.getImg());
