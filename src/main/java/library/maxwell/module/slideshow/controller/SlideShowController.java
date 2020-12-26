@@ -13,39 +13,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import library.maxwell.module.slideshow.dto.SlideShowDto;
 import library.maxwell.module.slideshow.entity.SlideShowEntity;
-import library.maxwell.module.slideshow.repository.SlideShowRepository;
-import library.maxwell.module.user.entity.UserEntity;
-import library.maxwell.module.user.repository.UserRepository;
+import library.maxwell.module.slideshow.service.SlideShowServiceImpl;
+
 
 @RestController
 @RequestMapping("/slideshow")
 public class SlideShowController {
+
 	@Autowired
-	private SlideShowRepository slideShowRepository;
-	@Autowired
-	private UserRepository userRepository;
+	SlideShowServiceImpl slideShowService;
 	
 	//GET ALL
 	@GetMapping("/get-all-slideshow")
-	public List<SlideShowEntity> getAllSlideShow(){
-		List<SlideShowEntity> slideShowEntities = slideShowRepository.findAll();
-		return slideShowEntities;
+	public ResponseEntity<?> getAllSlideShow(){
+		List<SlideShowEntity> slideShowEntities = slideShowService.getAllSlideShow();
+		return ResponseEntity.ok(slideShowEntities);
 	}
 	
 	//GET BY ID
 	@GetMapping("/get-slideshow-byId/{idSlideShow}")
 	public ResponseEntity<?> getSlideShowById(@PathVariable Integer idSlideShow) {
-		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
+		SlideShowEntity slideShowEntity = slideShowService.getSlideShowById(idSlideShow);
 		return ResponseEntity.ok(slideShowEntity);
 	}
 	
 	//POST
 	@PostMapping("/add-slideshow")
 	public ResponseEntity<?> addSlideShow(@RequestBody SlideShowDto dto) {
-		UserEntity userEntity = userRepository.findById(dto.getUserId()).get();
-		SlideShowEntity slideShowEntity = convertToSlideShowEntity(dto);
-		slideShowEntity.setUserEntity(userEntity);
-		slideShowRepository.save(slideShowEntity);
+		SlideShowEntity slideShowEntity = slideShowService.addSlideShow(dto);
 		return ResponseEntity.ok(slideShowEntity);
 	}
 	
@@ -53,31 +48,15 @@ public class SlideShowController {
 	@PutMapping("/update-slideshow/{idSlideShow}")
 	public ResponseEntity<?> updateSlideShow(@PathVariable Integer idSlideShow,
 			@RequestBody SlideShowDto dto){
-		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
-		slideShowEntity.setCreatedAt(dto.getCreatedAt());
-		slideShowEntity.setTitle(dto.getTitle());
-		slideShowEntity.setSubTitle(dto.getSubTitle());
-		slideShowEntity.setImg(dto.getImg());
-		slideShowRepository.save(slideShowEntity);
+		SlideShowEntity slideShowEntity = slideShowService.updateSlideShow(idSlideShow, dto);
 		return ResponseEntity.ok(slideShowEntity);
 	}
 	
 	//DELETE
 	@PutMapping("/delete-slideshow/{idSlideShow}")
 	public ResponseEntity<?> deleteSlideShow(@PathVariable Integer idSlideShow){
-		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
-		slideShowEntity.setStatus(false);
-		slideShowRepository.save(slideShowEntity);
+		SlideShowEntity slideShowEntity = slideShowService.deleteSlideShow(idSlideShow);
 		return ResponseEntity.ok(slideShowEntity);
 	}
 	
-	public SlideShowEntity convertToSlideShowEntity(SlideShowDto dto) {
-		SlideShowEntity slideShowEntity = new SlideShowEntity();
-		slideShowEntity.setCreatedAt(dto.getCreatedAt());
-		slideShowEntity.setTitle(dto.getTitle());
-		slideShowEntity.setSubTitle(dto.getSubTitle());
-		slideShowEntity.setImg(dto.getImg());
-		return slideShowEntity;
-		
-	}
 }
