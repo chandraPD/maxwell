@@ -14,25 +14,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import library.maxwell.module.log.dto.LogDto;
 import library.maxwell.module.log.entity.LogEntity;
-import library.maxwell.module.log.repository.LogRepository;
+import library.maxwell.module.log.service.LogServiceImpl;
 
 @RestController
 @RequestMapping("/log")
 public class LogController {
 	@Autowired
-	private LogRepository logRepository;
+	private LogServiceImpl logService;
 	
 	//GET ALL
 	@GetMapping("/get-all-log")
-	public List<LogEntity> getAllLog(){
-		List<LogEntity> logEntities = logRepository.findAll();
-		return logEntities;
+	public ResponseEntity<?> getAllLog(){
+		List<LogEntity> logEntities = logService.getAllLog();
+		return ResponseEntity.ok(logEntities);
 	}
 	
 	//GET BY ID
 	@GetMapping("/get-log-byId/{idLog}")
 	public ResponseEntity<?> getLogById(@PathVariable Integer idLog){
-		LogEntity logEntity = logRepository.findById(idLog).get();
+		LogEntity logEntity = logService.getLogById(idLog);
 		return ResponseEntity.ok(logEntity);
 		
 	}
@@ -40,8 +40,7 @@ public class LogController {
 	//POST
 	@PostMapping("/add-log")
 	public ResponseEntity<?> addLog(@RequestBody LogDto dto){
-		LogEntity logEntity = convertToLogEntity(dto);
-		logRepository.save(logEntity);
+		LogEntity logEntity = logService.addLog(dto);
 		return ResponseEntity.ok(logEntity);
 	}
 	
@@ -49,26 +48,14 @@ public class LogController {
 	@PutMapping("/update-log/{idLog}")
 	public ResponseEntity<?> updateLog(@PathVariable Integer idLog,
 			@RequestBody LogDto dto){
-		LogEntity logEntity = logRepository.findById(idLog).get();
-		LogEntity updateLog = convertToLogEntity(dto);
-		logRepository.save(updateLog);
+		LogEntity logEntity = logService.updateLog(idLog, dto);
 		return ResponseEntity.ok(logEntity);
 	}
 	
 	//DELETE
 	@PutMapping("/delete-log/{idLog}")
 	public ResponseEntity<?> deleteLog(@PathVariable Integer idLog){
-		LogEntity logEntity = logRepository.findById(idLog).get();
-		logEntity.setStatus(false);
-		logRepository.save(logEntity);
+		LogEntity logEntity = logService.deleteLog(idLog);
 		return ResponseEntity.ok(logEntity);
-	}
-	
-	public LogEntity convertToLogEntity(LogDto dto) {
-		LogEntity logEntity = new LogEntity();
-		logEntity.setDateTime(dto.getDateTime());
-		logEntity.setAction(dto.getAction());
-		logEntity.setDescription(dto.getDescription());
-		return logEntity;
 	}
 }
