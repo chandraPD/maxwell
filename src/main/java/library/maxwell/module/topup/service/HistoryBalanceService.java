@@ -12,6 +12,10 @@ public interface HistoryBalanceService {
 	
 	HistoryBalanceEntity post(HistoryBalanceDto Dto);
 	
+	HistoryBalanceEntity accept(HistoryBalanceDto Dto,Integer id);
+	
+	HistoryBalanceEntity cancel(HistoryBalanceDto Dto,Integer id);
+	
 	HistoryBalanceEntity update(HistoryBalanceDto Dto,Integer id);
 	
 	HistoryBalanceEntity delete(Integer id);

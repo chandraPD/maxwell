@@ -1,5 +1,6 @@
 package library.maxwell.module.topup.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,11 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 
 	@Override
 	public HistoryBalanceEntity post(HistoryBalanceDto Dto) {
+		LocalDateTime now = LocalDateTime.now();
 		HistoryBalanceEntity historyBalanceEntity=convertToHistoryBalanceEntity(Dto);
 		historyBalanceEntity.setStatus(true);
+		historyBalanceEntity.setStatusPayment("Pending");
+		historyBalanceEntity.setDateTopup(now);
 		repo.save(historyBalanceEntity);
 		return historyBalanceEntity;
 	}
@@ -59,6 +63,26 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	public HistoryBalanceEntity delete(Integer id) {
 		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();
 		historyBalanceEntity.setStatus(false);
+		repo.save(historyBalanceEntity);
+		return historyBalanceEntity;
+	}
+
+	@Override
+	public HistoryBalanceEntity accept(HistoryBalanceDto Dto,Integer id) {
+		LocalDateTime now = LocalDateTime.now();
+		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();		
+		historyBalanceEntity.setStatusPayment("Success");
+		historyBalanceEntity.setDateAcc(now);
+		repo.save(historyBalanceEntity);
+		return historyBalanceEntity;
+	}
+
+	@Override
+	public HistoryBalanceEntity cancel(HistoryBalanceDto Dto,Integer id) {
+		LocalDateTime now = LocalDateTime.now();
+		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();		
+		historyBalanceEntity.setStatusPayment("Cancelled");
+		historyBalanceEntity.setDateAcc(now);
 		repo.save(historyBalanceEntity);
 		return historyBalanceEntity;
 	}
