@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class CategoryEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
