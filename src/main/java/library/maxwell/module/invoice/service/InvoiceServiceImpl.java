@@ -2,6 +2,7 @@ package library.maxwell.module.invoice.service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,17 +18,19 @@ import library.maxwell.module.invoice.repository.InvoiceRepository;
 @Transactional
 public class InvoiceServiceImpl implements InvoiceService{
 
-	
 	@Autowired
 	private InvoiceRepository invoiceRepository;
-	
 
 	@Override
-	public StatusMessageDto<?> getAll() {
+	public StatusMessageDto<List<InvoiceEntity>> getAll() {
 		// TODO Auto-generated method stub
-		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
-		List<?> invoiceEntity = invoiceRepository.getdataAll();
-		
+      // Jangan pakai <?>, selalu spesifikin class apa yang direturn supaya gampang nanti kalau misalnya
+      // mau modify datanya
+		StatusMessageDto<List<InvoiceEntity>> result = new StatusMessageDto<>();
+		// Spring JPA telah menyediakan beberapa method default untuk get data, salah satunya get all data,
+        // cukup invoiceRepository.findAll();
+		List<InvoiceEntity> invoiceEntity = invoiceRepository.getdataAll();
+
 		if(invoiceEntity != null) {
 			result.setStatus(HttpStatus.OK.value());
 			result.setMessage("Data Invoice telah ditemukan");
@@ -35,9 +38,17 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}else {
 			result.setMessage("Data belum ada");
 			result.setStatus(HttpStatus.BAD_GATEWAY.value());
+			// tidak tepat kalau data tidak ditemukan itu Bad Gateway, walaupun tidak ditemukan harusnya tetap 200
+          // karena error 5xx itu dibalikin kalau ada error diservernya
 			result.setData(null);
 		}
 		return result;
+
+		// alternative, code diatas bisa disimplify menjadi
+//         List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByStatusIsTrue();
+//         return Optional.ofNullable(invoiceEntity)
+//             .map(invoiceEntities -> StatusMessageDto.success("Data Invoice telah ditemukan", invoiceEntities))
+//             .orElse(StatusMessageDto.error("Data Invoice telah ditemukan"));
 	}
 	
 	
