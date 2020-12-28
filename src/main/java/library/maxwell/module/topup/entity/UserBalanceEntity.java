@@ -28,50 +28,6 @@ public class UserBalanceEntity {
 	@OneToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
 	private UserEntity userEntity;
-	
-	public Integer getUserBalanceId() {
-		return userBalanceId;
-	}
-
-	public void setUserBalanceId(Integer userBalanceId) {
-		this.userBalanceId = userBalanceId;
-	}
-
-	public UserEntity getUserEntity() {
-		return userEntity;
-	}
-
-	public void setUserEntity(UserEntity userEntity) {
-		this.userEntity = userEntity;
-	}
-
-	public Double getNominal() {
-		return nominal;
-	}
-
-	public void setNominal(Double nominal) {
-		this.nominal = nominal;
-	}
-
-	public Boolean getStatus() {
-		return status;
-	}
-
-	public void setStatus(Boolean status) {
-		this.status = status;
-	}
-
-	public UserBalanceEntity(Integer userBalanceId, UserEntity userEntity, Double nominal, Boolean status) {
-		super();
-		this.userBalanceId = userBalanceId;
-		this.userEntity = userEntity;
-		this.nominal = nominal;
-		this.status = status;
-	}
-
-	public UserBalanceEntity() {
-		super();
-	}
 
 	@Column(name="nominal")
 	private Double nominal;

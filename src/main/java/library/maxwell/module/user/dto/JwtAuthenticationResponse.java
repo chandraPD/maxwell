@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class JwtAuthenticationResponse {
 
-    private String token;
+	private String token;
     private String tokenType = "Bearer";
 
     public JwtAuthenticationResponse(String jwt) {
