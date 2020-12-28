@@ -1,9 +1,9 @@
 package library.maxwell.module.slideshow.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +64,7 @@ public class SlideShowServiceImpl implements SlideShowService{
 	
 	public SlideShowEntity convertToSlideShowEntity(SlideShowDto dto) {
 		SlideShowEntity slideShowEntity = new SlideShowEntity();
-		slideShowEntity.setCreatedAt(dto.getCreatedAt());
+		slideShowEntity.setCreatedAt(LocalDateTime.now());
 		slideShowEntity.setTitle(dto.getTitle());
 		slideShowEntity.setSubTitle(dto.getSubTitle());
 		slideShowEntity.setImg(dto.getImg());
