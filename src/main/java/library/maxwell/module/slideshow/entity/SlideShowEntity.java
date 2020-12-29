@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "slideshow")
 @Data
-public class SlideshowEntity {
+public class SlideShowEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "slideshow_id")
@@ -45,11 +45,12 @@ public class SlideshowEntity {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
-	// relation
+	@Column(name = "status")
+	private Boolean status = true;
+	
 	@ManyToOne
 	@JoinColumn(name = "created_by", referencedColumnName = "user_id")
 	private UserEntity userEntity;
 
-	@Column(name = "status")
-	private Boolean status = true;
+	
 }
