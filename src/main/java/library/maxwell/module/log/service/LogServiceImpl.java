@@ -1,5 +1,6 @@
 package library.maxwell.module.log.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class LogServiceImpl implements LogService {
 	
 	public LogEntity convertToLogEntity(LogDto dto) {
 		LogEntity logEntity = new LogEntity();
-		logEntity.setDateTime(dto.getDateTime());
+		logEntity.setDateTime(LocalDateTime.now());
 		logEntity.setAction(dto.getAction());
 		logEntity.setDescription(dto.getDescription());
 		return logEntity;

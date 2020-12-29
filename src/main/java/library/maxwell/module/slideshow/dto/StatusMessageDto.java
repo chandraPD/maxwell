@@ -1,4 +1,4 @@
-package library.maxwell.module.log.dto;
+package library.maxwell.module.slideshow.dto;
 
 import lombok.Data;
 
