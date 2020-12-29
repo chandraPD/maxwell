@@ -44,6 +44,10 @@ public class UserPrincipal implements UserDetails {
                 authorities
         );
     }
+    
+    public Integer getId() {
+    	return id;
+    }
 
     @Override
     public String getPassword() {
