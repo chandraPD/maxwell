@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -113,10 +114,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity getProfiles(UserPrincipal userPrincipal) {
         //Get current logged in user
+    	System.out.println(userPrincipal.getId());
         System.out.println(userPrincipal.getAuthorities());
         System.out.println(userPrincipal.getEmail());
         UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail())
                 .get();
         return userEntity;
     }
+
+	@Override
+	public Optional<UserEntity> getId(UserPrincipal userPrincipal) {	
+		Optional<UserEntity> userEntity= userRepository.findById(userPrincipal.getId());
+		return userEntity;
+	}
 }

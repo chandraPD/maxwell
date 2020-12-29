@@ -5,6 +5,9 @@ import library.maxwell.module.user.dto.JwtAuthenticationResponse;
 import library.maxwell.module.user.dto.LoginDto;
 import library.maxwell.module.user.dto.RegistrationDto;
 import library.maxwell.module.user.entity.UserEntity;
+
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,4 +18,6 @@ public interface UserService {
     JwtAuthenticationResponse authenticateUser(LoginDto loginDto);
 
     UserEntity getProfiles(UserPrincipal userPrincipal);
+    
+    Optional<UserEntity> getId(UserPrincipal userPrincipal);
 }
