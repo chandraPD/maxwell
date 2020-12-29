@@ -1,27 +1,36 @@
 package library.maxwell.module.invoice.dto;
 
+import org.springframework.http.HttpStatus;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class StatusMessageDto<T> {
 	
 	private Integer status;
+	
 	private String message;
+	
 	private T data;
 	
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	public T getData() {
-		return data;
-	}
-	public void setData(T data) {
-		this.data = data;
-	}
+	public static <T>StatusMessageDto error(String message) {
+	      return StatusMessageDto.builder()
+	          .status(HttpStatus.BAD_GATEWAY.value())
+	          .message(message)
+	          .build();
+	    }
+
+	  public static <T>StatusMessageDto success(String message, T data) {
+	    return StatusMessageDto.builder()
+	        .status(HttpStatus.OK.value())
+	        .message(message)
+	        .data(data)
+	        .build();
+	  }
 }

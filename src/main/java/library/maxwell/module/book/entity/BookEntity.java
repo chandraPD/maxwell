@@ -41,7 +41,7 @@ public class BookEntity {
 	
 	@Column(name = "description", columnDefinition = "TEXT")
 	@Type(type = "text")
-	private Long description;
+	private String description;
 	
 	@Column(name = "img_banner")
 	private String imgBanner;
