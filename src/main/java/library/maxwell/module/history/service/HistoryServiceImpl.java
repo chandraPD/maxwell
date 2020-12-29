@@ -35,8 +35,7 @@ public class HistoryServiceImpl implements  HistoryService{
         return null;
     }
 
-    @Autowired
-    private userRepository;
+
 
 
 }

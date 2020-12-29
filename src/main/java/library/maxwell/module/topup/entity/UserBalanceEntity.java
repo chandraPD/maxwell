@@ -28,7 +28,7 @@ public class UserBalanceEntity {
 	@OneToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
 	private UserEntity userEntity;
-	
+
 	@Column(name="nominal")
 	private Double nominal;
 	

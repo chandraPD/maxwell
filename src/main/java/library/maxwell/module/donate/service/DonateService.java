@@ -1,5 +1,6 @@
 package library.maxwell.module.donate.service;
 
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.donate.dto.DonateDto;
 import library.maxwell.module.donate.entity.DonateEntity;
 
@@ -11,4 +12,6 @@ public interface DonateService {
     DonateEntity insertDonate(DonateDto dto);
     DonateEntity updateDonate(DonateDto dto, Integer UserId);
     DonateEntity deleteDonate(Integer UserId);
+    DonateEntity accept(UserPrincipal userPrincipal, Integer donateId);
+    DonateEntity reject(UserPrincipal userPrincipal, Integer donateId);
 }

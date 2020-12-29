@@ -13,13 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DonateDto {
 
-    private Integer donateId;
-    private UserEntity userEntity;
     private String email;
     private String name;
     private String donationType;
     private Integer totalBook;
-    private LocalDateTime createdAt;
     private String statusDonate;
-    private Boolean status = true;
+
 }

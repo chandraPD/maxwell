@@ -41,7 +41,7 @@ public class HistoryBalanceEntity {
 	@CreatedDate
 	@Column(name = "date_topup")
 	private LocalDateTime dateTopup;
-
+	
 	@Column(name = "nominal")
 	private Double nominal;
 
