@@ -54,7 +54,7 @@ public class UserController {
     }
 
     //Login user
-    @PostMapping("/auth/login/{role}")
+    @PostMapping("/auth/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
 
         try {
