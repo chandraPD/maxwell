@@ -78,12 +78,10 @@ public class GlobalSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/**")
-                .permitAll()
-                .anyRequest()
-                .permitAll();
+                .antMatchers("/**").permitAll()
+                .anyRequest().permitAll();
 
-        // Add our custom JWT security filter
+        // Add custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }

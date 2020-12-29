@@ -1,13 +1,18 @@
 package library.maxwell.module.user.controller;
 
+import library.maxwell.config.security.auth.CurrentUser;
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.user.dto.JwtAuthenticationResponse;
 import library.maxwell.module.user.dto.LoginDto;
 import library.maxwell.module.user.dto.RegistrationDto;
 import library.maxwell.module.user.dto.StatusMessageDto;
+import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,6 +58,7 @@ public class UserController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
 
         try {
+
             JwtAuthenticationResponse token = userService.authenticateUser(loginDto);
 
             result.setStatus(200);
@@ -74,5 +80,13 @@ public class UserController {
             return ResponseEntity.status(500).body(error);
         }
 
+    }
+
+    //Check profiles
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfiles(@CurrentUser UserPrincipal userPrincipal) {
+        UserEntity user = userService.getProfiles(userPrincipal);
+        return ResponseEntity.ok(user);
     }
 }

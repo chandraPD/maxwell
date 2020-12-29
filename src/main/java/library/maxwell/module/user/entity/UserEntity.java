@@ -49,6 +49,9 @@ public class UserEntity implements Serializable {
     @Column(name = "status")
     private Boolean status=true;
 
+    @Column
+    private String activeRole;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_akses",
             joinColumns = @JoinColumn(name = "user_id"),

@@ -50,8 +50,7 @@ public class UserServiceImpl implements UserService {
         Boolean existByEmail = userRepository.existsByEmail(registrationDto.getEmail());
 
         if (existByEmail) {
-            registrationDto = null;
-            return registrationDto;
+           return null;
         }
 
         if (!(registrationDto.getPassword().equals(registrationDto.getConfirmPassword()))) {
@@ -109,5 +108,15 @@ public class UserServiceImpl implements UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
         return new JwtAuthenticationResponse(jwt);
+    }
+
+    @Override
+    public UserEntity getProfiles(UserPrincipal userPrincipal) {
+        //Get current logged in user
+        System.out.println(userPrincipal.getAuthorities());
+        System.out.println(userPrincipal.getEmail());
+        UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail())
+                .get();
+        return userEntity;
     }
 }
