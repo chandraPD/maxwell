@@ -15,6 +15,9 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import library.maxwell.module.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
@@ -53,10 +56,12 @@ public class BookEntity {
 	private Integer qty;
 	
     @CreatedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 	
     @LastModifiedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 	
