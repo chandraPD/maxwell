@@ -41,9 +41,10 @@ public class UserBalanceImp implements UserBalanceService{
 
 	@Override
 	public UserBalanceEntity post(UserBalanceDto Dto) {	
-		UserBalanceEntity userBalanceEntity=convertToUserBalanceEntity(Dto);
+		UserBalanceEntity userBalanceEntity=new UserBalanceEntity();
 		UserEntity userEntity=repo2.findById(Dto.getUser_id()).get();
 		userBalanceEntity.setStatus(true);		
+		userBalanceEntity.setNominal((double) 0);
 		userBalanceEntity.setUserEntity(userEntity);
 		repo.save(userBalanceEntity);
 		return userBalanceEntity;

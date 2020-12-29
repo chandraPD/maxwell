@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 import library.maxwell.module.topup.service.HistoryBalanceImp;
+import library.maxwell.module.topup.service.HistoryBalanceService;
 
 @RestController
 @RequestMapping("/top_up_management")
 @CrossOrigin(origins = "http://localhost:3000")
 public class TopUpManagement {
 	@Autowired
-	HistoryBalanceImp service;
+	private HistoryBalanceService service;
 	
 	@GetMapping("/getAll")
 	public ResponseEntity<?> getAll(){
