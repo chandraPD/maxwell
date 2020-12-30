@@ -15,6 +15,8 @@ import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 import library.maxwell.module.topup.entity.UserBalanceEntity;
 import library.maxwell.module.topup.repository.HistoryBalanceRepository;
 import library.maxwell.module.topup.repository.UserBalanceRepository;
+import library.maxwell.module.user.entity.UserEntity;
+import library.maxwell.module.user.repository.UserRepository;
 
 @Service
 @Transactional
@@ -24,6 +26,9 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	
 	@Autowired
 	UserBalanceRepository repo2;
+	
+	@Autowired
+	UserRepository repo3;
 
 	public HistoryBalanceEntity convertToHistoryBalanceEntity (HistoryBalanceDto dto) {
 		HistoryBalanceEntity historyBalanceEntity=new HistoryBalanceEntity();
@@ -39,8 +44,8 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	}
 
 	@Override
-	public List<HistoryBalanceEntity> getAll() {
-		List<HistoryBalanceEntity> historyBalanceEntities= repo.findAll();
+	public List<HistoryBalanceEntity> getAll() {		
+		List<HistoryBalanceEntity> historyBalanceEntities= repo.findAll2();
 		return historyBalanceEntities;
 	}
 	
@@ -75,15 +80,18 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	}
 
 	@Override
-	public HistoryBalanceEntity accept(HistoryBalanceDto Dto,Integer id) {
+	public HistoryBalanceEntity accept(UserPrincipal userPrincipal,HistoryBalanceDto Dto,Integer id) {
+		Integer id3=userPrincipal.getId();
 		Integer idbalance=repo.findIdBalance(id);
 		Double nominal=repo2.findNominal(idbalance);
 		Double nominal2=repo.findNominal2(id);
 		LocalDateTime now = LocalDateTime.now();
 		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();
-		UserBalanceEntity userBalanceEntity= repo2.findById(idbalance).get();		
+		UserBalanceEntity userBalanceEntity= repo2.findById(idbalance).get();
+		UserEntity entity=repo3.findById(id3).get();
 		userBalanceEntity.setNominal(nominal+nominal2);
 		repo2.save(userBalanceEntity);
+		historyBalanceEntity.setUserEntity(entity);
 		historyBalanceEntity.setStatusPayment("Success");
 		historyBalanceEntity.setDateAcc(now);
 		repo.save(historyBalanceEntity);
@@ -91,13 +99,35 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	}
 
 	@Override
-	public HistoryBalanceEntity cancel(HistoryBalanceDto Dto,Integer id) {
+	public HistoryBalanceEntity cancel(UserPrincipal userPrincipal,HistoryBalanceDto Dto,Integer id) {
+		Integer id3=userPrincipal.getId();
 		LocalDateTime now = LocalDateTime.now();
-		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();		
+		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();
+		UserEntity entity=repo3.findById(id3).get();
+		historyBalanceEntity.setUserEntity(entity);
 		historyBalanceEntity.setStatusPayment("Cancelled");
 		historyBalanceEntity.setDateAcc(now);
 		repo.save(historyBalanceEntity);
 		return historyBalanceEntity;
+	}
+
+	@Override
+	public HistoryBalanceEntity post2(HistoryBalanceDto Dto) {		
+		LocalDateTime now = LocalDateTime.now();
+		HistoryBalanceEntity historyBalanceEntity=convertToHistoryBalanceEntity(Dto);
+		UserBalanceEntity userBalanceEntity=repo2.findByUserBalanceId(Dto.getUser_balance_id());		
+		historyBalanceEntity.setUserBalanceEntity(userBalanceEntity);
+		historyBalanceEntity.setStatus(true);
+		historyBalanceEntity.setStatusPayment("Pending");		
+		historyBalanceEntity.setDateTopup(now);
+		repo.save(historyBalanceEntity);
+		return historyBalanceEntity;
+	}
+
+	@Override	
+	public List<HistoryBalanceEntity> getAll2(Integer userPrincipal) {
+		List<HistoryBalanceEntity> historyBalanceEntities= repo.findall3(userPrincipal);
+		return historyBalanceEntities;
 	}
 
 }
