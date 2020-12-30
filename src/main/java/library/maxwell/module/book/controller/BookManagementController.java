@@ -60,8 +60,8 @@ public class BookManagementController {
 	}
 	
 	@PutMapping("/update-book/{id}")
-	public ResponseEntity<?> updateBook(@PathVariable Integer id, @RequestBody BookDto dto) {
-		return bookService.updateBook(id, dto);
+	public ResponseEntity<?> updateBook(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id, @RequestBody BookDto dto) {
+		return bookService.updateBook(userPrincipal, id, dto);
 	}
 	
 	@PutMapping("/delete-book/{id}")

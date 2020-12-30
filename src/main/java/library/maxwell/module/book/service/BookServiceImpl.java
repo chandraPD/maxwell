@@ -110,12 +110,12 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public ResponseEntity<?> updateBook(Integer id, BookDto dto) {
+	public ResponseEntity<?> updateBook(UserPrincipal userPrincipal, Integer id, BookDto dto) {
 		// TODO Auto-generated method stub
+		Integer userId = userPrincipal.getId();
 		BookEntity bookEntity = bookRepository.findById(id).get();
 		CategoryEntity categoryEntity = categoryRepository.findById(dto.getCategoryId()).get();
-		UserEntity createdByEntity = userRepository.findById(dto.getCreatedBy()).get();
-		UserEntity updatedByEntity = userRepository.findById(dto.getUpdatedBy()).get();
+		UserEntity updatedByEntity = userRepository.findById(userId).get();
 		LocalDateTime dateTime = LocalDateTime.now();
 		
 		bookEntity.setTitle(dto.getTitle());
@@ -123,14 +123,12 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setImgBanner(dto.getImgBanner());
 		bookEntity.setImgDetail(dto.getImgDetail());
 		bookEntity.setQty(dto.getQty());
-		bookEntity.setCreatedAt(dto.getCreatedAt());
 		bookEntity.setUpdatedAt(dateTime);
 		bookEntity.setStatusBook(dto.getStatusBook());
 		bookEntity.setPublishDate(dto.getPublishDate());
 		bookEntity.setAuthor(dto.getAuthor());
 		
 		bookEntity.setCategoryEntity(categoryEntity);
-		bookEntity.setCreatedByEntity(createdByEntity);
 		bookEntity.setUpdatedByEntity(updatedByEntity);
 		bookRepository.save(bookEntity);
 		
