@@ -12,7 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Transient;
 
 import library.maxwell.module.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
@@ -57,12 +56,4 @@ public class InvoiceEntity {
 	@Column(name = "status")
 	private Boolean status = true;
 	
-	@Transient
-	private String firstName;
-	@Transient
-	private String lastName;
-	@Transient
-	private String phoneNumber;
-	@Transient
-	private String address;
 }	
