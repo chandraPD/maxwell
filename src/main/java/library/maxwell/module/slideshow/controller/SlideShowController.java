@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import library.maxwell.config.security.auth.CurrentUser;
 import library.maxwell.module.log.dto.StatusMessageDto;
 import library.maxwell.module.slideshow.dto.SlideShowDto;
 import library.maxwell.module.slideshow.entity.SlideShowEntity;
@@ -21,6 +23,7 @@ import library.maxwell.module.slideshow.service.SlideShowServiceImpl;
 
 @RestController
 @RequestMapping("/slideshow")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SlideShowController {
 
 	@Autowired
@@ -50,7 +53,7 @@ public class SlideShowController {
 	
 	//POST
 	@PostMapping("/add-slideshow")
-	public ResponseEntity<?> addSlideShow(@RequestBody SlideShowDto dto) {
+	public ResponseEntity<?> addSlideShow(@CurrentUser UserPrincipal userPrincipal @RequestBody SlideShowDto dto) {
 		SlideShowEntity slideShowEntity = slideShowService.addSlideShow(dto);
 		StatusMessageDto<SlideShowEntity> result = new StatusMessageDto<>();
 		if(slideShowEntity == null) {
