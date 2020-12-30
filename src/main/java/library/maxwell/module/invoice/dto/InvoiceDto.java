@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class InvoiceDto {
 
 	private Integer invoiceId;
-	private Integer checkedBy;
+	private String checkedBy;
 	private String noInvoice;
 	private String invoiceDate;
 	private String paymentDate;
