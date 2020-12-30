@@ -45,6 +45,21 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 	
 	@Override
+	public ResponseEntity<?> getCategoryById(Integer id) {
+		// TODO Auto-generated method stub
+		CategoryEntity categoryEntity = categoryRepository.findById(id).get();
+		if(categoryEntity == null) {
+			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("Data Not Found!");
+			result.setData(categoryEntity);
+			return ResponseEntity.badRequest().body(result);
+		} else {
+			return ResponseEntity.ok(categoryEntity);
+		}
+	}
+	
+	@Override
 	public ResponseEntity<?> getActiveCategory() {
 		// TODO Auto-generated method stub
 		List<CategoryEntity> categoryEntities = categoryRepository.findActiveCategory();
@@ -95,6 +110,8 @@ public class CategoryServiceImpl implements CategoryService {
 		categoryEntity.setCategory(dto.getCategory());
 		return categoryEntity;
 	}
+
+
 
 	
 

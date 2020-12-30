@@ -8,6 +8,7 @@ import library.maxwell.module.book.dto.CategoryDto;
 public interface CategoryService {
 	ResponseEntity<?> getCategory();
 	ResponseEntity<?> getByCategory(String category);
+	ResponseEntity<?> getCategoryById(Integer id);
 	ResponseEntity<?> getActiveCategory();
 	ResponseEntity<?> getInactiveCategory();
 	ResponseEntity<?> addCategory(CategoryDto dto);
