@@ -17,7 +17,7 @@ import library.maxwell.module.book.service.CategoryService;
 
 @RestController
 @RequestMapping("/category")
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CategoryManagementController {
 		
 	@Autowired
@@ -31,6 +31,11 @@ public class CategoryManagementController {
 	@GetMapping("/get-by-category/{category}")
 	public ResponseEntity<?> getByCategory(@PathVariable String category) {
 		return categoryService.getByCategory(category);
+	}
+	
+	@GetMapping("/get-by-id/{id}")
+	public ResponseEntity<?> getCategoryById(@PathVariable Integer id) {
+		return categoryService.getCategoryById(id);
 	}
 	
 	@GetMapping("/get-all-active")

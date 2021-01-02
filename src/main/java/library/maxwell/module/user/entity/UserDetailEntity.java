@@ -32,22 +32,22 @@ public class UserDetailEntity {
 	@JoinColumn(name = "user_id")
 	private UserEntity userEntity;
 
-	@Column(name = "first_name", nullable = false, unique = true)
+	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
-	@Column(name = "last_name", nullable = false, unique = true)
+	@Column(name = "last_name", nullable = false)
 	private String lastName;
 
-	@Column(name = "address", nullable = false, unique = true)
+	@Column(name = "address", nullable = false)
 	private String address;
 
-	@Column(name = "img", nullable = false, unique = true)
+	@Column(name = "img", nullable = false)
 	private String img;
 
-	@Column(name = "phone_number", nullable = false, unique = true)
+	@Column(name = "phone_number", nullable = false)
 	private String phoneNumber;
 
-	@Column(name = "date_of_birth", nullable = false, unique = true)
+	@Column(name = "date_of_birth", nullable = false)
 	private Date dateOfBirth;
 
 	@Column(name = "status")

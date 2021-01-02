@@ -11,11 +11,15 @@ public interface HistoryBalanceService {
 	
 	List<HistoryBalanceEntity> getAll();
 	
+	List<HistoryBalanceEntity> getAll2(Integer id);
+	
 	HistoryBalanceEntity post(UserPrincipal userPrincipal,HistoryBalanceDto Dto);
 	
-	HistoryBalanceEntity accept(HistoryBalanceDto Dto,Integer id);
+	HistoryBalanceEntity post2(HistoryBalanceDto Dto);
 	
-	HistoryBalanceEntity cancel(HistoryBalanceDto Dto,Integer id);
+	HistoryBalanceEntity accept(UserPrincipal userPrincipal,HistoryBalanceDto Dto,Integer id);
+	
+	HistoryBalanceEntity cancel(UserPrincipal userPrincipal,HistoryBalanceDto Dto,Integer id);
 	
 	HistoryBalanceEntity update(HistoryBalanceDto Dto,Integer id);
 	
