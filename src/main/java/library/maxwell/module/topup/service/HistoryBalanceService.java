@@ -2,6 +2,7 @@ package library.maxwell.module.topup.service;
 
 import java.util.List;
 
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.topup.dto.HistoryBalanceDto;
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 
@@ -10,7 +11,7 @@ public interface HistoryBalanceService {
 	
 	List<HistoryBalanceEntity> getAll();
 	
-	HistoryBalanceEntity post(HistoryBalanceDto Dto);
+	HistoryBalanceEntity post(UserPrincipal userPrincipal,HistoryBalanceDto Dto);
 	
 	HistoryBalanceEntity accept(HistoryBalanceDto Dto,Integer id);
 	
@@ -19,4 +20,6 @@ public interface HistoryBalanceService {
 	HistoryBalanceEntity update(HistoryBalanceDto Dto,Integer id);
 	
 	HistoryBalanceEntity delete(Integer id);
+
+
 }

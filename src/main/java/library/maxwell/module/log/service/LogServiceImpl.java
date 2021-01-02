@@ -40,6 +40,7 @@ public class LogServiceImpl implements LogService {
 		return logEntity;
 	}
 
+
 	@Override
 	public LogEntity updateLog(Integer idLog, LogDto dto) {
 		// TODO Auto-generated method stub
@@ -67,4 +68,6 @@ public class LogServiceImpl implements LogService {
 		return logEntity;
 
 }
+
+
 }

@@ -2,13 +2,17 @@ package library.maxwell.module.topup.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.topup.dto.HistoryBalanceDto;
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
+import library.maxwell.module.topup.entity.UserBalanceEntity;
 import library.maxwell.module.topup.repository.HistoryBalanceRepository;
 import library.maxwell.module.topup.repository.UserBalanceRepository;
 
@@ -39,13 +43,16 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 		List<HistoryBalanceEntity> historyBalanceEntities= repo.findAll();
 		return historyBalanceEntities;
 	}
-
+	
 	@Override
-	public HistoryBalanceEntity post(HistoryBalanceDto Dto) {
+	public HistoryBalanceEntity post(UserPrincipal userPrincipal,HistoryBalanceDto Dto) {	
+		Integer id=userPrincipal.getId();
 		LocalDateTime now = LocalDateTime.now();
 		HistoryBalanceEntity historyBalanceEntity=convertToHistoryBalanceEntity(Dto);
+		UserBalanceEntity userBalanceEntity=repo2.findByUserBalanceId(id);		
+		historyBalanceEntity.setUserBalanceEntity(userBalanceEntity);
 		historyBalanceEntity.setStatus(true);
-		historyBalanceEntity.setStatusPayment("Pending");
+		historyBalanceEntity.setStatusPayment("Pending");		
 		historyBalanceEntity.setDateTopup(now);
 		repo.save(historyBalanceEntity);
 		return historyBalanceEntity;
@@ -69,8 +76,14 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 
 	@Override
 	public HistoryBalanceEntity accept(HistoryBalanceDto Dto,Integer id) {
+		Integer idbalance=repo.findIdBalance(id);
+		Double nominal=repo2.findNominal(idbalance);
+		Double nominal2=repo.findNominal2(id);
 		LocalDateTime now = LocalDateTime.now();
-		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();		
+		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();
+		UserBalanceEntity userBalanceEntity= repo2.findById(idbalance).get();		
+		userBalanceEntity.setNominal(nominal+nominal2);
+		repo2.save(userBalanceEntity);
 		historyBalanceEntity.setStatusPayment("Success");
 		historyBalanceEntity.setDateAcc(now);
 		repo.save(historyBalanceEntity);
