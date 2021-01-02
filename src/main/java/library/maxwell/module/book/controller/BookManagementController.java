@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import library.maxwell.config.security.auth.CurrentUser;
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.BookDto;
+import library.maxwell.module.book.dto.UpdateQtyBookDto;
 import library.maxwell.module.book.service.BookService;
 
 @RestController
@@ -60,8 +61,13 @@ public class BookManagementController {
 	}
 	
 	@PutMapping("/update-book/{id}")
-	public ResponseEntity<?> updateBook(@PathVariable Integer id, @RequestBody BookDto dto) {
-		return bookService.updateBook(id, dto);
+	public ResponseEntity<?> updateBook(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id, @RequestBody BookDto dto) {
+		return bookService.updateBook(userPrincipal, id, dto);
+	}
+	
+	@PutMapping("/update-qty-book/{id}")
+	public ResponseEntity<?> UpdateQtyBook(@PathVariable Integer id, @RequestBody UpdateQtyBookDto dto) {
+		return bookService.updateQtyBook(id, dto);
 	}
 	
 	@PutMapping("/delete-book/{id}")

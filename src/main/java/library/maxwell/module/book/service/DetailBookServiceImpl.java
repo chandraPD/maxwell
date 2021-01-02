@@ -46,6 +46,21 @@ public class DetailBookServiceImpl implements BookDetailService{
 		List<BookDetailEntity> bookDetailEntities = bookDetailRepository.findAllInactive();
 		return ResponseEntity.ok(bookDetailEntities);
 	}
+	
+	@Override
+	public ResponseEntity<?> getByBookId(Integer bookId) {
+		// TODO Auto-generated method stub
+		List<BookDetailEntity> bookDetailEntities = bookDetailRepository.findByBookEntityBookId(bookId);
+		if(bookDetailEntities == null) {
+			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("Data Not Found!");
+			result.setData(null);
+			return ResponseEntity.ok(result);
+		} else {
+			return ResponseEntity.ok(bookDetailEntities);
+		}
+	}
 
 	@Override
 	public ResponseEntity<?> getDetailBook(Integer id) {
@@ -118,5 +133,7 @@ public class DetailBookServiceImpl implements BookDetailService{
 		bookDetailEntity.setDescOfDamage(dto.getDescOfDamage());
 		return bookDetailEntity;
 	}
+
+	
 
 }
