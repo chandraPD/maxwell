@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.BookDto;
 import library.maxwell.module.book.dto.StatusMessageDto;
+import library.maxwell.module.book.dto.UpdateQtyBookDto;
 import library.maxwell.module.book.entity.BookEntity;
 import library.maxwell.module.book.entity.CategoryEntity;
 import library.maxwell.module.book.repository.BookRepository;
@@ -122,7 +123,7 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setDescription(dto.getDescription());
 		bookEntity.setImgBanner(dto.getImgBanner());
 		bookEntity.setImgDetail(dto.getImgDetail());
-		bookEntity.setQty(dto.getQty());
+		bookEntity.setQty(0);
 		bookEntity.setUpdatedAt(dateTime);
 		bookEntity.setStatusBook(dto.getStatusBook());
 		bookEntity.setPublishDate(dto.getPublishDate());
@@ -130,6 +131,17 @@ public class BookServiceImpl implements BookService {
 		
 		bookEntity.setCategoryEntity(categoryEntity);
 		bookEntity.setUpdatedByEntity(updatedByEntity);
+		bookRepository.save(bookEntity);
+		
+		return ResponseEntity.ok(bookEntity);
+	}
+	
+	@Override
+	public ResponseEntity<?> updateQtyBook(Integer id, UpdateQtyBookDto dto) {
+		// TODO Auto-generated method stub
+		BookEntity bookEntity = bookRepository.findById(id).get();
+		bookEntity.setQty(dto.getQty());
+		
 		bookRepository.save(bookEntity);
 		
 		return ResponseEntity.ok(bookEntity);
@@ -158,6 +170,8 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setAuthor(dto.getAuthor());
 		return bookEntity;
 	}
+
+	
 
 	
 

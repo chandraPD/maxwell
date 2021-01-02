@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.BookDto;
+import library.maxwell.module.book.dto.UpdateQtyBookDto;
 
 public interface BookService {
 	ResponseEntity<?> getBook();
@@ -17,4 +18,5 @@ public interface BookService {
 	ResponseEntity<?> addBook(UserPrincipal userPrincipal, BookDto dto);
 	ResponseEntity<?> updateBook(UserPrincipal userPrincipal, Integer id, BookDto dto);
 	ResponseEntity<?> deleteBook(Integer id);
+	ResponseEntity<?> updateQtyBook(Integer id, UpdateQtyBookDto dto);
 }
