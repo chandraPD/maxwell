@@ -9,6 +9,7 @@ public interface BookDetailService {
 	public ResponseEntity<?> getAllActive();
 	public ResponseEntity<?> getAllInactive();
 	public ResponseEntity<?> getDetailBook(Integer id);
+	public ResponseEntity<?> getByBookId(Integer bookId);
 	public ResponseEntity<?> getByTypeofDamage(String typeOfDamage);
 	public ResponseEntity<?> addDetailBook(BookDetailDto dto);
 	public ResponseEntity<?> updateDetailBook(Integer id, BookDetailDto dto);

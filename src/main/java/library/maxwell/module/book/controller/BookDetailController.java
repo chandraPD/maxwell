@@ -37,6 +37,11 @@ public class BookDetailController {
 		return bookDetailService.getAllInactive();
 	}
 	
+	@GetMapping("/get-by-book-id/{id}")
+	public ResponseEntity<?> getByBookId(@PathVariable Integer id) {
+		return bookDetailService.getByBookId(id);
+	}
+	
 	@GetMapping("/get-detail-book/{id}")
 	public ResponseEntity<?> getDetailBook(@PathVariable Integer id) {
 		return bookDetailService.getDetailBook(id);
