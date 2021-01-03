@@ -1,10 +1,8 @@
 package library.maxwell.module.invoice.service;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import library.maxwell.config.security.auth.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +15,7 @@ import library.maxwell.module.invoice.dto.StatusMessageDto;
 import library.maxwell.module.invoice.entity.InvoiceEntity;
 import library.maxwell.module.invoice.repository.InvoiceRepository;
 import library.maxwell.module.user.entity.UserDetailEntity;
-import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.repository.UserDetailRepository;
-import library.maxwell.module.user.repository.UserRepository;
 
 @Service
 @Transactional
@@ -41,18 +37,18 @@ public class InvoiceServiceImpl implements InvoiceService {
 		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
 		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByStatusIsTrue();
 		List<InvoiceDto> invoiceDtos = new ArrayList<>();
-		
-		if (invoiceEntity != null) {
+
+		if (invoiceEntity.isEmpty()) {
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("Data belum ada");
+			result.setData(null);
+		} else {
 			for (InvoiceEntity row : invoiceEntity) {
 				invoiceDtos.add(convertToInvoiceDto(row));
 			}
 			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data Invoice telah ditemukan");
+			result.setMessage("Data Invoice telah ditemukan1");
 			result.setData(invoiceDtos);
-		} else {
-			result.setMessage("Data belum ada");
-			result.setStatus(HttpStatus.BAD_GATEWAY.value());
-			result.setData(null);
 		}
 		return result;
 	}
@@ -65,7 +61,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (invoiceEntity != null) {
 
 			InvoiceDto invoiceDto = convertToInvoiceDto(invoiceEntity);
-			
+
 			result.setStatus(HttpStatus.OK.value());
 			result.setMessage("Data ditemukan");
 			result.setData(invoiceDto);
@@ -81,14 +77,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	public InvoiceDto convertToInvoiceDto(InvoiceEntity invoiceEntity) {
 		Integer idBorrower = invoiceEntity.getBorrowerEntity().getUserId();
-		
+
 		InvoiceDto invoiceDto = new InvoiceDto();
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm");
 		String invoiceDateString = invoiceEntity.getInvoiceDate().format(formatter);
 
 		String treshold = invoiceEntity.getInvoiceDate().plusDays(7).format(formatter);
-		
+
 		UserDetailEntity borrower = userDetailRepository.findByUserEntityUserId(idBorrower);
 		invoiceDto.setInvoiceId(invoiceEntity.getInvoiceId());
 		invoiceDto.setNoInvoice(invoiceEntity.getNoInvoice());
@@ -128,13 +124,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 		Integer id = userPrincipal.getId();
 		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByBorrowerEntity_UserId(id);
 		List<InvoiceDto> invoiceDtos = new ArrayList<>();
-		
+
 		if (invoiceEntity != null) {
 			for (InvoiceEntity row : invoiceEntity) {
 				invoiceDtos.add(convertToInvoiceDto(row));
 			}
 			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data Invoice telah ditemukan");
+			result.setMessage("Data Invoice telah ditemukan1");
 			result.setData(invoiceDtos);
 		} else {
 			result.setMessage("Data belum ada");
