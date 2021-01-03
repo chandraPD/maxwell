@@ -18,6 +18,7 @@ public interface BookDetailRepository extends JpaRepository<BookDetailEntity, In
 	List<BookDetailEntity> findAllInactive();
 	
 	List<BookDetailEntity> findByTypeOfDamage(String typeOfDamage);
-
 	
+	@Query(value = "SELECT * FROM book_detail WHERE book_id = ? AND status IS true", nativeQuery = true)
+	List<BookDetailEntity> findByBookEntityBookId(Integer bookId);
 }
