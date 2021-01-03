@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import library.maxwell.module.log.service.LogServiceImpl;
 
 @RestController
 @RequestMapping("/log")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LogController {
 	@Autowired
 	private LogServiceImpl logService;
@@ -42,7 +44,11 @@ public class LogController {
 			result.setData(logEntity);
 			return ResponseEntity.badRequest().body(result);
 		}
-		return ResponseEntity.ok(logEntity);
+		StatusMessageDto<LogEntity> result = new StatusMessageDto<>();
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("DATA TELAH DITEMUKAN!");
+		result.setData(logEntity);
+		return ResponseEntity.ok(result);
 		
 	}
 	

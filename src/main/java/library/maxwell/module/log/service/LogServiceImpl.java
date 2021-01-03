@@ -40,12 +40,15 @@ public class LogServiceImpl implements LogService {
 		return logEntity;
 	}
 
+
 	@Override
 	public LogEntity updateLog(Integer idLog, LogDto dto) {
 		// TODO Auto-generated method stub
 		LogEntity logEntity = logRepository.findById(idLog).get();
-		LogEntity updateLog = convertToLogEntity(dto);
-		logRepository.save(updateLog);
+		logEntity.setDateTime(LocalDateTime.now());
+		logEntity.setAction(dto.getAction());
+		logEntity.setDescription(dto.getDescription());
+		logRepository.save(logEntity);
 		return logEntity;
 	}
 
@@ -67,4 +70,6 @@ public class LogServiceImpl implements LogService {
 		return logEntity;
 
 }
+
+
 }
