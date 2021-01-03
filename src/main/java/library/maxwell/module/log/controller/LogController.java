@@ -44,7 +44,11 @@ public class LogController {
 			result.setData(logEntity);
 			return ResponseEntity.badRequest().body(result);
 		}
-		return ResponseEntity.ok(logEntity);
+		StatusMessageDto<LogEntity> result = new StatusMessageDto<>();
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("DATA TELAH DITEMUKAN!");
+		result.setData(logEntity);
+		return ResponseEntity.ok(result);
 		
 	}
 	
