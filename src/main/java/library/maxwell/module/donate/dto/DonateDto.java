@@ -18,5 +18,6 @@ public class DonateDto {
     private String donationType;
     private Integer totalBook;
     private String statusDonate;
+    private String phoneNumber;
 
 }

@@ -9,7 +9,7 @@ import library.maxwell.module.topup.entity.UserBalanceEntity;
 
 @Repository
 public interface UserBalanceRepository extends JpaRepository<UserBalanceEntity, Integer>{
-	@Query(value="select nominal from user_balance where user_balance_id=?",nativeQuery = true)
+	@Query(value="select nominal from user_balance where user_id=?",nativeQuery = true)
 	Double findNominal(Integer id);
 	
 	

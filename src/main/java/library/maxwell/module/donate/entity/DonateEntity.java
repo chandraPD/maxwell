@@ -48,4 +48,8 @@ public class DonateEntity {
 
 	@Column(name = "status")
 	private Boolean status = true;
+
+	@Column(name = "phone_number", length = 15, nullable = false)
+	private String phoneNumber;
+
 }
