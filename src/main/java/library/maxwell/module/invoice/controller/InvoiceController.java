@@ -24,7 +24,7 @@ public class InvoiceController {
 	
 	@GetMapping("/user/get-all")
 	public ResponseEntity<?> getAllUser(@CurrentUser UserPrincipal userprincipal){
-		StatusMessageDto<?> result = invoiceService.getAll(userprincipal);
+		StatusMessageDto<?> result = invoiceService.getAll(userprincipal,"");
 		return ResponseEntity.ok(result);
 	}
 
@@ -34,6 +34,11 @@ public class InvoiceController {
 		return ResponseEntity.ok(result);
 	}
 	
+	@GetMapping("/user/get-all-need-paid")
+	public ResponseEntity<?> getAllUserByStatusInvoice(@CurrentUser UserPrincipal userprincipal){
+		StatusMessageDto<?> result = invoiceService.getAll(userprincipal,"Waiting For Payment");
+		return ResponseEntity.ok(result);
+	}
 	
 	@GetMapping("/get-by-id/{invoiceId}")
 	public ResponseEntity<?> getById(@PathVariable Integer invoiceId){

@@ -1,5 +1,7 @@
 package library.maxwell.module.invoice.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,9 @@ import library.maxwell.module.invoice.dto.StatusMessageDto;
 import library.maxwell.module.invoice.entity.InvoiceEntity;
 import library.maxwell.module.invoice.repository.InvoiceRepository;
 import library.maxwell.module.user.entity.UserDetailEntity;
+import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.repository.UserDetailRepository;
+import library.maxwell.module.user.repository.UserRepository;
 
 @Service
 @Transactional
@@ -26,6 +30,39 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	private UserDetailRepository userDetailRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Override
+	public StatusMessageDto<?> getAll(UserPrincipal userPrincipal, String statusInvoice) {
+
+		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
+		Integer id = userPrincipal.getId();
+		List<InvoiceEntity> invoiceEntity = new ArrayList<>();
+		if (statusInvoice == "") {
+//			Get All Invoice
+			invoiceEntity = invoiceRepository.findAllByStatusIsTrueAndBorrowerEntity_UserIdIs(id);
+		} else {
+//			Get All Invoice is status Invoice = Waiting for Payment
+			invoiceEntity = invoiceRepository.findAllByStatusIsTrueAndBorrowerEntity_UserIdIsAndStatusInvoiceIs(id,statusInvoice);
+		}
+		List<InvoiceDto> invoiceDtos = new ArrayList<>();
+
+		if (invoiceEntity != null) {
+			for (InvoiceEntity row : invoiceEntity) {
+				invoiceDtos.add(convertToInvoiceDto(row));
+			}
+			result.setStatus(HttpStatus.OK.value());
+			result.setMessage("Data Invoice telah ditemukan");
+			result.setData(invoiceDtos);
+		} else {
+			result.setMessage("Data belum ada");
+			result.setStatus(HttpStatus.BAD_GATEWAY.value());
+			result.setData(null);
+		}
+		return result;
+	}
 
 	@Override
 	public StatusMessageDto<?> getAll() {
@@ -114,30 +151,34 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public StatusMessageDto<?> getAll(UserPrincipal userPrincipal) {
+	public InvoiceEntity addInvoice(UserPrincipal userPrincipal) {
+		// TODO Auto-generated method stub
+		InvoiceEntity invoiceEntity = new InvoiceEntity();
+		Integer idBorrower = userPrincipal.getId();
+		UserEntity borrower = userRepository.findById(idBorrower).get();
+		invoiceEntity.setBorrowerEntity(borrower);
 
-//		List<InvoiceEntity> invoiceEntity2 = invoiceRepository.findAllByBorrowerEntity_UserId(id);
-//		return Optional.ofNullable(invoiceEntity)
-//				.map(invoiceEntities -> StatusMessageDto.success("Data Invoice telah ditemukan", invoiceEntities))
-//				.orElse(StatusMessageDto.error("Data Invoice Belum ditemukan"));
-		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
-		Integer id = userPrincipal.getId();
-		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByBorrowerEntity_UserId(id);
-		List<InvoiceDto> invoiceDtos = new ArrayList<>();
+		DateTimeFormatter getYearFull = DateTimeFormatter.ofPattern("yyyy");
+		DateTimeFormatter getYear = DateTimeFormatter.ofPattern("yy");
+		String year = LocalDate.now().format(getYear);
+		Integer yearFull = Integer.parseInt(LocalDate.now().format(getYearFull));
+//		find last no invoice
+		String lastNoInvoice = invoiceRepository.getLastInvoice(yearFull);
 
-		if (invoiceEntity != null) {
-			for (InvoiceEntity row : invoiceEntity) {
-				invoiceDtos.add(convertToInvoiceDto(row));
-			}
-			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data Invoice telah ditemukan1");
-			result.setData(invoiceDtos);
+		String seq;
+		if (lastNoInvoice == null) {
+			seq = String.format("%04d", 1);
 		} else {
-			result.setMessage("Data belum ada");
-			result.setStatus(HttpStatus.BAD_GATEWAY.value());
-			result.setData(null);
+			Integer number = Integer.parseInt(lastNoInvoice.substring(6, 9)) + 1;
+			seq = String.format("%04d", number);
 		}
-		return result;
+		String noInvoice = "INV" + year + seq;
+		invoiceEntity.setNoInvoice(noInvoice);
+		invoiceEntity.setGrandTotal((double) 5000);
+//		payment date pertama kali null, akan berubah pada saat user membayar invoice
+		invoiceEntity.setStatusInvoice("Waiting For Payment");
+		invoiceRepository.save(invoiceEntity);
+		return invoiceEntity;
 	}
 
 }
