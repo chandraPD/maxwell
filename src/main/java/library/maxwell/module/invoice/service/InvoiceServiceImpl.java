@@ -1,10 +1,10 @@
 package library.maxwell.module.invoice.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import library.maxwell.config.security.auth.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +31,24 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Autowired
 	private UserDetailRepository userDetailRepository;
 
-	@Override
-	public StatusMessageDto<?> getAll() {
+	@Autowired
+	private UserRepository userRepository;
 
-//		List<InvoiceEntity> invoiceEntity2 = invoiceRepository.findAllByBorrowerEntity_UserId(id);
-//		return Optional.ofNullable(invoiceEntity)
-//				.map(invoiceEntities -> StatusMessageDto.success("Data Invoice telah ditemukan", invoiceEntities))
-//				.orElse(StatusMessageDto.error("Data Invoice Belum ditemukan"));
+	@Override
+	public StatusMessageDto<?> getAll(UserPrincipal userPrincipal, String statusInvoice) {
+
 		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
-		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByStatusIsTrue();
+		Integer id = userPrincipal.getId();
+		List<InvoiceEntity> invoiceEntity = new ArrayList<>();
+		if (statusInvoice == "") {
+//			Get All Invoice
+			invoiceEntity = invoiceRepository.findAllByStatusIsTrueAndBorrowerEntity_UserIdIs(id);
+		} else {
+//			Get All Invoice is status Invoice = Waiting for Payment
+			invoiceEntity = invoiceRepository.findAllByStatusIsTrueAndBorrowerEntity_UserIdIsAndStatusInvoiceIs(id,statusInvoice);
+		}
 		List<InvoiceDto> invoiceDtos = new ArrayList<>();
-		
+
 		if (invoiceEntity != null) {
 			for (InvoiceEntity row : invoiceEntity) {
 				invoiceDtos.add(convertToInvoiceDto(row));
@@ -58,6 +65,32 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
+	public StatusMessageDto<?> getAll() {
+
+//		List<InvoiceEntity> invoiceEntity2 = invoiceRepository.findAllByBorrowerEntity_UserId(id);
+//		return Optional.ofNullable(invoiceEntity)
+//				.map(invoiceEntities -> StatusMessageDto.success("Data Invoice telah ditemukan", invoiceEntities))
+//				.orElse(StatusMessageDto.error("Data Invoice Belum ditemukan"));
+		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
+		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByStatusIsTrue();
+		List<InvoiceDto> invoiceDtos = new ArrayList<>();
+
+		if (invoiceEntity.isEmpty()) {
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("Data belum ada");
+			result.setData(null);
+		} else {
+			for (InvoiceEntity row : invoiceEntity) {
+				invoiceDtos.add(convertToInvoiceDto(row));
+			}
+			result.setStatus(HttpStatus.OK.value());
+			result.setMessage("Data Invoice telah ditemukan1");
+			result.setData(invoiceDtos);
+		}
+		return result;
+	}
+
+	@Override
 	public StatusMessageDto<?> getById(Integer invoiceId) {
 		// TODO Auto-generated method stub
 		InvoiceEntity invoiceEntity = invoiceRepository.getById(invoiceId);
@@ -65,7 +98,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (invoiceEntity != null) {
 
 			InvoiceDto invoiceDto = convertToInvoiceDto(invoiceEntity);
-			
+
 			result.setStatus(HttpStatus.OK.value());
 			result.setMessage("Data ditemukan");
 			result.setData(invoiceDto);
@@ -81,14 +114,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	public InvoiceDto convertToInvoiceDto(InvoiceEntity invoiceEntity) {
 		Integer idBorrower = invoiceEntity.getBorrowerEntity().getUserId();
-		
+
 		InvoiceDto invoiceDto = new InvoiceDto();
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm");
 		String invoiceDateString = invoiceEntity.getInvoiceDate().format(formatter);
 
 		String treshold = invoiceEntity.getInvoiceDate().plusDays(7).format(formatter);
-		
+
 		UserDetailEntity borrower = userDetailRepository.findByUserEntityUserId(idBorrower);
 		invoiceDto.setInvoiceId(invoiceEntity.getInvoiceId());
 		invoiceDto.setNoInvoice(invoiceEntity.getNoInvoice());
@@ -118,30 +151,34 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public StatusMessageDto<?> getAll(UserPrincipal userPrincipal) {
+	public InvoiceEntity addInvoice(UserPrincipal userPrincipal) {
+		// TODO Auto-generated method stub
+		InvoiceEntity invoiceEntity = new InvoiceEntity();
+		Integer idBorrower = userPrincipal.getId();
+		UserEntity borrower = userRepository.findById(idBorrower).get();
+		invoiceEntity.setBorrowerEntity(borrower);
 
-//		List<InvoiceEntity> invoiceEntity2 = invoiceRepository.findAllByBorrowerEntity_UserId(id);
-//		return Optional.ofNullable(invoiceEntity)
-//				.map(invoiceEntities -> StatusMessageDto.success("Data Invoice telah ditemukan", invoiceEntities))
-//				.orElse(StatusMessageDto.error("Data Invoice Belum ditemukan"));
-		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
-		Integer id = userPrincipal.getId();
-		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByBorrowerEntity_UserId(id);
-		List<InvoiceDto> invoiceDtos = new ArrayList<>();
-		
-		if (invoiceEntity != null) {
-			for (InvoiceEntity row : invoiceEntity) {
-				invoiceDtos.add(convertToInvoiceDto(row));
-			}
-			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data Invoice telah ditemukan");
-			result.setData(invoiceDtos);
+		DateTimeFormatter getYearFull = DateTimeFormatter.ofPattern("yyyy");
+		DateTimeFormatter getYear = DateTimeFormatter.ofPattern("yy");
+		String year = LocalDate.now().format(getYear);
+		Integer yearFull = Integer.parseInt(LocalDate.now().format(getYearFull));
+//		find last no invoice
+		String lastNoInvoice = invoiceRepository.getLastInvoice(yearFull);
+
+		String seq;
+		if (lastNoInvoice == null) {
+			seq = String.format("%04d", 1);
 		} else {
-			result.setMessage("Data belum ada");
-			result.setStatus(HttpStatus.BAD_GATEWAY.value());
-			result.setData(null);
+			Integer number = Integer.parseInt(lastNoInvoice.substring(6, 9)) + 1;
+			seq = String.format("%04d", number);
 		}
-		return result;
+		String noInvoice = "INV" + year + seq;
+		invoiceEntity.setNoInvoice(noInvoice);
+		invoiceEntity.setGrandTotal((double) 5000);
+//		payment date pertama kali null, akan berubah pada saat user membayar invoice
+		invoiceEntity.setStatusInvoice("Waiting For Payment");
+		invoiceRepository.save(invoiceEntity);
+		return invoiceEntity;
 	}
 
 }

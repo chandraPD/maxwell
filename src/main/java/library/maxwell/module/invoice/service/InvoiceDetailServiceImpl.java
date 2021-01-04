@@ -11,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import library.maxwell.module.book.entity.BorrowedBookEntity;
 import library.maxwell.module.invoice.dto.InvoiceDetailDto;
 import library.maxwell.module.invoice.dto.StatusMessageDto;
 import library.maxwell.module.invoice.entity.InvoiceDetailEntity;
+import library.maxwell.module.invoice.entity.InvoiceEntity;
 import library.maxwell.module.invoice.repository.InvoiceDetailRepository;
 
 @Service
@@ -63,6 +65,20 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 		}
 		
 		return result;
+	}
+
+	@Override
+	public InvoiceDetailEntity addInvoiceDetail(InvoiceEntity invoiceEntity, BorrowedBookEntity borrowedBookEntity) {
+		// TODO Auto-generated method stub
+		
+		InvoiceDetailEntity invoiceDetailEntity = new InvoiceDetailEntity();
+		invoiceDetailEntity.setBorrowedBookEntity(borrowedBookEntity);
+		invoiceDetailEntity.setInvoiceEntity(invoiceEntity);
+		invoiceDetailEntity.setTotal((double)5000);
+		invoiceDetailEntity.setType("DP");
+		
+		invoiceDetailRepository.save(invoiceDetailEntity);
+		return invoiceDetailEntity;
 	}
 
 }
