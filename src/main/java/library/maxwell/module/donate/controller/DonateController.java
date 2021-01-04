@@ -40,8 +40,8 @@ public class DonateController {
     }
 
     @PutMapping("/{donateId}")
-    public ResponseEntity<?> updateDonate(@PathVariable Integer donateId, @RequestBody DonateDto dto) {
-        DonateEntity donateEntity = donateService.updateDonate(dto, donateId);
+    public ResponseEntity<?> updateDonate(@CurrentUser UserPrincipal userPrincipal,@PathVariable Integer donateId, @RequestBody DonateDto dto) {
+        DonateEntity donateEntity = donateService.updateDonate(userPrincipal, dto, donateId);
         statusMessageDto.setStatus(200);
         statusMessageDto.setMessages("Data have succesfully updated");
         statusMessageDto.setData(donateEntity);
