@@ -23,6 +23,14 @@ public class TopUpManagement {
 	@Autowired
 	private HistoryBalanceService service;
 	
+	@GetMapping("/getRole")
+	public ResponseEntity<?> getRole(@CurrentUser UserPrincipal userprincipal){
+		String role=userprincipal.getAuthorities().toString();	
+		Integer id=userprincipal.getId();
+		System.out.println(role);
+		return ResponseEntity.ok(role);
+	}
+	
 	@GetMapping("/getAll")
 	public ResponseEntity<?> getAll(@CurrentUser UserPrincipal userprincipal){
 		String role=userprincipal.getAuthorities().toString();	
