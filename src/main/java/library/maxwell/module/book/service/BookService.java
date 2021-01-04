@@ -19,4 +19,5 @@ public interface BookService {
 	ResponseEntity<?> updateBook(UserPrincipal userPrincipal, Integer id, BookDto dto);
 	ResponseEntity<?> deleteBook(Integer id);
 	ResponseEntity<?> updateQtyBook(Integer id, UpdateQtyBookDto dto);
+	ResponseEntity<?> getRecentFive();
 }

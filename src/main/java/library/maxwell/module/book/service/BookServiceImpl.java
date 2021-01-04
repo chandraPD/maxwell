@@ -60,6 +60,13 @@ public class BookServiceImpl implements BookService {
 		List<BookEntity> bookEntities = bookRepository.findInactiveBook();
 		return ResponseEntity.ok(bookEntities);
 	}
+	
+	@Override
+	public ResponseEntity<?> getRecentFive() {
+		// TODO Auto-generated method stub
+		List<BookEntity> bookEntities = bookRepository.getRecentFive();
+		return ResponseEntity.ok(bookEntities);
+	}
 
 	@Override
 	public ResponseEntity<?> findByTitle(String title) {
@@ -171,8 +178,5 @@ public class BookServiceImpl implements BookService {
 		return bookEntity;
 	}
 
-	
-
-	
 
 }

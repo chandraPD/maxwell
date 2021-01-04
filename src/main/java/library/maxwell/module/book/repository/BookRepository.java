@@ -19,4 +19,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	
 	@Query(value = "SELECT * FROM book WHERE status IS false", nativeQuery = true)
 	List<BookEntity> findInactiveBook();
+	
+	@Query(value = "SELECT * FROM book WHERE status IS true ORDER BY created_at DESC LIMIT 5", nativeQuery = true)
+	List<BookEntity> getRecentFive();
+	
 }

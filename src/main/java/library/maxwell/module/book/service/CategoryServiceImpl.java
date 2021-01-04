@@ -77,8 +77,20 @@ public class CategoryServiceImpl implements CategoryService {
 	public ResponseEntity<?> addCategory(CategoryDto dto) {
 		// TODO Auto-generated method stub
 		CategoryEntity categoryEntity = convertToCategoryEntity(dto);
-		categoryRepository.save(categoryEntity);
-		return ResponseEntity.ok(categoryEntity);
+		
+		Boolean existsByCategory = categoryRepository.existsByCategory(dto.getCategory());
+		
+		if(existsByCategory) {
+			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
+			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			result.setMessage("Category already exist!");
+			result.setData(categoryEntity);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+		} else {
+			categoryRepository.save(categoryEntity);
+			return ResponseEntity.ok(categoryEntity);
+		}
+		
 	}
 	
 	@Override

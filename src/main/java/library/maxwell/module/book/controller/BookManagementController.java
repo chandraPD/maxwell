@@ -50,6 +50,11 @@ public class BookManagementController {
 		return bookService.findByTitle(title);
 	}
 	
+	@GetMapping("/get-recent-five")
+	public ResponseEntity<?> getRecentFive() {
+		return bookService.getRecentFive();
+	}
+	
 	@GetMapping("/get-by-author/{author}")
 	public ResponseEntity<?> getByAuthor(@PathVariable String author) {
 		return bookService.findByAuthor(author);
