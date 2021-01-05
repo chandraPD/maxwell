@@ -76,4 +76,7 @@ public class BorrowedBookEntity {
 
 	@Column(name = "status")
 	private Boolean status = true;
+	
+	@Column(name = "borrowed_book_code", length = 10, unique= true)
+	private String borrowedBookCode;
 }
