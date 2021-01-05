@@ -81,6 +81,8 @@ public class SlideShowServiceImpl implements SlideShowService{
 		slideShowEntity.setImg(dto.getImg());
 		return slideShowEntity;
 	}
+	
+	//DELETE YANG DIGUNAKAN DI FRONT-END
 	@Override
 	public SlideShowEntity deleteDataSlideShow(UserPrincipal userPrincipal, Integer idSlideShow) {
 		// TODO Auto-generated method stub
