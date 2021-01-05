@@ -7,11 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import library.maxwell.config.security.auth.CurrentUser;
 import library.maxwell.config.security.auth.UserPrincipal;
+import library.maxwell.module.topup.dto.HistoryBalanceDto;
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 import library.maxwell.module.topup.service.HistoryBalanceImp;
 import library.maxwell.module.topup.service.HistoryBalanceService;
@@ -31,10 +35,18 @@ public class TopUpManagement {
 		return ResponseEntity.ok(role);
 	}
 	
+	@PostMapping("/getPass")
+	public ResponseEntity<?> getpass(@CurrentUser UserPrincipal userprincipal, @RequestBody HistoryBalanceDto dto){
+		Boolean isBoolean=service.getPass(userprincipal,dto);
+		return ResponseEntity.ok(isBoolean);
+	}
+	
 	@GetMapping("/getAll")
 	public ResponseEntity<?> getAll(@CurrentUser UserPrincipal userprincipal){
 		String role=userprincipal.getAuthorities().toString();	
 		Integer id=userprincipal.getId();
+		String pass=userprincipal.getPassword().toString();
+		System.out.println(pass);
 		System.out.println(role);
 		if (role.equals("[ROLE_ADMIN]")) {
 			List<HistoryBalanceEntity> historyBalanceEntities=service.getAll();

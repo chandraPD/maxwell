@@ -20,4 +20,6 @@ public interface UserService {
     UserEntity getProfiles(UserPrincipal userPrincipal);
     
     Optional<UserEntity> getId(UserPrincipal userPrincipal);
+    
+ 
 }
