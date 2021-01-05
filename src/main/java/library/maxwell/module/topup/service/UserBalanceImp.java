@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.topup.dto.UserBalanceDto;
 import library.maxwell.module.topup.entity.UserBalanceEntity;
 import library.maxwell.module.topup.repository.UserBalanceRepository;
@@ -65,6 +66,14 @@ public class UserBalanceImp implements UserBalanceService{
 		userBalanceEntity.setStatus(false);
 		repo.save(userBalanceEntity);
 		return userBalanceEntity;
+	}
+
+	@Override
+	public Double getSaldo(UserPrincipal userPrincipal) {
+		// TODO Auto-generated method stub
+		Integer userId = userPrincipal.getId();
+		Double balance = repo.findByUserEntity_UserIdIs(userId).getNominal();
+		return balance;
 	}
 
 }

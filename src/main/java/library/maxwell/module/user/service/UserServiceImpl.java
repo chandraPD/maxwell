@@ -98,6 +98,8 @@ public class UserServiceImpl implements UserService {
             response = null;
             return response;
         }
+        
+        
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -122,9 +124,13 @@ public class UserServiceImpl implements UserService {
         return userEntity;
     }
 
+    
+    
 	@Override
 	public Optional<UserEntity> getId(UserPrincipal userPrincipal) {	
 		Optional<UserEntity> userEntity= userRepository.findById(userPrincipal.getId());
 		return userEntity;
 	}
+
+	
 }

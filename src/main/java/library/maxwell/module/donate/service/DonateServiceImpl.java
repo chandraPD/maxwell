@@ -35,9 +35,9 @@ public class DonateServiceImpl implements DonateService{
     }
 
     @Override
-    public DonateEntity updateDonate(DonateDto dto, Integer donateId){
+    public DonateEntity updateDonate(UserPrincipal userPrincipal, DonateDto dto, Integer donateId){
         DonateEntity donateEntity = donateRepository.findById(donateId).get();
-        UserEntity userEntity = userRepository.findById(1).get();
+        UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();
         donateEntity.setDonationType(dto.getDonationType());
         donateEntity.setEmail(dto.getEmail());
         donateEntity.setName(dto.getName());
@@ -82,6 +82,7 @@ public DonateEntity convertToDonateEntity(DonateDto dto){
         donateEntity.setName(dto.getName());
         donateEntity.setTotalBook(dto.getTotalBook());
         donateEntity.setStatusDonate(dto.getStatusDonate());
+        donateEntity.setPhoneNumber((dto.getPhoneNumber()));
     return donateEntity;
 }
 }

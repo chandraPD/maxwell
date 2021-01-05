@@ -19,5 +19,6 @@ public class HistoryBalanceDto {
 	private String statusPayment;
 	private LocalDateTime dateAcc;
 	private Boolean status;
+	private String password;
 
 }
