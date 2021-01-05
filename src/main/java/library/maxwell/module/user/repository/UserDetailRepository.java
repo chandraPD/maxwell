@@ -1,7 +1,6 @@
 package library.maxwell.module.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import library.maxwell.module.user.entity.UserDetailEntity;

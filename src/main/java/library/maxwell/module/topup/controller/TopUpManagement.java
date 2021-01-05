@@ -15,6 +15,7 @@ import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 import library.maxwell.module.topup.service.HistoryBalanceImp;
 import library.maxwell.module.topup.service.HistoryBalanceService;
+import library.maxwell.module.topup.service.UserBalanceService;
 
 @RestController
 @RequestMapping("/top_up_management")
@@ -22,6 +23,9 @@ import library.maxwell.module.topup.service.HistoryBalanceService;
 public class TopUpManagement {
 	@Autowired
 	private HistoryBalanceService service;
+	
+	@Autowired
+	private UserBalanceService userBalanceService;
 	
 	@GetMapping("/getRole")
 	public ResponseEntity<?> getRole(@CurrentUser UserPrincipal userprincipal){
@@ -50,4 +54,17 @@ public class TopUpManagement {
 		HistoryBalanceEntity historyBalanceEntity=service.getById(id);
 		return ResponseEntity.ok(historyBalanceEntity);
 	}
+	
+	@GetMapping("/getBalance")
+	public Double getBalance(@CurrentUser UserPrincipal userPrincipal) {
+		Double balance = userBalanceService.getSaldo(userPrincipal);
+		
+		if(balance != 0){
+			return balance;	
+		}else {
+			return balance = (double)0;
+		}
+		
+	}
+	
 }
