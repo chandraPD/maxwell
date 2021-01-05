@@ -83,6 +83,7 @@ public class UserController {
         }
 
     }
+    
 
     //Check profiles
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
