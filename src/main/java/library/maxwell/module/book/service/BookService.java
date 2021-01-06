@@ -20,4 +20,6 @@ public interface BookService {
 	ResponseEntity<?> deleteBook(Integer id);
 	ResponseEntity<?> updateQtyBook(Integer id, UpdateQtyBookDto dto);
 	ResponseEntity<?> getRecentFive();
+	ResponseEntity<?> getOldestFive();
+	ResponseEntity<?> getRecommendedDetail(Integer categoryId, Integer bookId);
 }
