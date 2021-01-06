@@ -11,6 +11,9 @@ import library.maxwell.module.user.dto.StatusMessageDto;
 import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.repository.UserRepository;
 import library.maxwell.module.user.service.UserServiceImpl;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,5 +94,11 @@ public class UserController {
     public ResponseEntity<?> getProfiles(@CurrentUser UserPrincipal userPrincipal) {
         UserEntity user = userService.getProfiles(userPrincipal);
         return ResponseEntity.ok(user);
+    }
+    
+    @GetMapping("/user")
+    public ResponseEntity<?> getUser(){
+    	List<UserEntity> userEntities=userService.getUser(1);
+    	return ResponseEntity.ok(userEntities);
     }
 }

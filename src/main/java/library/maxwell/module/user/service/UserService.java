@@ -6,6 +6,7 @@ import library.maxwell.module.user.dto.LoginDto;
 import library.maxwell.module.user.dto.RegistrationDto;
 import library.maxwell.module.user.entity.UserEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -21,5 +22,5 @@ public interface UserService {
     
     Optional<UserEntity> getId(UserPrincipal userPrincipal);
     
- 
+    List<UserEntity> getUser(Integer id);
 }

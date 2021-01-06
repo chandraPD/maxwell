@@ -34,28 +34,73 @@ public class TopUp {
 	
 	@PostMapping("/post")
 	public ResponseEntity<?> post(@CurrentUser UserPrincipal userprincipal, @RequestBody HistoryBalanceDto Dto){	
+		String role=userprincipal.getAuthorities().toString();	
 		StatusMessageDto<HistoryBalanceEntity> result=new StatusMessageDto<>();
-		HistoryBalanceEntity historyBalanceEntity=service.post(userprincipal,Dto);
-		result.setStatus(HttpStatus.OK.value());
-		result.setMessage("Berhasil Insert");
-		result.setData(historyBalanceEntity);
-		return ResponseEntity.ok(result);
+		if (role.equals("[ROLE_ADMIN]")) {
+			result.setStatus(HttpStatus.BAD_GATEWAY.value());
+			result.setMessage("Role Admin");
+			result.setData(null);
+			return ResponseEntity.ok(result);
+		} else {
+			if (Dto.getNominal().equals(0)) {			
+				result.setStatus(HttpStatus.BAD_REQUEST.value());
+				result.setMessage("Nominal Tidak boleh kosong");
+				result.setData(null);
+				return ResponseEntity.ok(result);
+			} else if (Dto.getNominal().isNaN()) {
+				result.setStatus(HttpStatus.BAD_REQUEST.value());
+				result.setMessage("Nominal Bukan Angka");
+				result.setData(null);
+				return ResponseEntity.ok(result);
+			} else if (Dto.getPaymentMethod().isEmpty()) {			
+				result.setStatus(HttpStatus.BAD_REQUEST.value());
+				result.setMessage("Payment Method Kosong");
+				result.setData(null);
+				return ResponseEntity.ok(result);
+			} else {
+				HistoryBalanceEntity historyBalanceEntity=service.post(userprincipal,Dto);
+				result.setStatus(HttpStatus.OK.value());
+				result.setMessage("Berhasil Insert");
+				result.setData(historyBalanceEntity);
+				return ResponseEntity.ok(result);
+			}
+		}			
 	}
 	
 	@PostMapping("/post2")
 	public ResponseEntity<?> post2(@CurrentUser UserPrincipal userprincipal, @RequestBody HistoryBalanceDto Dto){		
-		String role=userprincipal.getAuthorities().toString();		
-		System.out.println(role);
-		if (role.equals("[ROLE_ADMIN]")) {
-			StatusMessageDto<HistoryBalanceEntity> result=new StatusMessageDto<>();
-			HistoryBalanceEntity historyBalanceEntity=service.post2(Dto);
-			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Berhasil Insert");
-			result.setData(historyBalanceEntity);
-			return ResponseEntity.ok(result);
+		StatusMessageDto<HistoryBalanceEntity> result=new StatusMessageDto<>();
+		String role=userprincipal.getAuthorities().toString();				
+		if (role.equals("[ROLE_ADMIN]")) {					
+			if (Dto.getUser_balance_id().equals("")) {			
+				result.setStatus(HttpStatus.BAD_REQUEST.value());
+				result.setMessage("User ID Tidak boleh kosong");
+				result.setData(null);
+				return ResponseEntity.ok(result);
+			} else if (Dto.getNominal().isNaN()) {
+				result.setStatus(HttpStatus.BAD_REQUEST.value());
+				result.setMessage("Nominal Bukan Angka");
+				result.setData(null);
+				return ResponseEntity.ok(result);
+			}else if (Dto.getNominal().isNaN()) {
+				result.setStatus(HttpStatus.BAD_REQUEST.value());
+				result.setMessage("Nominal Bukan Angka");
+				result.setData(null);
+				return ResponseEntity.ok(result);
+			} else if (Dto.getPaymentMethod().isEmpty()) {			
+				result.setStatus(HttpStatus.BAD_REQUEST.value());
+				result.setMessage("Payment Method Kosong");
+				result.setData(null);
+				return ResponseEntity.ok(result);
+			} else {				
+				HistoryBalanceEntity historyBalanceEntity=service.post2(Dto);
+				result.setStatus(HttpStatus.OK.value());
+				result.setMessage("Berhasil Insert");
+				result.setData(historyBalanceEntity);
+				return ResponseEntity.ok(result);
+			}			
 		}
-		else {
-			StatusMessageDto<HistoryBalanceEntity> result=new StatusMessageDto<>();			
+		else {				
 			result.setStatus(HttpStatus.BAD_GATEWAY.value());
 			result.setMessage("Role bukan Admin");
 			result.setData(null);

@@ -5,6 +5,7 @@ import java.util.List;
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.topup.dto.HistoryBalanceDto;
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
+import library.maxwell.module.user.entity.UserEntity;
 
 public interface HistoryBalanceService {
 	HistoryBalanceEntity getById(Integer id);
@@ -26,6 +27,7 @@ public interface HistoryBalanceService {
 	HistoryBalanceEntity delete(Integer id);
 	
 	Boolean getPass(UserPrincipal userPrincipal,HistoryBalanceDto dto);
+		
 
 
 }

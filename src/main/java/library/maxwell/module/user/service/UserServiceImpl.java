@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -130,6 +131,12 @@ public class UserServiceImpl implements UserService {
 	public Optional<UserEntity> getId(UserPrincipal userPrincipal) {	
 		Optional<UserEntity> userEntity= userRepository.findById(userPrincipal.getId());
 		return userEntity;
+	}
+
+	@Override
+	public List<UserEntity> getUser(Integer id) {
+		List<UserEntity> entities=userRepository.findUser(id);
+		return entities;
 	}
 
 	
