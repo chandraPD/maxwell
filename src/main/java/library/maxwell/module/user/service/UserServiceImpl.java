@@ -1,12 +1,15 @@
 package library.maxwell.module.user.service;
 
-import com.cloudinary.utils.ObjectUtils;
 import library.maxwell.config.CloudinaryConfig;
 import library.maxwell.config.security.auth.JwtTokenProvider;
 import library.maxwell.config.security.auth.UserPrincipal;
-import library.maxwell.module.topup.entity.UserBalanceEntity;
 import library.maxwell.module.topup.repository.UserBalanceRepository;
-import library.maxwell.module.user.dto.*;
+import library.maxwell.module.user.dto.JwtAuthenticationResponse;
+import library.maxwell.module.user.dto.LoginDto;
+import library.maxwell.module.user.dto.RegistrationDto;
+import library.maxwell.module.user.dto.UpdateProfileDto;
+import library.maxwell.module.user.dto.UserDetailDto;
+import library.maxwell.module.user.dto.UserInfoDto;
 import library.maxwell.module.user.entity.LevelEntity;
 import library.maxwell.module.user.entity.LevelName;
 import library.maxwell.module.user.entity.UserDetailEntity;
@@ -22,14 +25,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
+import com.cloudinary.utils.ObjectUtils;
+
 import java.util.Collections;
+import java.util.List;
+import java.util.Base64;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+	@Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -60,8 +67,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public RegistrationDto createNewUser(RegistrationDto registrationDto) {
         UserEntity userEntity = new UserEntity();
-        UserDetailEntity userDetailEntity = new UserDetailEntity();
-        UserBalanceEntity userBalanceEntity = new UserBalanceEntity();
 
         //Lookup by registered email
         Boolean existByEmail = userRepository.existsByEmail(registrationDto.getEmail());
@@ -80,7 +85,6 @@ public class UserServiceImpl implements UserService {
 
         userEntity.setPassword(encodedPassword);
         userEntity.setEmail(registrationDto.getEmail());
-        userEntity.setActiveRole(String.valueOf(LevelName.ROLE_USER));
 
        LevelEntity levelEntity = levelRepository.findByName(LevelName.ROLE_USER)
                .get();
@@ -88,12 +92,6 @@ public class UserServiceImpl implements UserService {
 
        //Save user
         saveUser(userEntity);
-        //Set initial detail and balance entity
-        userDetailEntity.setUserEntity(userEntity);
-        userDetailEntity.setImg("https://www.oneworldplayproject.com/wp-content/uploads/2016/03/avatar-1024x1024.jpg");
-        userBalanceEntity.setUserEntity(userEntity);
-        userDetailRepository.save(userDetailEntity);
-        userBalanceRepository.save(userBalanceEntity);
 
         return registrationDto;
     }
@@ -141,10 +139,7 @@ public class UserServiceImpl implements UserService {
         return new JwtAuthenticationResponse(jwt, userInfo);
     }
 
-
-    
-    
-	@Override
+    @Override
 	public UserDetailDto getProfiles(UserPrincipal userPrincipal) {
 		UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();
 		UserDetailEntity userDetail = userDetailRepository.findByUserEntityUserId(userPrincipal.getId());
@@ -162,7 +157,21 @@ public class UserServiceImpl implements UserService {
 		return userDetailDto;
 	}
 
-    @Override
+    
+    
+	@Override
+	public Optional<UserEntity> getId(UserPrincipal userPrincipal) {	
+		Optional<UserEntity> userEntity= userRepository.findById(userPrincipal.getId());
+		return userEntity;
+	}
+
+	@Override
+	public List<UserEntity> getUser(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
     public UpdateProfileDto updateProfile(UserPrincipal userPrincipal, UpdateProfileDto profileDto) {
 
         UserEntity user = userRepository.findById(userPrincipal.getId()).get();
@@ -192,4 +201,6 @@ public class UserServiceImpl implements UserService {
         }
         return profileDto;
     }
+
+	
 }

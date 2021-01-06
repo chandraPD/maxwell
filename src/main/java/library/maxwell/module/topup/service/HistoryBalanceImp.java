@@ -146,6 +146,6 @@ public class HistoryBalanceImp implements HistoryBalanceService{
         boolean isPasswordMatch = passwordEncoder.matches(rawPassword, encodedPassword);	
         System.out.println(isPasswordMatch);
 		return isPasswordMatch;
-	}
+	}	
 
 }
