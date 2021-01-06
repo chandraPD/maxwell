@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,21 +22,33 @@ import library.maxwell.module.invoice.dto.StatusMessageDto;
 @RestController
 @RequestMapping("/borrow")
 public class BorrowedBookController {
-	
+
 	@Autowired
 	BorrowedBookService borrowImplService;
-	
+
 	@PostMapping("/save")
-	public ResponseEntity<?> save(@CurrentUser UserPrincipal userPrincipal, @RequestBody BorrowBookDto dto){
-		
+	public ResponseEntity<?> save(@CurrentUser UserPrincipal userPrincipal, @RequestBody BorrowBookDto dto) {
+
 		StatusMessageDto<?> result = borrowImplService.borrowBook(userPrincipal, dto);
-		return ResponseEntity.ok(result); 
+		return ResponseEntity.ok(result);
 	}
-	
+
 	@GetMapping("/get-all")
-	public ResponseEntity<?> getAll(@CurrentUser UserPrincipal userPrincipal){
+	public ResponseEntity<?> getAll(@CurrentUser UserPrincipal userPrincipal) {
+		System.out.println(userPrincipal);
 		StatusMessageDto<?> result = borrowImplService.getAll(userPrincipal);
-		return ResponseEntity.ok(result); 
+		return ResponseEntity.ok(result);
 	}
-	
+
+	@PutMapping("/acc-act/{idBorrowedBook}")
+	public ResponseEntity<?> accAct(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idBorrowedBook) {
+		System.out.println(userPrincipal);
+		return borrowImplService.accAct(userPrincipal, idBorrowedBook);
+	}
+
+	@PutMapping("/dec-act/{idBorrowedBook}")
+	public ResponseEntity<?> decAct(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idBorrowedBook) {
+		System.out.println(userPrincipal);
+		return borrowImplService.decAct(userPrincipal, idBorrowedBook);
+	}
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,8 +97,21 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 	@Override
 	public StatusMessageDto<?> borrowBook(UserPrincipal userPrincipal, BorrowBookDto dto) {
 		// TODO Auto-generated method stub
-		BorrowedBookEntity borrowedBookEntity = converToBorrowedBookEntity(dto);
+
 		StatusMessageDto<BorrowedBookEntity> result = new StatusMessageDto<>();
+		
+//		check tanggal peminjaman buku tidak boleh kurang dari tanggal hari ini
+		LocalDateTime firstDate = LocalDateTime.parse(dto.getReturnedDate());
+		LocalDateTime secondDate = LocalDateTime.now();
+		if(firstDate.isBefore(secondDate)) {
+			result.setMessage("Gagal meminjam Buku, Tanggal yang diinputkan lebih kecil dari tanggal sekarang");
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setData(null);
+			return result;
+		}
+		
+
+		BorrowedBookEntity borrowedBookEntity = converToBorrowedBookEntity(dto);
 		
 		Integer idUser = userPrincipal.getId();
 		
@@ -182,7 +196,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		
 		BorrowBookDto dto = new BorrowBookDto();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm");
-		
+		dto.setBorrowedBookId(borrowedBookEntity.getBorrowedBookId());
 		dto.setBorrowedBookCode(borrowedBookEntity.getBorrowedBookCode());
 		dto.setBorrower(borrower);
 		dto.setTitle(bookEntity.getTitle());
@@ -214,6 +228,38 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		}
 		
 		return fullName;
+	}
+
+	@Override
+	public ResponseEntity<?> accAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
+		
+		Integer test = userPrincipal.getId();
+		System.out.println(test);
+		BorrowedBookEntity borrowedBookEntity = borrowedBookRepository.findByBorrowedBookId(borrowedBookId);
+		
+		if(borrowedBookEntity.getStatusBook().equalsIgnoreCase("Waiting Given By Librarian")) {
+			borrowedBookEntity.setStatusBook("Waiting For Return");
+			borrowedBookEntity.setGivenByEntity(userRepository.findByUserId(userPrincipal.getId()));
+		}else if (borrowedBookEntity.getStatusBook().equalsIgnoreCase("Waiting Taken By Librarian")) {
+			borrowedBookEntity.setStatusBook("Waiting for Payment of Fines");
+		}else {
+			System.out.println("gagal");
+		}
+		borrowedBookRepository.save(borrowedBookEntity);
+		return ResponseEntity.ok(borrowedBookEntity);
+	}
+
+	@Override
+	public ResponseEntity<?> decAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
+		
+		
+		BorrowedBookEntity borrowedBookEntity = borrowedBookRepository.findByBorrowedBookId(borrowedBookId);
+		
+		if(borrowedBookEntity.getStatusBook().equalsIgnoreCase("Waiting Given By Librarian")) {
+			borrowedBookEntity.setStatusBook("Canceled");
+		}
+		borrowedBookRepository.save(borrowedBookEntity);
+		return ResponseEntity.ok(borrowedBookEntity);
 	}
 	
 }
