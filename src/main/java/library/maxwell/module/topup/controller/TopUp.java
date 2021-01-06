@@ -29,6 +29,9 @@ public class TopUp {
 	@Autowired
 	private HistoryBalanceService service;
 	
+	@Autowired
+	private UserService service2;
+	
 	@PostMapping("/post")
 	public ResponseEntity<?> post(@CurrentUser UserPrincipal userprincipal, @RequestBody HistoryBalanceDto Dto){	
 		StatusMessageDto<HistoryBalanceEntity> result=new StatusMessageDto<>();
@@ -40,7 +43,7 @@ public class TopUp {
 	}
 	
 	@PostMapping("/post2")
-	public ResponseEntity<?> post2(@CurrentUser UserPrincipal userprincipal, @RequestBody HistoryBalanceDto Dto){	
+	public ResponseEntity<?> post2(@CurrentUser UserPrincipal userprincipal, @RequestBody HistoryBalanceDto Dto){		
 		String role=userprincipal.getAuthorities().toString();		
 		System.out.println(role);
 		if (role.equals("[ROLE_ADMIN]")) {

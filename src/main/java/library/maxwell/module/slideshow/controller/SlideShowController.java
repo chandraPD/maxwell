@@ -85,9 +85,9 @@ public class SlideShowController {
 	
 	//UPDATE
 	@PutMapping("/update-slideshow/{idSlideShow}")
-	public ResponseEntity<?> updateSlideShow(@PathVariable Integer idSlideShow,
+	public ResponseEntity<?> updateSlideShow(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idSlideShow,
 			@RequestBody SlideShowDto dto){
-		SlideShowEntity slideShowEntity = slideShowService.updateSlideShow(idSlideShow, dto);
+		SlideShowEntity slideShowEntity = slideShowService.updateSlideShow(userPrincipal, idSlideShow, dto);
 		StatusMessageDto<SlideShowEntity> result = new StatusMessageDto<>();
 		result.setStatus(HttpStatus.OK.value());
 		result.setMessage("Data berhasil diupdate!");
@@ -97,8 +97,8 @@ public class SlideShowController {
 	
 	//DELETE
 	@PutMapping("/delete-slideshow/{idSlideShow}")
-	public ResponseEntity<?> deleteSlideShow(@PathVariable Integer idSlideShow){
-		SlideShowEntity slideShowEntity = slideShowService.deleteSlideShow(idSlideShow);
+	public ResponseEntity<?> deleteSlideShow(@CurrentUser UserPrincipal userPrincipal , @PathVariable Integer idSlideShow){
+		SlideShowEntity slideShowEntity = slideShowService.deleteSlideShow(userPrincipal, idSlideShow);
 		StatusMessageDto<SlideShowEntity> result = new StatusMessageDto<>();
 		result.setStatus(HttpStatus.OK.value());
 		result.setMessage("Data berhasil dihapus!");
@@ -108,8 +108,8 @@ public class SlideShowController {
 	
 	//DELETE DATA SLIDESHOW
 	@DeleteMapping("/delete-data-slideshow/{idSlideShow}")
-	public ResponseEntity<?> deleteDataSlideShow(@PathVariable Integer idSlideShow){
-		SlideShowEntity slideShowEntity = slideShowService.deleteDataSlideShow(idSlideShow);
+	public ResponseEntity<?> deleteDataSlideShow(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idSlideShow){
+		SlideShowEntity slideShowEntity = slideShowService.deleteDataSlideShow(userPrincipal, idSlideShow);
 		StatusMessageDto<SlideShowEntity> result = new StatusMessageDto<>();
 		result.setStatus(HttpStatus.OK.value());
 		result.setMessage("Data berhasil dihapus!");
