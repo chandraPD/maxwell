@@ -29,7 +29,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	@Query(value = "SELECT * FROM book WHERE category_id = ?1 AND book_id != ?2 LIMIT 3", nativeQuery = true)
 	List<BookEntity> getRecommendedDetail(Integer categoryId, Integer bookId);
 	
-	
+	@Query(value = "SELECT book_code FROM book WHERE YEAR(created_at) = ? ORDER BY book_code DESC LIMIT 1", nativeQuery = true)
+	String getLastBookCode(Integer year);
 	
 	Boolean existsByTitle(String title);
 	

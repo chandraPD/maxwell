@@ -17,4 +17,6 @@ public interface UserBalanceRepository extends JpaRepository<UserBalanceEntity, 
 	UserBalanceEntity findByUserBalanceId(Integer id);
 
 	UserBalanceEntity findByUserBalanceId(UserPrincipal userPrincipal);
+
+	UserBalanceEntity findByUserEntityUserId(Integer id);
 }
