@@ -5,6 +5,7 @@ import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.user.dto.JwtAuthenticationResponse;
 import library.maxwell.module.user.dto.LoginDto;
 import library.maxwell.module.user.dto.RegistrationDto;
+import library.maxwell.module.user.dto.UserInfoDto;
 import library.maxwell.module.user.entity.LevelEntity;
 import library.maxwell.module.user.entity.LevelName;
 import library.maxwell.module.user.entity.UserEntity;
@@ -19,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -109,9 +109,14 @@ public class UserServiceImpl implements UserService {
                 )
         );
 
+        //Set user info
+        UserInfoDto userInfo = new UserInfoDto();
+        userInfo.setEmail(findUser.getEmail());
+        userInfo.setActiveRole(findUser.getActiveRole());
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
-        return new JwtAuthenticationResponse(jwt);
+        return new JwtAuthenticationResponse(jwt, userInfo);
     }
 
     @Override
@@ -131,12 +136,6 @@ public class UserServiceImpl implements UserService {
 	public Optional<UserEntity> getId(UserPrincipal userPrincipal) {	
 		Optional<UserEntity> userEntity= userRepository.findById(userPrincipal.getId());
 		return userEntity;
-	}
-
-	@Override
-	public List<UserEntity> getUser(Integer id) {
-		List<UserEntity> entities=userRepository.findUser(id);
-		return entities;
 	}
 
 	
