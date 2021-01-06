@@ -35,8 +35,6 @@ import library.maxwell.module.user.service.UserServiceImpl;
 public class SlideShowController {
 
 	@Autowired
-	UserServiceImpl userService;
-	@Autowired
 	SlideShowServiceImpl slideShowService;
 	
 	//GET ALL
@@ -54,7 +52,7 @@ public class SlideShowController {
 		if(slideShowEntity == null) {
 			result.setStatus(HttpStatus.BAD_REQUEST.value());
 			result.setMessage("Data Tidak Ditemukan!");
-			result.setData(slideShowEntity);
+			result.setData(null);
 			return ResponseEntity.badRequest().body(result);
 		} 
 			result.setStatus(HttpStatus.OK.value());
@@ -106,10 +104,28 @@ public class SlideShowController {
 		return ResponseEntity.ok(result);
 	}
 	
-	//DELETE DATA SLIDESHOW
+	//DELETE DATA SLIDESHOW YANG DIGUNAKAN
 	@DeleteMapping("/delete-data-slideshow/{idSlideShow}")
 	public ResponseEntity<?> deleteDataSlideShow(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idSlideShow){
 		SlideShowEntity slideShowEntity = slideShowService.deleteDataSlideShow(userPrincipal, idSlideShow);
+		StatusMessageDto<SlideShowEntity> result = new StatusMessageDto<>();
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("Data berhasil dihapus!");
+		result.setData(slideShowEntity);
+		return ResponseEntity.ok(result);
+		
+	}
+	
+	@PutMapping("update-status/{idSlideShow}/{status}")
+	public ResponseEntity<?> editStatus(@CurrentUser UserPrincipal userPrincipal,
+			@PathVariable Integer idSlideShow, @PathVariable Integer status) {
+		Boolean statusSlideShow;
+		if(status == 1) {
+			statusSlideShow = true;
+		} else {
+			statusSlideShow = false;
+		}
+		SlideShowEntity slideShowEntity = slideShowService.editStatus(userPrincipal, idSlideShow, statusSlideShow);
 		StatusMessageDto<SlideShowEntity> result = new StatusMessageDto<>();
 		result.setStatus(HttpStatus.OK.value());
 		result.setMessage("Data berhasil dihapus!");

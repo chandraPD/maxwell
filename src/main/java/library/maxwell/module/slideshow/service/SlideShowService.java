@@ -13,5 +13,6 @@ public interface SlideShowService {
 	SlideShowEntity updateSlideShow(UserPrincipal userPrincipal, Integer idSlideShow, SlideShowDto dto);
 	SlideShowEntity deleteSlideShow(UserPrincipal userPrincipal, Integer idSlideShow);
 	SlideShowEntity deleteDataSlideShow(UserPrincipal userPrincipal, Integer idSlideShow);
+	SlideShowEntity editStatus(UserPrincipal userPrincipal, Integer idSlideShow, Boolean status);
 	
 }

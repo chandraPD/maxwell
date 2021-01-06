@@ -48,6 +48,7 @@ public class SlideShowEntity {
 	@Column(name = "status")
 	private Boolean status = true;
 	
+	//TABEL RELASI
 	@ManyToOne
 	@JoinColumn(name = "created_by", referencedColumnName = "user_id")
 	private UserEntity userEntity;

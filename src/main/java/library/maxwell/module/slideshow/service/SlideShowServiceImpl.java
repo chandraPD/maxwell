@@ -57,6 +57,7 @@ public class SlideShowServiceImpl implements SlideShowService{
 		slideShowEntity.setTitle(dto.getTitle());
 		slideShowEntity.setSubTitle(dto.getSubTitle());
 		slideShowEntity.setImg(dto.getImg());
+		slideShowEntity.setStatusShow(dto.getStatusShow());
 		slideShowEntity.setUserEntity(userEntity);
 		slideShowRepository.save(slideShowEntity);
 		return slideShowEntity;
@@ -93,5 +94,19 @@ public class SlideShowServiceImpl implements SlideShowService{
 		slideShowRepository.delete(slideShowEntity);
 		return slideShowEntity;
 	}
+	
+	@Override
+	public SlideShowEntity editStatus(UserPrincipal userPrincipal, Integer idSlideShow, Boolean status) {
+		// TODO Auto-generated method stub
+		Integer userId = userPrincipal.getId();
+		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
+		UserEntity userEntity = userRepository.findById(userId).get();
+		slideShowEntity.setUserEntity(userEntity);
+		slideShowEntity.setStatusShow(status);
+		slideShowRepository.save(slideShowEntity);
+		return slideShowEntity;
+		
+	}
+	
 	
 }

@@ -11,9 +11,4 @@ import library.maxwell.module.slideshow.entity.SlideShowEntity;
 @Repository
 public interface SlideShowRepository extends JpaRepository<SlideShowEntity, Integer>{
 
-//	//UNTUK STATUS YANG ACTIVE
-//	@Query(value = "SELECT * FROM slideshow WHERE status IS true", nativeQuery = true)
-//	List<SlideShowEntity> findActiveSlideShow();
-//	
-//	//UNTUK STATUS YANG INACTIVE
 }
