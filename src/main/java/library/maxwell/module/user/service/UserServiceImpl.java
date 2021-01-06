@@ -121,6 +121,8 @@ public class UserServiceImpl implements UserService {
             response = null;
             return response;
         }
+        
+        
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -140,6 +142,8 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    
+    
 	@Override
 	public UserDetailDto getProfiles(UserPrincipal userPrincipal) {
 		UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();

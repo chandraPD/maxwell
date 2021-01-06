@@ -58,7 +58,7 @@ public class BookEntity {
 	private String imgDetail;
 	
 	@Column(name = "qty")
-	private Integer qty;
+	private Integer qty = 0;
 	
     @CreatedDate
 	@Column(name = "created_at")

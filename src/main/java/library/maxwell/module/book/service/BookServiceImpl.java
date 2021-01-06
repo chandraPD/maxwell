@@ -60,11 +60,32 @@ public class BookServiceImpl implements BookService {
 		List<BookEntity> bookEntities = bookRepository.findInactiveBook();
 		return ResponseEntity.ok(bookEntities);
 	}
-
+	
+	@Override
+	public ResponseEntity<?> getRecentFive() {
+		// TODO Auto-generated method stub
+		List<BookEntity> bookEntities = bookRepository.getRecentFive();
+		return ResponseEntity.ok(bookEntities);
+	}
+	
+	@Override
+	public ResponseEntity<?> getOldestFive() {
+		// TODO Auto-generated method stub
+		List<BookEntity> bookEntities = bookRepository.getOldestFive();
+		return ResponseEntity.ok(bookEntities);
+	}
+	
+	@Override
+	public ResponseEntity<?> getRecommendedDetail(Integer categoryId, Integer bookId) {
+		// TODO Auto-generated method stub
+		List<BookEntity> bookEntities = bookRepository.getRecommendedDetail(categoryId, bookId);
+		return ResponseEntity.ok(bookEntities);
+	}
+	
 	@Override
 	public ResponseEntity<?> findByTitle(String title) {
 		// TODO Auto-generated method stub
-		List<BookEntity> bookEntities = bookRepository.findByTitle(title);
+		List<BookEntity> bookEntities = bookRepository.findByTitleLike( "%" + title + "%");
 		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
 		
 		if(bookEntities == null) {
@@ -98,16 +119,28 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		Integer userId = userPrincipal.getId();
 		BookEntity bookEntity = convertToBookEntity(dto);
-		UserEntity createdByEntity = userRepository.findById(userId).get();
-		UserEntity updatedByEntity = userRepository.findById(userId).get();
-		CategoryEntity categoryEntity = categoryRepository.findById(dto.getCategoryId()).get();
 		
-		bookEntity.setCategoryEntity(categoryEntity);
-		bookEntity.setCreatedByEntity(createdByEntity);
-		bookEntity.setUpdatedByEntity(updatedByEntity);
-		bookRepository.save(bookEntity);
+		Boolean existsByTitle = bookRepository.existsByTitle(dto.getTitle());
 		
-		return ResponseEntity.ok(bookEntity);
+		if (existsByTitle) {
+			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
+			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			result.setMessage("Book already exist!");
+			result.setData(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+		} else {
+			UserEntity createdByEntity = userRepository.findById(userId).get();
+			UserEntity updatedByEntity = userRepository.findById(userId).get();
+			CategoryEntity categoryEntity = categoryRepository.findById(dto.getCategoryId()).get();
+			bookEntity.setQty(0);
+			bookEntity.setCategoryEntity(categoryEntity);
+			bookEntity.setCreatedByEntity(createdByEntity);
+			bookEntity.setUpdatedByEntity(updatedByEntity);
+			bookRepository.save(bookEntity);
+			
+			return ResponseEntity.ok(bookEntity);
+		}
+		
 	}
 
 	@Override
@@ -123,7 +156,6 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setDescription(dto.getDescription());
 		bookEntity.setImgBanner(dto.getImgBanner());
 		bookEntity.setImgDetail(dto.getImgDetail());
-		bookEntity.setQty(0);
 		bookEntity.setUpdatedAt(dateTime);
 		bookEntity.setStatusBook(dto.getStatusBook());
 		bookEntity.setPublishDate(dto.getPublishDate());
@@ -174,5 +206,4 @@ public class BookServiceImpl implements BookService {
 	
 
 	
-
 }

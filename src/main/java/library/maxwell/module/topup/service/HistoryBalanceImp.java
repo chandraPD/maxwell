@@ -2,10 +2,11 @@ package library.maxwell.module.topup.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Optional;import javax.xml.stream.events.EndDocument;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import library.maxwell.module.topup.repository.HistoryBalanceRepository;
 import library.maxwell.module.topup.repository.UserBalanceRepository;
 import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.repository.UserRepository;
+import library.maxwell.module.user.service.UserService;
 
 @Service
 @Transactional
@@ -29,6 +31,9 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	
 	@Autowired
 	UserRepository repo3;
+	
+	@Autowired
+    private PasswordEncoder passwordEncoder;
 
 	public HistoryBalanceEntity convertToHistoryBalanceEntity (HistoryBalanceDto dto) {
 		HistoryBalanceEntity historyBalanceEntity=new HistoryBalanceEntity();
@@ -128,6 +133,19 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	public List<HistoryBalanceEntity> getAll2(Integer userPrincipal) {
 		List<HistoryBalanceEntity> historyBalanceEntities= repo.findall3(userPrincipal);
 		return historyBalanceEntities;
+	}
+
+	@Override
+	public Boolean getPass(UserPrincipal userPrincipal,HistoryBalanceDto dto) {
+		Integer id=userPrincipal.getId();
+		System.out.println(id);
+		String rawPassword = dto.getPassword();
+		System.out.println(rawPassword);
+        String encodedPassword = repo3.findPasswordByUserId(id).toString();
+        System.out.println(encodedPassword);
+        boolean isPasswordMatch = passwordEncoder.matches(rawPassword, encodedPassword);	
+        System.out.println(isPasswordMatch);
+		return isPasswordMatch;
 	}
 
 }

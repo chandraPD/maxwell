@@ -48,21 +48,27 @@ public class SlideShowServiceImpl implements SlideShowService{
 	}
 	
 	@Override
-	public SlideShowEntity updateSlideShow(Integer idSlideShow, SlideShowDto dto) {
+	public SlideShowEntity updateSlideShow(UserPrincipal userPrincipal, Integer idSlideShow, SlideShowDto dto) {
 		// TODO Auto-generated method stub
 		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
+		Integer userId = userPrincipal.getId();
+		UserEntity userEntity = userRepository.findById(userId).get();
 		slideShowEntity.setCreatedAt(LocalDateTime.now());
 		slideShowEntity.setTitle(dto.getTitle());
 		slideShowEntity.setSubTitle(dto.getSubTitle());
 		slideShowEntity.setImg(dto.getImg());
+		slideShowEntity.setUserEntity(userEntity);
 		slideShowRepository.save(slideShowEntity);
 		return slideShowEntity;
 	}
 	@Override
-	public SlideShowEntity deleteSlideShow(Integer idSlideShow) {
+	public SlideShowEntity deleteSlideShow(UserPrincipal userPrincipal, Integer idSlideShow) {
 		// TODO Auto-generated method stub
+		Integer userId = userPrincipal.getId();
+		UserEntity userEntity = userRepository.findById(userId).get();
 		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
 		slideShowEntity.setStatus(false);
+		slideShowEntity.setUserEntity(userEntity);
 		slideShowRepository.save(slideShowEntity);
 		return slideShowEntity;
 	}
@@ -75,10 +81,15 @@ public class SlideShowServiceImpl implements SlideShowService{
 		slideShowEntity.setImg(dto.getImg());
 		return slideShowEntity;
 	}
+	
+	//DELETE YANG DIGUNAKAN DI FRONT-END
 	@Override
-	public SlideShowEntity deleteDataSlideShow(Integer idSlideShow) {
+	public SlideShowEntity deleteDataSlideShow(UserPrincipal userPrincipal, Integer idSlideShow) {
 		// TODO Auto-generated method stub
+		Integer userId = userPrincipal.getId();
+		UserEntity userEntity = userRepository.findById(userId).get();
 		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
+		slideShowEntity.setUserEntity(userEntity);
 		slideShowRepository.delete(slideShowEntity);
 		return slideShowEntity;
 	}

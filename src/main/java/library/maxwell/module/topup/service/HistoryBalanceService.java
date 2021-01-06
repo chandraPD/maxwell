@@ -24,6 +24,8 @@ public interface HistoryBalanceService {
 	HistoryBalanceEntity update(HistoryBalanceDto Dto,Integer id);
 	
 	HistoryBalanceEntity delete(Integer id);
+	
+	Boolean getPass(UserPrincipal userPrincipal,HistoryBalanceDto dto);
 
 
 }
