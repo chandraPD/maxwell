@@ -1,19 +1,11 @@
 package library.maxwell.module.user.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "user_detail")
@@ -32,22 +24,22 @@ public class UserDetailEntity {
 	@JoinColumn(name = "user_id")
 	private UserEntity userEntity;
 
-	@Column(name = "first_name", nullable = false)
+	@Column(name = "first_name")
 	private String firstName;
 
-	@Column(name = "last_name", nullable = false)
+	@Column(name = "last_name")
 	private String lastName;
 
-	@Column(name = "address", nullable = false)
+	@Column(name = "address")
 	private String address;
 
-	@Column(name = "img", nullable = false)
+	@Column(name = "img")
 	private String img;
 
-	@Column(name = "phone_number", nullable = false)
+	@Column(name = "phone_number")
 	private String phoneNumber;
 
-	@Column(name = "date_of_birth", nullable = false)
+	@Column(name = "date_of_birth")
 	private Date dateOfBirth;
 
 	@Column(name = "status")

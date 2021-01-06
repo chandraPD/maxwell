@@ -1,14 +1,21 @@
 package library.maxwell.module.user.service;
 
+import library.maxwell.config.CloudinaryConfig;
 import library.maxwell.config.security.auth.JwtTokenProvider;
 import library.maxwell.config.security.auth.UserPrincipal;
+import library.maxwell.module.topup.repository.UserBalanceRepository;
 import library.maxwell.module.user.dto.JwtAuthenticationResponse;
 import library.maxwell.module.user.dto.LoginDto;
 import library.maxwell.module.user.dto.RegistrationDto;
+import library.maxwell.module.user.dto.UpdateProfileDto;
+import library.maxwell.module.user.dto.UserDetailDto;
+import library.maxwell.module.user.dto.UserInfoDto;
 import library.maxwell.module.user.entity.LevelEntity;
 import library.maxwell.module.user.entity.LevelName;
+import library.maxwell.module.user.entity.UserDetailEntity;
 import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.repository.LevelRepository;
+import library.maxwell.module.user.repository.UserDetailRepository;
 import library.maxwell.module.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,14 +25,25 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.cloudinary.utils.ObjectUtils;
+
 import java.util.Collections;
+import java.util.List;
+import java.util.Base64;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+	@Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserDetailRepository userDetailRepository;
+
+    @Autowired
+    private UserBalanceRepository userBalanceRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -38,6 +56,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private CloudinaryConfig cloudinary;
 
     public void saveUser(UserEntity user) {
         userRepository.save(user);
@@ -108,21 +129,33 @@ public class UserServiceImpl implements UserService {
                 )
         );
 
+        //Set user info
+        UserInfoDto userInfo = new UserInfoDto();
+        userInfo.setEmail(findUser.getEmail());
+        userInfo.setActiveRole(findUser.getActiveRole());
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
-        return new JwtAuthenticationResponse(jwt);
+        return new JwtAuthenticationResponse(jwt, userInfo);
     }
 
     @Override
-    public UserEntity getProfiles(UserPrincipal userPrincipal) {
-        //Get current logged in user
-    	System.out.println(userPrincipal.getId());
-        System.out.println(userPrincipal.getAuthorities());
-        System.out.println(userPrincipal.getEmail());
-        UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail())
-                .get();
-        return userEntity;
-    }
+	public UserDetailDto getProfiles(UserPrincipal userPrincipal) {
+		UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();
+		UserDetailEntity userDetail = userDetailRepository.findByUserEntityUserId(userPrincipal.getId());
+
+		UserDetailDto userDetailDto = new UserDetailDto();
+
+		userDetailDto.setEmail(userEntity.getEmail());
+		userDetailDto.setFirstName(userDetail.getFirstName());
+		userDetailDto.setLastName(userDetail.getLastName());
+		userDetailDto.setAddress(userDetail.getAddress());
+		userDetailDto.setImg(userDetail.getImg());
+		userDetailDto.setPhoneNumber(userDetail.getPhoneNumber());
+		userDetailDto.setDateOfBirth(userDetail.getDateOfBirth());
+
+		return userDetailDto;
+	}
 
     
     
@@ -131,6 +164,43 @@ public class UserServiceImpl implements UserService {
 		Optional<UserEntity> userEntity= userRepository.findById(userPrincipal.getId());
 		return userEntity;
 	}
+
+	@Override
+	public List<UserEntity> getUser(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+    public UpdateProfileDto updateProfile(UserPrincipal userPrincipal, UpdateProfileDto profileDto) {
+
+        UserEntity user = userRepository.findById(userPrincipal.getId()).get();
+        UserDetailEntity userDetail = userDetailRepository.findByUserEntityUserId(user.getUserId());
+
+        //Upload image
+        try {
+            //Covert Base64 to bytes
+            byte[] profileImage = Base64.getMimeDecoder().decode(profileDto.getImg());
+
+            Map uploadResult = cloudinary.upload(profileImage,
+                    ObjectUtils.asMap("resourcetype", "auto"));
+
+            userDetail.setImg(uploadResult.get("url").toString());
+
+            userDetail.setFirstName(profileDto.getFirstName());
+            userDetail.setLastName(profileDto.getLastName());
+            userDetail.setAddress(profileDto.getAddress());
+            userDetail.setPhoneNumber(profileDto.getPhoneNumber());
+            userDetail.setDateOfBirth(profileDto.getDateOfBirth());
+
+            userDetailRepository.save(userDetail);
+            profileDto.setImg(userDetail.getImg());
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return profileDto;
+    }
 
 	
 }

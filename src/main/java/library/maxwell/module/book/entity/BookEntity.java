@@ -40,6 +40,9 @@ public class BookEntity {
 	@Column(name = "book_id")
 	private Integer BookId;
 	
+	@Column(name = "book_code", unique = true, length = 10)
+	private String bookCode;
+	
 	@ManyToOne
 	@JoinColumn(name = "category_id", referencedColumnName = "category_id")
 	private CategoryEntity categoryEntity;
@@ -58,7 +61,7 @@ public class BookEntity {
 	private String imgDetail;
 	
 	@Column(name = "qty")
-	private Integer qty;
+	private Integer qty = 0;
 	
     @CreatedDate
 	@Column(name = "created_at")
