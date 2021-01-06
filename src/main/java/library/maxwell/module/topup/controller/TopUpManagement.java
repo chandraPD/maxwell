@@ -34,8 +34,7 @@ public class TopUpManagement {
 	@GetMapping("/getRole")
 	public ResponseEntity<?> getRole(@CurrentUser UserPrincipal userprincipal){
 		String role=userprincipal.getAuthorities().toString();	
-		Integer id=userprincipal.getId();
-		System.out.println(role);
+		Integer id=userprincipal.getId();		
 		return ResponseEntity.ok(role);
 	}
 	
