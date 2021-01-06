@@ -10,8 +10,8 @@ public interface SlideShowService {
 	List<SlideShowEntity> getAllSlideShow();
 	SlideShowEntity getSlideShowById(Integer idSlideShow);
 	SlideShowEntity addSlideShow(UserPrincipal userPrincipal, SlideShowDto dto);
-	SlideShowEntity updateSlideShow(Integer idSlideShow, SlideShowDto dto);
-	SlideShowEntity deleteSlideShow(Integer idSlideShow);
-	SlideShowEntity deleteDataSlideShow(Integer idSlideShow);
+	SlideShowEntity updateSlideShow(UserPrincipal userPrincipal, Integer idSlideShow, SlideShowDto dto);
+	SlideShowEntity deleteSlideShow(UserPrincipal userPrincipal, Integer idSlideShow);
+	SlideShowEntity deleteDataSlideShow(UserPrincipal userPrincipal, Integer idSlideShow);
 	
 }
