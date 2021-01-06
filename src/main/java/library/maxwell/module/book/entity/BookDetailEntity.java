@@ -24,6 +24,9 @@ public class BookDetailEntity {
 	@Column(name = "book_detail_id")
 	private Integer bookDetailId;
 	
+	@Column(name = "book_detail_code", unique = true, length = 10)
+	private String bookDetailCode;
+	
 	@ManyToOne
 	@JoinColumn(name = "book_id", referencedColumnName = "book_id")
 	private BookEntity bookEntity;

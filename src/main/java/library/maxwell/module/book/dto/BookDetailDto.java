@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BookDetailDto {
 	private Integer bookDetailId;
+	private String bookDetailCode;
 	private Integer bookId;
 	private String typeOfDamage;
 	private String descOfDamage;
