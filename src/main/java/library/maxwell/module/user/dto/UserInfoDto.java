@@ -13,5 +13,4 @@ public class UserInfoDto {
 
     private String activeRole;
 
-    private Double activeBalance;
 }

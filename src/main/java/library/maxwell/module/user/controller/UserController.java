@@ -3,7 +3,6 @@ package library.maxwell.module.user.controller;
 import library.maxwell.config.security.auth.CurrentUser;
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.user.dto.*;
-import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -82,7 +81,7 @@ public class UserController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/profile")
     public ResponseEntity<?> getProfiles(@CurrentUser UserPrincipal userPrincipal) {
-        UserEntity user = userService.getProfiles(userPrincipal);
+        UserDetailDto user = userService.getProfiles(userPrincipal);
         return ResponseEntity.ok(user);
     }
 

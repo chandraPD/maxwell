@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -91,6 +90,7 @@ public class UserServiceImpl implements UserService {
         saveUser(userEntity);
         //Set initial detail and balance entity
         userDetailEntity.setUserEntity(userEntity);
+        userDetailEntity.setImg("https://www.oneworldplayproject.com/wp-content/uploads/2016/03/avatar-1024x1024.jpg");
         userBalanceEntity.setUserEntity(userEntity);
         userDetailRepository.save(userDetailEntity);
         userBalanceRepository.save(userBalanceEntity);
@@ -131,32 +131,31 @@ public class UserServiceImpl implements UserService {
 
         //Set user info
         UserInfoDto userInfo = new UserInfoDto();
-        UserBalanceEntity userBalanceEntity = userBalanceRepository.findByUserEntityUserId(findUser.getUserId());
-
         userInfo.setEmail(findUser.getEmail());
         userInfo.setActiveRole(findUser.getActiveRole());
-        userInfo.setActiveBalance(userBalanceEntity.getNominal());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
         return new JwtAuthenticationResponse(jwt, userInfo);
     }
 
-    @Override
-    public UserEntity getProfiles(UserPrincipal userPrincipal) {
-        //Get current logged in user
-    	System.out.println(userPrincipal.getId());
-        System.out.println(userPrincipal.getAuthorities());
-        System.out.println(userPrincipal.getEmail());
-        UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail())
-                .get();
-        return userEntity;
-    }
 
 	@Override
-	public Optional<UserEntity> getId(UserPrincipal userPrincipal) {
-		Optional<UserEntity> userEntity = userRepository.findById(userPrincipal.getId());
-		return userEntity;
+	public UserDetailDto getProfiles(UserPrincipal userPrincipal) {
+		UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();
+		UserDetailEntity userDetail = userDetailRepository.findByUserEntityUserId(userPrincipal.getId());
+
+		UserDetailDto userDetailDto = new UserDetailDto();
+
+		userDetailDto.setEmail(userEntity.getEmail());
+		userDetailDto.setFirstName(userDetail.getFirstName());
+		userDetailDto.setLastName(userDetail.getLastName());
+		userDetailDto.setAddress(userDetail.getAddress());
+		userDetailDto.setImg(userDetail.getImg());
+		userDetailDto.setPhoneNumber(userDetail.getPhoneNumber());
+		userDetailDto.setDateOfBirth(userDetail.getDateOfBirth());
+
+		return userDetailDto;
 	}
 
     @Override
