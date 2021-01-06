@@ -1,6 +1,8 @@
 package library.maxwell.module.book.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,7 +192,26 @@ public class BookServiceImpl implements BookService {
 
 	public BookEntity convertToBookEntity(BookDto dto) {
 		BookEntity bookEntity = new BookEntity();
-		LocalDateTime dateTime = LocalDateTime.now();
+
+		DateTimeFormatter getYearFull = DateTimeFormatter.ofPattern("yyyy");
+		DateTimeFormatter getYear = DateTimeFormatter.ofPattern("yy");
+		String year = LocalDate.now().format(getYear);
+		Integer yearFull = Integer.parseInt(LocalDate.now().format(getYearFull));
+		
+		// mencari nomor terakhir dari book code
+		String lastBookCode = bookRepository.getLastBookCode(yearFull);
+		String seq;
+		
+		if(lastBookCode == null) {
+			seq = String.format("%04d", 1);
+		} else {
+			Integer number = Integer.parseInt(lastBookCode.substring(4, 7)) + 1;
+			seq = String.format("%04d", number);
+		}
+		
+		String bookCode = "B" + year + seq;
+		bookEntity.setBookCode(bookCode);
+		
 		
 		bookEntity.setTitle(dto.getTitle());
 		bookEntity.setDescription(dto.getDescription());

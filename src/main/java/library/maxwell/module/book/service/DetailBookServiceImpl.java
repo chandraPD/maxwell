@@ -1,5 +1,7 @@
 package library.maxwell.module.book.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,6 +131,24 @@ public class DetailBookServiceImpl implements BookDetailService{
 	
 	public BookDetailEntity convertToBookDetailEntity(BookDetailDto dto) {
 		BookDetailEntity bookDetailEntity = new BookDetailEntity();
+		
+		DateTimeFormatter getYear = DateTimeFormatter.ofPattern("yy");
+		String year = LocalDate.now().format(getYear);
+		
+		// mencari nomor terakhir dari book detail code
+		String lastBookDetailCode = bookDetailRepository.getLastBookDetailCode();
+		String seq;
+		
+		if(lastBookDetailCode == null) {
+			seq = String.format("%04d", 1);
+		} else {
+			Integer number = Integer.parseInt(lastBookDetailCode.substring(5, 8)) + 1;
+			seq = String.format("%04d", number);
+		}
+		
+		String bookDetailCode = "BD" + year + seq;
+		bookDetailEntity.setBookDetailCode(bookDetailCode);
+		
 		bookDetailEntity.setTypeOfDamage(dto.getTypeOfDamage());
 		bookDetailEntity.setDescOfDamage(dto.getDescOfDamage());
 		return bookDetailEntity;
