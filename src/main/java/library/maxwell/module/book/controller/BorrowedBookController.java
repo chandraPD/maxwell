@@ -17,6 +17,7 @@ import library.maxwell.module.book.dto.BorrowBookDto;
 import library.maxwell.module.book.service.BorrowedBookService;
 import library.maxwell.module.book.service.BorrowedBookServiceImpl;
 import library.maxwell.module.invoice.dto.StatusMessageDto;
+import library.maxwell.module.user.service.UserService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -25,6 +26,9 @@ public class BorrowedBookController {
 
 	@Autowired
 	BorrowedBookService borrowImplService;
+	
+	@Autowired
+	UserService userService;
 
 	@PostMapping("/save")
 	public ResponseEntity<?> save(@CurrentUser UserPrincipal userPrincipal, @RequestBody BorrowBookDto dto) {
@@ -35,20 +39,18 @@ public class BorrowedBookController {
 
 	@GetMapping("/get-all")
 	public ResponseEntity<?> getAll(@CurrentUser UserPrincipal userPrincipal) {
-		System.out.println(userPrincipal);
 		StatusMessageDto<?> result = borrowImplService.getAll(userPrincipal);
 		return ResponseEntity.ok(result);
 	}
 
 	@PutMapping("/acc-act/{idBorrowedBook}")
 	public ResponseEntity<?> accAct(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idBorrowedBook) {
-		System.out.println(userPrincipal);
 		return borrowImplService.accAct(userPrincipal, idBorrowedBook);
 	}
 
 	@PutMapping("/dec-act/{idBorrowedBook}")
 	public ResponseEntity<?> decAct(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idBorrowedBook) {
-		System.out.println(userPrincipal);
 		return borrowImplService.decAct(userPrincipal, idBorrowedBook);
 	}
+	
 }

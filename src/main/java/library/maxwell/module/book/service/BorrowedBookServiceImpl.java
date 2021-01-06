@@ -72,8 +72,16 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		// TODO Auto-generated method stub
 		
 		Integer userId = userPrincipal.getId();
+		UserEntity userEntity = userRepository.findByUserId(userId);
 		
-		List<BorrowedBookEntity> borrowedBookEntities = borrowedBookRepository.findAllByStatusIsTrueAndUserIdEntity_UserIdIs(userId);
+		List<BorrowedBookEntity> borrowedBookEntities;
+		if(userEntity.getActiveRole().equalsIgnoreCase("1")) {
+			borrowedBookEntities = borrowedBookRepository.findAllByStatusIsTrueAndUserIdEntity_UserIdIs(userId);
+		} else {
+			borrowedBookEntities = borrowedBookRepository.findAllByStatusIsTrue();
+		}
+		
+		
 		StatusMessageDto<List<BorrowBookDto>> result = new StatusMessageDto<>();
 		
 		List<BorrowBookDto> borrowBookDtos = new ArrayList<>();
