@@ -2,14 +2,7 @@ package library.maxwell.module.user.controller;
 
 import library.maxwell.config.security.auth.CurrentUser;
 import library.maxwell.config.security.auth.UserPrincipal;
-import library.maxwell.module.topup.entity.UserBalanceEntity;
-import library.maxwell.module.topup.service.UserBalanceService;
-import library.maxwell.module.user.dto.JwtAuthenticationResponse;
-import library.maxwell.module.user.dto.LoginDto;
-import library.maxwell.module.user.dto.RegistrationDto;
-import library.maxwell.module.user.dto.StatusMessageDto;
-import library.maxwell.module.user.entity.UserEntity;
-import library.maxwell.module.user.repository.UserRepository;
+import library.maxwell.module.user.dto.*;
 import library.maxwell.module.user.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -89,7 +82,21 @@ public class UserController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping("/profile")
     public ResponseEntity<?> getProfiles(@CurrentUser UserPrincipal userPrincipal) {
-        UserEntity user = userService.getProfiles(userPrincipal);
+        UserDetailDto user = userService.getProfiles(userPrincipal);
         return ResponseEntity.ok(user);
+    }
+
+    //Update profile
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @PostMapping("/profile")
+    public ResponseEntity<?> updateProfile(@CurrentUser UserPrincipal userPrincipal,
+                                           @RequestBody UpdateProfileDto updateProfileDto) {
+        UpdateProfileDto updatedProfile = userService.updateProfile(userPrincipal, updateProfileDto);
+
+        result.setStatus(200);
+        result.setMessages("profile updated");
+        result.setData(updatedProfile);
+
+        return ResponseEntity.ok(result);
     }
 }
