@@ -167,8 +167,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserEntity> getUser(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		List<UserEntity> userEntities=userRepository.findUser(id);
+		return userEntities;
 	}
 
 	@Override
