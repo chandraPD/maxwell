@@ -82,7 +82,6 @@ public class UserServiceImpl implements UserService {
 
         //Set encode password
         String encodedPassword = passwordEncoder.encode(registrationDto.getPassword());
-
         userEntity.setPassword(encodedPassword);
         userEntity.setEmail(registrationDto.getEmail());
 
@@ -98,7 +97,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JwtAuthenticationResponse authenticateUser(LoginDto loginDto) {
-
         JwtAuthenticationResponse response = new JwtAuthenticationResponse();
 
         //Lookup by registered email
