@@ -72,11 +72,12 @@ public class TopUpManagement {
 	
 	@GetMapping("/getBalance")
 	public Double getBalance(@CurrentUser UserPrincipal userPrincipal) {
-		Double balance = userBalanceService.getSaldo(userPrincipal);
+		Double balance = userBalanceService.getSaldo(userPrincipal) == null ? 0 : userBalanceService.getSaldo(userPrincipal);
 		
 		if(balance != 0){
 			return balance;	
 		}else {
+			
 			return balance = (double)0;
 		}
 		

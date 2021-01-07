@@ -37,6 +37,9 @@ public class BookDetailEntity {
 	@Column(name = "desc_of_damage", length = 500)
 	private String descOfDamage;
 	
+	@Column(name = "status_book_detail", length = 50)
+	private String statusBookDetail;
+	
 	@Column(name = "status")
 	private Boolean status = true;
 	

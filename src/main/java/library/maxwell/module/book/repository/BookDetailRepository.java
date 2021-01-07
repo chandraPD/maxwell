@@ -19,6 +19,8 @@ public interface BookDetailRepository extends JpaRepository<BookDetailEntity, In
 	
 	BookDetailEntity findByBookDetailId(Integer idBookDetail);
 	
+	Long countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs(String statusBookDetail,Integer BookId);
+	
 	List<BookDetailEntity> findByTypeOfDamage(String typeOfDamage);
 	
 	@Query(value = "SELECT * FROM book_detail WHERE book_id = ? AND status IS true", nativeQuery = true)
