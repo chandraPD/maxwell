@@ -26,4 +26,6 @@ public interface UserService {
     UserDetailDto getProfiles(UserPrincipal userPrincipal);
 
     UpdateProfileDto updateProfile(UserPrincipal userPrincipal, UpdateProfileDto updateProfileDto);
+    
+    String getRole(Integer id);
 }

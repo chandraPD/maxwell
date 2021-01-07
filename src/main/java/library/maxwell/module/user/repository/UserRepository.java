@@ -21,4 +21,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     
     @Query(value="SELECT user.* FROM user INNER JOIN user_akses ON user.user_id=user_akses.user_id WHERE level_id=?",nativeQuery = true)
     List<UserEntity> findUser(Integer id);
+    
+    UserEntity findActiveRoleByUserId(Integer id);
 }
