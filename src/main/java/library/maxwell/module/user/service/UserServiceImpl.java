@@ -90,6 +90,7 @@ public class UserServiceImpl implements UserService {
         userDetailEntity.setImg("https://www.oneworldplayproject.com/wp-content/uploads/2016/03/avatar-1024x1024.jpg");
         userBalanceEntity.setUserEntity(userEntity);
         userDetailRepository.save(userDetailEntity);
+        userBalanceEntity.setNominal((double) 0);
         userBalanceRepository.save(userBalanceEntity);
 
         return registrationDto;
@@ -168,6 +169,8 @@ public class UserServiceImpl implements UserService {
 		List<UserEntity> userEntities=userRepository.findUser(id);
 		return userEntities;
 	}
+	
+	
 
 	@Override
     public UpdateProfileDto updateProfile(UserPrincipal userPrincipal, UpdateProfileDto profileDto) {
@@ -199,6 +202,12 @@ public class UserServiceImpl implements UserService {
         }
         return profileDto;
     }
+
+	@Override
+	public String getRole(Integer id) {
+		String userEntity=userRepository.findActiveRoleByUserId(id).getActiveRole();
+		return userEntity;
+	}
 
 	
 }
