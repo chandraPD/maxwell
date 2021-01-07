@@ -22,14 +22,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+	@Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -141,10 +139,7 @@ public class UserServiceImpl implements UserService {
         return new JwtAuthenticationResponse(jwt, userInfo);
     }
 
-
-    
-    
-	@Override
+    @Override
 	public UserDetailDto getProfiles(UserPrincipal userPrincipal) {
 		UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();
 		UserDetailEntity userDetail = userDetailRepository.findByUserEntityUserId(userPrincipal.getId());
@@ -162,7 +157,21 @@ public class UserServiceImpl implements UserService {
 		return userDetailDto;
 	}
 
-    @Override
+    
+    
+	@Override
+	public Optional<UserEntity> getId(UserPrincipal userPrincipal) {	
+		Optional<UserEntity> userEntity= userRepository.findById(userPrincipal.getId());
+		return userEntity;
+	}
+
+	@Override
+	public List<UserEntity> getUser(Integer id) {
+		List<UserEntity> userEntities=userRepository.findUser(id);
+		return userEntities;
+	}
+
+	@Override
     public UpdateProfileDto updateProfile(UserPrincipal userPrincipal, UpdateProfileDto profileDto) {
 
         UserEntity user = userRepository.findById(userPrincipal.getId()).get();
@@ -192,4 +201,6 @@ public class UserServiceImpl implements UserService {
         }
         return profileDto;
     }
+
+	
 }

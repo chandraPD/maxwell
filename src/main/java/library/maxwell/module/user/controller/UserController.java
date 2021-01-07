@@ -3,7 +3,11 @@ package library.maxwell.module.user.controller;
 import library.maxwell.config.security.auth.CurrentUser;
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.user.dto.*;
+import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.service.UserServiceImpl;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,7 +89,14 @@ public class UserController {
         UserDetailDto user = userService.getProfiles(userPrincipal);
         return ResponseEntity.ok(user);
     }
+    
+    @GetMapping("/user")
+    public ResponseEntity<?> getUser(){
+    	List<UserEntity> userEntities=userService.getUser(1);
+    	return ResponseEntity.ok(userEntities);
 
+    }
+    
     //Update profile
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("/profile")
