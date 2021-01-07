@@ -19,6 +19,7 @@ import library.maxwell.module.topup.dto.StatusMessageDto;
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 import library.maxwell.module.topup.entity.UserBalanceEntity;
 import library.maxwell.module.topup.service.HistoryBalanceService;
+import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.service.UserService;
 import library.maxwell.module.user.service.UserServiceImpl;
 
@@ -34,9 +35,10 @@ public class TopUp {
 	
 	@PostMapping("/post")
 	public ResponseEntity<?> post(@CurrentUser UserPrincipal userprincipal, @RequestBody HistoryBalanceDto Dto){	
-		String role=userprincipal.getAuthorities().toString();	
+		Integer id=userprincipal.getId();
+		String role=service2.getRole(id).toString();
 		StatusMessageDto<HistoryBalanceEntity> result=new StatusMessageDto<>();
-		if (role.equals("[ROLE_ADMIN]")) {
+		if (role.equals("ROLE_ADMIN")) {
 			result.setStatus(HttpStatus.BAD_GATEWAY.value());
 			result.setMessage("Role Admin");
 			result.setData(null);
@@ -70,8 +72,9 @@ public class TopUp {
 	@PostMapping("/post2")
 	public ResponseEntity<?> post2(@CurrentUser UserPrincipal userprincipal, @RequestBody HistoryBalanceDto Dto){		
 		StatusMessageDto<HistoryBalanceEntity> result=new StatusMessageDto<>();
-		String role=userprincipal.getAuthorities().toString();				
-		if (role.equals("[ROLE_ADMIN]")) {					
+		Integer id=userprincipal.getId();
+		String role=service2.getRole(id).toString();				
+		if (role.equals("ROLE_ADMIN")) {					
 			if (Dto.getUser_balance_id().equals("")) {			
 				result.setStatus(HttpStatus.BAD_REQUEST.value());
 				result.setMessage("User ID Tidak boleh kosong");
@@ -111,8 +114,9 @@ public class TopUp {
 	
 	@PutMapping("/accept/{id}")
 	public ResponseEntity<?> accept(@CurrentUser UserPrincipal userprincipal,@RequestBody HistoryBalanceDto Dto,@PathVariable Integer id){
-		String role=userprincipal.getAuthorities().toString();		
-		if (role.equals("[ROLE_ADMIN]")) {			
+		Integer id2=userprincipal.getId();
+		String role=service2.getRole(id2).toString();
+		if (role.equals("ROLE_ADMIN")) {			
 			StatusMessageDto<HistoryBalanceEntity> result=new StatusMessageDto<>();
 			HistoryBalanceEntity historyBalanceEntity=service.accept(userprincipal,Dto, id);
 			result.setStatus(HttpStatus.OK.value());
@@ -131,8 +135,9 @@ public class TopUp {
 	
 	@PutMapping("/cancel/{id}")
 	public ResponseEntity<?> cancel(@CurrentUser UserPrincipal userprincipal,@RequestBody HistoryBalanceDto Dto,@PathVariable Integer id){
-		String role=userprincipal.getAuthorities().toString();		
-		if (role.equals("[ROLE_ADMIN]")) {
+		Integer id2=userprincipal.getId();
+		String role=service2.getRole(id2).toString();			
+		if (role.equals("ROLE_ADMIN")) {
 			StatusMessageDto<HistoryBalanceEntity> result=new StatusMessageDto<>();
 			HistoryBalanceEntity historyBalanceEntity=service.cancel(userprincipal,Dto, id);
 			result.setStatus(HttpStatus.OK.value());
