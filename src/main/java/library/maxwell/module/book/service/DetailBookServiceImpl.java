@@ -114,6 +114,7 @@ public class DetailBookServiceImpl implements BookDetailService{
 		bookDetailEntity.setBookEntity(bookEntity);
 		bookDetailEntity.setTypeOfDamage(dto.getTypeOfDamage());
 		bookDetailEntity.setDescOfDamage(dto.getDescOfDamage());
+		bookDetailEntity.setStatusBookDetail(dto.getStatusBookDetail());
 		
 		bookDetailRepository.save(bookDetailEntity);
 		return ResponseEntity.ok(bookDetailEntity);
