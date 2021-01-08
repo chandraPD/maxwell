@@ -13,5 +13,6 @@ public class BookDetailDto {
 	private Integer bookId;
 	private String typeOfDamage;
 	private String descOfDamage;
+	private String statusBookDetail;
 	private Boolean status;
 }

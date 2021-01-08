@@ -14,6 +14,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findByEmail(String email);
     Boolean existsByEmail(String email);
     
+    UserEntity findByUserId(Integer userId);
+
     @Query(value="select password from user where user_id=?",nativeQuery = true)
     String findPasswordByUserId(Integer id);
     

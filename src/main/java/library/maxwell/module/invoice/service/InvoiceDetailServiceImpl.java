@@ -49,6 +49,8 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 			invoiceDetailDto.setTitle(row.getBorrowedBookEntity().getBookDetailEntity().getBookEntity().getTitle());
 			invoiceDetailDto.setTreshold(dueOn);
 			invoiceDetailDto.setLate(diffDays);
+			invoiceDetailDto.setType(row.getType());
+			
 			
 			InvoiceDetails.add(invoiceDetailDto);
 		}

@@ -13,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.BookDto;
+import library.maxwell.module.book.dto.BookDto2;
 import library.maxwell.module.book.dto.StatusMessageDto;
 import library.maxwell.module.book.dto.UpdateQtyBookDto;
 import library.maxwell.module.book.entity.BookEntity;
 import library.maxwell.module.book.entity.CategoryEntity;
+import library.maxwell.module.book.repository.BookDetailRepository;
 import library.maxwell.module.book.repository.BookRepository;
 import library.maxwell.module.book.repository.CategoryRepository;
 import library.maxwell.module.user.entity.UserEntity;
@@ -28,6 +30,9 @@ public class BookServiceImpl implements BookService {
 	
 	@Autowired
 	BookRepository bookRepository;
+	
+	@Autowired
+	BookDetailRepository bookdetailRepository;
 	
 	@Autowired
 	CategoryRepository categoryRepository;
@@ -46,7 +51,8 @@ public class BookServiceImpl implements BookService {
 	public ResponseEntity<?> getBookById(Integer id) {
 		// TODO Auto-generated method stub
 		BookEntity bookEntities = bookRepository.findById(id).get();
-		return ResponseEntity.ok(bookEntities);
+		BookDto2 result = convertToBookDto(bookEntities);
+		return ResponseEntity.ok(result);
 	}
 
 	@Override
@@ -159,7 +165,7 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setImgBanner(dto.getImgBanner());
 		bookEntity.setImgDetail(dto.getImgDetail());
 		bookEntity.setUpdatedAt(dateTime);
-		bookEntity.setStatusBook(dto.getStatusBook());
+//		bookEntity.setStatusBook(dto.getStatusBook());
 		bookEntity.setPublishDate(dto.getPublishDate());
 		bookEntity.setAuthor(dto.getAuthor());
 		
@@ -218,10 +224,31 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setImgBanner(dto.getImgBanner());
 		bookEntity.setImgDetail(dto.getImgDetail());
 		bookEntity.setQty(dto.getQty());
-		bookEntity.setStatusBook(dto.getStatusBook());
+//		bookEntity.setStatusBook(dto.getStatusBook());
 		bookEntity.setPublishDate(dto.getPublishDate());
 		bookEntity.setAuthor(dto.getAuthor());
 		return bookEntity;
+	}
+	
+	public BookDto2 convertToBookDto(BookEntity data) {
+		BookDto2 result = new BookDto2();
+		
+		result.setBookId(data.getBookId());
+		result.setBookCode(data.getBookCode());
+		result.setCategoryEntity(data.getCategoryEntity());
+		result.setTitle(data.getTitle());
+		result.setDescription(data.getDescription());
+		result.setImgBanner(data.getImgBanner());
+		result.setImgDetail(data.getImgDetail());
+		result.setQty(data.getQty());
+		
+		Long count = bookdetailRepository.countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs("Available",data.getBookId());
+		if(count == 0) {
+			result.setStatusBook("Unavailable");
+		} else {
+			result.setStatusBook("Available");
+		}
+		return result;
 	}
 
 	

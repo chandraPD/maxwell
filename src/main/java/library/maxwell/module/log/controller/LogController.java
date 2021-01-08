@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import library.maxwell.config.security.auth.CurrentUser;
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.log.dto.LogDto;
 import library.maxwell.module.log.dto.StatusMessageDto;
 import library.maxwell.module.log.entity.LogEntity;
@@ -54,8 +56,8 @@ public class LogController {
 	
 	//POST
 	@PostMapping("/add-log")
-	public ResponseEntity<?> addLog(@RequestBody LogDto dto){
-		LogEntity logEntity = logService.addLog(dto);
+	public ResponseEntity<?> addLog(@CurrentUser UserPrincipal userPrincipal, @RequestBody LogDto dto){
+		LogEntity logEntity = logService.addLog(userPrincipal, dto);
 		if(logEntity == null) {
 			StatusMessageDto<LogEntity> result = new StatusMessageDto<>();
 			result.setStatus(HttpStatus.BAD_REQUEST.value());
