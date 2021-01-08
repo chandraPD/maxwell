@@ -1,15 +1,12 @@
 package library.maxwell.module.user.service;
 
+import com.cloudinary.utils.ObjectUtils;
 import library.maxwell.config.CloudinaryConfig;
 import library.maxwell.config.security.auth.JwtTokenProvider;
 import library.maxwell.config.security.auth.UserPrincipal;
+import library.maxwell.module.topup.entity.UserBalanceEntity;
 import library.maxwell.module.topup.repository.UserBalanceRepository;
-import library.maxwell.module.user.dto.JwtAuthenticationResponse;
-import library.maxwell.module.user.dto.LoginDto;
-import library.maxwell.module.user.dto.RegistrationDto;
-import library.maxwell.module.user.dto.UpdateProfileDto;
-import library.maxwell.module.user.dto.UserDetailDto;
-import library.maxwell.module.user.dto.UserInfoDto;
+import library.maxwell.module.user.dto.*;
 import library.maxwell.module.user.entity.LevelEntity;
 import library.maxwell.module.user.entity.LevelName;
 import library.maxwell.module.user.entity.UserDetailEntity;
@@ -25,13 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.cloudinary.utils.ObjectUtils;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Base64;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -67,6 +58,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public RegistrationDto createNewUser(RegistrationDto registrationDto) {
         UserEntity userEntity = new UserEntity();
+        UserDetailEntity userDetailEntity = new UserDetailEntity();
+        UserBalanceEntity userBalanceEntity = new UserBalanceEntity();
 
         //Lookup by registered email
         Boolean existByEmail = userRepository.existsByEmail(registrationDto.getEmail());
@@ -82,9 +75,9 @@ public class UserServiceImpl implements UserService {
 
         //Set encode password
         String encodedPassword = passwordEncoder.encode(registrationDto.getPassword());
-
         userEntity.setPassword(encodedPassword);
         userEntity.setEmail(registrationDto.getEmail());
+        userEntity.setActiveRole(String.valueOf(LevelName.ROLE_USER));
 
        LevelEntity levelEntity = levelRepository.findByName(LevelName.ROLE_USER)
                .get();
@@ -92,13 +85,19 @@ public class UserServiceImpl implements UserService {
 
        //Save user
         saveUser(userEntity);
+        //Set initial detail and balance entity
+        userDetailEntity.setUserEntity(userEntity);
+        userDetailEntity.setImg("https://www.oneworldplayproject.com/wp-content/uploads/2016/03/avatar-1024x1024.jpg");
+        userBalanceEntity.setUserEntity(userEntity);
+        userDetailRepository.save(userDetailEntity);
+        userBalanceEntity.setNominal((double) 0);
+        userBalanceRepository.save(userBalanceEntity);
 
         return registrationDto;
     }
 
     @Override
     public JwtAuthenticationResponse authenticateUser(LoginDto loginDto) {
-
         JwtAuthenticationResponse response = new JwtAuthenticationResponse();
 
         //Lookup by registered email
@@ -167,9 +166,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserEntity> getUser(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		List<UserEntity> userEntities=userRepository.findUser(id);
+		return userEntities;
 	}
+	
+	
 
 	@Override
     public UpdateProfileDto updateProfile(UserPrincipal userPrincipal, UpdateProfileDto profileDto) {
@@ -201,6 +202,12 @@ public class UserServiceImpl implements UserService {
         }
         return profileDto;
     }
+
+	@Override
+	public String getRole(Integer id) {
+		String userEntity=userRepository.findActiveRoleByUserId(id).getActiveRole();
+		return userEntity;
+	}
 
 	
 }

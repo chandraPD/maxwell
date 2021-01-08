@@ -20,6 +20,7 @@ import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 import library.maxwell.module.topup.service.HistoryBalanceImp;
 import library.maxwell.module.topup.service.HistoryBalanceService;
 import library.maxwell.module.topup.service.UserBalanceService;
+import library.maxwell.module.user.service.UserService;
 
 @RestController
 @RequestMapping("/top_up_management")
@@ -31,10 +32,13 @@ public class TopUpManagement {
 	@Autowired
 	private UserBalanceService userBalanceService;
 	
+	@Autowired
+	private UserService user;
+	
 	@GetMapping("/getRole")
 	public ResponseEntity<?> getRole(@CurrentUser UserPrincipal userprincipal){
-		String role=userprincipal.getAuthorities().toString();	
-		Integer id=userprincipal.getId();		
+		Integer id=userprincipal.getId();
+		String role=user.getRole(id).toString();		
 		return ResponseEntity.ok(role);
 	}
 	
@@ -46,12 +50,12 @@ public class TopUpManagement {
 	
 	@GetMapping("/getAll")
 	public ResponseEntity<?> getAll(@CurrentUser UserPrincipal userprincipal){
-		String role=userprincipal.getAuthorities().toString();	
 		Integer id=userprincipal.getId();
+		String role=user.getRole(id).toString();		
 		String pass=userprincipal.getPassword().toString();
 		System.out.println(pass);
 		System.out.println(role);
-		if (role.equals("[ROLE_ADMIN]")) {
+		if (role.equals("ROLE_ADMIN")) {
 			List<HistoryBalanceEntity> historyBalanceEntities=service.getAll();
 			return ResponseEntity.ok(historyBalanceEntities);
 		} else {
@@ -68,11 +72,12 @@ public class TopUpManagement {
 	
 	@GetMapping("/getBalance")
 	public Double getBalance(@CurrentUser UserPrincipal userPrincipal) {
-		Double balance = userBalanceService.getSaldo(userPrincipal);
+		Double balance = userBalanceService.getSaldo(userPrincipal) == null ? 0 : userBalanceService.getSaldo(userPrincipal);
 		
 		if(balance != 0){
 			return balance;	
 		}else {
+			
 			return balance = (double)0;
 		}
 		

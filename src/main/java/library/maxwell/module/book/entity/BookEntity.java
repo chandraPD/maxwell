@@ -38,7 +38,7 @@ public class BookEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "book_id")
-	private Integer BookId;
+	private Integer bookId;
 	
 	@Column(name = "book_code", unique = true, length = 10)
 	private String bookCode;
@@ -78,9 +78,6 @@ public class BookEntity {
     @ManyToOne
     @JoinColumn(name = "update_by", referencedColumnName = "user_id")
 	private UserEntity updatedByEntity;
-	
-	@Column(name = "status_book", length = 50)
-	private String statusBook;
 	
 	@Column(name = "publish_date")
 	private Date publishDate;

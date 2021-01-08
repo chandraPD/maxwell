@@ -10,6 +10,7 @@ public class InvoiceDetailDto {
 	private String borrowedDate;
 	private String treshold;
 	private Double grandTotal;
+	private String type;
 	private Long late;
 	
 }
