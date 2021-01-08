@@ -24,4 +24,5 @@ public class BorrowBookDto {
 	private String givenBy;
 	private String takenBy;
 	private String borrower;
+	private Integer bookId;
 }

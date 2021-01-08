@@ -9,6 +9,10 @@ import java.util.List;
 
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -107,7 +111,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		// TODO Auto-generated method stub
 
 		StatusMessageDto<BorrowedBookEntity> result = new StatusMessageDto<>();
-		
+				
 //		check tanggal peminjaman buku tidak boleh kurang dari tanggal hari ini
 		LocalDateTime firstDate = LocalDateTime.parse(dto.getReturnedDate());
 		LocalDateTime secondDate = LocalDateTime.now();
@@ -119,9 +123,18 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		}
 		
 
+		Long count = bookDetailRepository.countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs("Available", dto.getBookId());
+		if(count == 0 ) {
+			result.setMessage("Gagal meminjam Buku, Buku yang akan dipinjam sudah tidak tersedia");
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setData(null);
+			return result;
+		}
+
 		BorrowedBookEntity borrowedBookEntity = converToBorrowedBookEntity(dto);
 		
 		Integer idUser = userPrincipal.getId();
+		
 		
 		UserEntity userEntity = userRepository.findById(idUser).get();
 		borrowedBookEntity.setUserIdEntity(userEntity);
@@ -151,6 +164,13 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		
 		BorrowedBookEntity borrowedBookEntity = new BorrowedBookEntity();
 		
+//		Limit 1 
+		Pageable pageable  = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "bookDetailId"));
+		Page<BookDetailEntity> pageBookDetail = bookDetailRepository.findByStatusIsTrueAndBookEntity_BookIdIs(dto.getBookId(), pageable);
+		
+//		Store pageBookDetail ke dalam bookDetailEntity dan ambil 1 data
+		BookDetailEntity bookDetailEntity = pageBookDetail.getContent().get(0);
+		borrowedBookEntity.setBookDetailEntity(bookDetailEntity);
 		DateTimeFormatter getYearFull = DateTimeFormatter.ofPattern("yyyy");
 		DateTimeFormatter getYear = DateTimeFormatter.ofPattern("yy");
 		String year = LocalDate.now().format(getYear);
@@ -175,9 +195,6 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm");
 		LocalDateTime threshold = LocalDateTime.parse(dto.getReturnedDate());
 		borrowedBookEntity.setThreshold(threshold);
-		Integer idBookDetail = dto.getBookDetailId();
-		BookDetailEntity bookDetailEntity = bookDetailRepository.findByBookDetailId(idBookDetail);
-		borrowedBookEntity.setBookDetailEntity(bookDetailEntity);
 		return borrowedBookEntity;
 	}
 
