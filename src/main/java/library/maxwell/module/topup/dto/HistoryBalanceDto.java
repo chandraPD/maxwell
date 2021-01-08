@@ -20,5 +20,6 @@ public class HistoryBalanceDto {
 	private LocalDateTime dateAcc;
 	private Boolean status;
 	private String password;
+	private String name;
 
 }
