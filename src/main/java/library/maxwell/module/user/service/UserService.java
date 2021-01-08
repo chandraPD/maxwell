@@ -28,4 +28,6 @@ public interface UserService {
     UpdateProfileDto updateProfile(UserPrincipal userPrincipal, UpdateProfileDto updateProfileDto);
     
     String getRole(Integer id);
+    
+    String getName(Integer id);
 }

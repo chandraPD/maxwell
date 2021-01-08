@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.log.dto.LogDto;
 import library.maxwell.module.log.entity.LogEntity;
 import library.maxwell.module.log.repository.LogRepository;
+import library.maxwell.module.user.entity.UserEntity;
+import library.maxwell.module.user.repository.UserRepository;
 
 @Service
 @Transactional
@@ -17,6 +20,8 @@ public class LogServiceImpl implements LogService {
 
 	@Autowired
 	private LogRepository logRepository;
+	@Autowired
+	private UserRepository userRepository;
 	
 	@Override
 	public List<LogEntity> getAllLog() {
@@ -33,9 +38,12 @@ public class LogServiceImpl implements LogService {
 	}
 
 	@Override
-	public LogEntity addLog(LogDto dto) {
+	public LogEntity addLog(UserPrincipal userPrincipal, LogDto dto) {
 		// TODO Auto-generated method stub
+		Integer userId = userPrincipal.getId();
+		UserEntity userEntity = userRepository.findById(userId).get();
 		LogEntity logEntity = convertToLogEntity(dto);
+		logEntity.setUserEntity(userEntity);
 		logRepository.save(logEntity);
 		return logEntity;
 	}

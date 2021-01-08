@@ -15,4 +15,5 @@ public class LogDto {
 	private String description;
 	private LocalDateTime dateTime;
 	private Boolean status = true;
+	private Integer userId;
 }

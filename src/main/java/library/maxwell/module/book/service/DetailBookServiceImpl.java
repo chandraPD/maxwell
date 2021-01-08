@@ -114,6 +114,7 @@ public class DetailBookServiceImpl implements BookDetailService{
 		bookDetailEntity.setBookEntity(bookEntity);
 		bookDetailEntity.setTypeOfDamage(dto.getTypeOfDamage());
 		bookDetailEntity.setDescOfDamage(dto.getDescOfDamage());
+		bookDetailEntity.setStatusBookDetail(dto.getStatusBookDetail());
 		
 		bookDetailRepository.save(bookDetailEntity);
 		return ResponseEntity.ok(bookDetailEntity);
@@ -148,7 +149,7 @@ public class DetailBookServiceImpl implements BookDetailService{
 		
 		String bookDetailCode = "BD" + year + seq;
 		bookDetailEntity.setBookDetailCode(bookDetailCode);
-		
+		bookDetailEntity.setStatusBookDetail(dto.getStatusBookDetail());
 		bookDetailEntity.setTypeOfDamage(dto.getTypeOfDamage());
 		bookDetailEntity.setDescOfDamage(dto.getDescOfDamage());
 		return bookDetailEntity;
