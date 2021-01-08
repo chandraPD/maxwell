@@ -50,7 +50,7 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 
 	@Override
 	public List<HistoryBalanceEntity> getAll() {		
-		List<HistoryBalanceEntity> historyBalanceEntities= repo.findAll2();
+		List<HistoryBalanceEntity> historyBalanceEntities= repo.findAll2();		
 		return historyBalanceEntities;
 	}
 	
