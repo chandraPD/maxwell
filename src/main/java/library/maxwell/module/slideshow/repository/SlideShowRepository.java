@@ -10,5 +10,5 @@ import library.maxwell.module.slideshow.entity.SlideShowEntity;
 
 @Repository
 public interface SlideShowRepository extends JpaRepository<SlideShowEntity, Integer>{
-
+	Boolean existsBySlideShowId(Integer id);
 }

@@ -53,11 +53,11 @@ public class SlideShowController {
 			result.setStatus(HttpStatus.BAD_REQUEST.value());
 			result.setMessage("Data Tidak Ditemukan!");
 			result.setData(null);
-			return ResponseEntity.badRequest().body(result);
-		} 
+		} else {
 			result.setStatus(HttpStatus.OK.value());
 			result.setMessage("Data Ditemukan!");
 			result.setData(slideShowEntity);
+		}
 			return ResponseEntity.ok(result);
 	}
 		
@@ -128,7 +128,7 @@ public class SlideShowController {
 		SlideShowEntity slideShowEntity = slideShowService.editStatus(userPrincipal, idSlideShow, statusSlideShow);
 		StatusMessageDto<SlideShowEntity> result = new StatusMessageDto<>();
 		result.setStatus(HttpStatus.OK.value());
-		result.setMessage("Data berhasil dihapus!");
+		result.setMessage("Data status berhasil diupdate!");
 		result.setData(slideShowEntity);
 		return ResponseEntity.ok(result);
 		
