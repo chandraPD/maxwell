@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +51,13 @@ public class SlideShowServiceImpl implements SlideShowService{
 		
 		return null;
 		
+	}
+	
+	@Override
+	public ResponseEntity<?> getAllActive() {
+		// TODO Auto-generated method stub
+		List<SlideShowEntity> slideShowEntities = slideShowRepository.findAllActive();
+		return ResponseEntity.ok(slideShowEntities);
 	}
 	
 	@Override
@@ -128,7 +136,7 @@ public class SlideShowServiceImpl implements SlideShowService{
 		slideShowEntity.setCreatedAt(LocalDateTime.now());
 		slideShowEntity.setTitle(dto.getTitle());
 		slideShowEntity.setSubTitle(dto.getSubTitle());
-		slideShowEntity.setImg(dto.getImg());
+//		slideShowEntity.setImg(dto.getImg());
 		return slideShowEntity;
 	}
 	
@@ -156,6 +164,7 @@ public class SlideShowServiceImpl implements SlideShowService{
 		return slideShowEntity;
 		
 	}
+	
 	
 	
 }

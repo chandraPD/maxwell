@@ -61,6 +61,11 @@ public class SlideShowController {
 			return ResponseEntity.ok(result);
 	}
 		
+	//GET BY ACTIVE STATUS
+	@GetMapping("/get-all-active")
+	public ResponseEntity<?> getAllActive(){
+		return slideShowService.getAllActive();
+	}
 	
 	//POST
 	@PostMapping("/add-slideshow")
