@@ -12,14 +12,15 @@ import lombok.NoArgsConstructor;
 public class BorrowBookDto {
 	private Integer borrowedBookId;
 	private String borrowedBookCode;
-	private String borrowedDate;
+	private LocalDateTime borrowedDate;
+	private String bookDetailCode;
 	private String title;
 	private String descOfDamage;
 	private Double dp;
 	private Double grandTotal;
-	private String returnedDate;
+	private LocalDateTime returnedDate;
 	private String statusBook;
-	private String threshold;
+	private LocalDateTime threshold;
 	private Integer bookDetailId;
 	private String givenBy;
 	private String takenBy;

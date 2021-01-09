@@ -240,6 +240,7 @@ public class BookServiceImpl implements BookService {
 		result.setDescription(data.getDescription());
 		result.setImgBanner(data.getImgBanner());
 		result.setImgDetail(data.getImgDetail());
+		result.setAuthor(data.getAuthor());
 		result.setQty(data.getQty());
 		
 		Long count = bookdetailRepository.countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs("Available",data.getBookId());

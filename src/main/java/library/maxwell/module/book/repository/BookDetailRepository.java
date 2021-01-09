@@ -21,7 +21,7 @@ public interface BookDetailRepository extends JpaRepository<BookDetailEntity, In
 	
 	BookDetailEntity findByBookDetailId(Integer idBookDetail);
 	
-	Page<BookDetailEntity> findByStatusIsTrueAndBookEntity_BookIdIs(Integer BookId, Pageable pageable);
+	Page<BookDetailEntity> findByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs(String StatusBookDetail, Integer BookId, Pageable pageable);
 	
 	Long countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs(String statusBookDetail,Integer BookId);
 	

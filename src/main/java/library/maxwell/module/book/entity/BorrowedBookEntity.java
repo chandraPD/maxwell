@@ -1,5 +1,6 @@
 package library.maxwell.module.book.entity;
 
+
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -67,9 +68,6 @@ public class BorrowedBookEntity {
 	@ManyToOne
 	@JoinColumn(name = "taken_by", referencedColumnName = "user_id")
 	private UserEntity takenByEntity;
-
-	@Column(name = "dp")
-	private Double dp;
 
 	@Column(name = "grand_total")
 	private Double grandTotal;
