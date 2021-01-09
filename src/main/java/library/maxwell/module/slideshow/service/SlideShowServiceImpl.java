@@ -32,10 +32,10 @@ public class SlideShowServiceImpl implements SlideShowService{
 	private CloudinaryConfig cloudinary;
 	
 	@Override
-	public List<SlideShowEntity> getAllSlideShow() {
+	public ResponseEntity<?> getAllSlideShow() {
 		// TODO Auto-generated method stub
 		List<SlideShowEntity> slideShowEntities = slideShowRepository.findAll();
-		return slideShowEntities;
+		return ResponseEntity.ok(slideShowEntities);
 	}
 	@Override
 	public SlideShowEntity getSlideShowById(Integer idSlideShow) {

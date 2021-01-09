@@ -1,6 +1,6 @@
 package library.maxwell.module.slideshow.service;
 
-import java.util.List;
+
 
 import org.springframework.http.ResponseEntity;
 
@@ -9,7 +9,7 @@ import library.maxwell.module.slideshow.dto.SlideShowDto;
 import library.maxwell.module.slideshow.entity.SlideShowEntity;
 
 public interface SlideShowService {
-	List<SlideShowEntity> getAllSlideShow();
+	ResponseEntity<?> getAllSlideShow();
 	ResponseEntity<?> getAllActive();
 	SlideShowEntity getSlideShowById(Integer idSlideShow);
 	SlideShowEntity addSlideShow(UserPrincipal userPrincipal, SlideShowDto dto);
