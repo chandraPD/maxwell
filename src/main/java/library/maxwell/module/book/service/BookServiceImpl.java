@@ -3,7 +3,9 @@ package library.maxwell.module.book.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cloudinary.utils.ObjectUtils;
+
+import library.maxwell.config.CloudinaryConfig;
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.BookDto;
 import library.maxwell.module.book.dto.BookDto2;
@@ -39,6 +44,9 @@ public class BookServiceImpl implements BookService {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	private CloudinaryConfig cloudinary;
 	
 	@Override
 	public ResponseEntity<?> getBook() {
@@ -221,8 +229,16 @@ public class BookServiceImpl implements BookService {
 		
 		bookEntity.setTitle(dto.getTitle());
 		bookEntity.setDescription(dto.getDescription());
-		bookEntity.setImgBanner(dto.getImgBanner());
-		bookEntity.setImgDetail(dto.getImgDetail());
+		
+		byte[] imgDetail = Base64.getMimeDecoder().decode(dto.getImgDetail());
+		byte[] imgBanner = Base64.getMimeDecoder().decode(dto.getImgBanner());
+		
+		Map uploadResultDetail = cloudinary.upload(imgDetail, ObjectUtils.asMap("resourcetype", "auto"));
+		bookEntity.setImgDetail(uploadResultDetail.get("url").toString());
+		
+		Map uploadResultBanner = cloudinary.upload(imgBanner, ObjectUtils.asMap("resourcetype", "auto"));
+		bookEntity.setImgBanner(uploadResultBanner.get("url").toString());
+		
 		bookEntity.setQty(dto.getQty());
 //		bookEntity.setStatusBook(dto.getStatusBook());
 		bookEntity.setPublishDate(dto.getPublishDate());
