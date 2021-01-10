@@ -49,6 +49,9 @@ public class InvoiceEntity {
     @CreatedDate
 	@Column(name = "invoice_date", nullable = false)
 	private LocalDateTime invoiceDate;
+    
+    @Column(name = "type_invoice", nullable = false, length = 30)
+    private String typeInvoice;
 	
 	@Column(name = "grand_total", nullable = false)
 	private Double grandTotal;

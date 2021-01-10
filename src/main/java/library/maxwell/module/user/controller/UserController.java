@@ -97,6 +97,13 @@ public class UserController {
 
     }
     
+    @GetMapping("/name")
+    public ResponseEntity<?> getName(@CurrentUser UserPrincipal userPrincipal){
+    	Integer id=userPrincipal.getId();
+    	String nama=userService.getName(id);
+    	return ResponseEntity.ok(nama);
+    }
+    
     //Update profile
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("/profile")

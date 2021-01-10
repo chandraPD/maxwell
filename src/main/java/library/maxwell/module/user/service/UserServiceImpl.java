@@ -209,5 +209,13 @@ public class UserServiceImpl implements UserService {
 		return userEntity;
 	}
 
+	@Override
+	public String getName(Integer id) {
+		String userString=userDetailRepository.findFirst(id);
+		String userString2=userDetailRepository.findLast(id);
+		String nama=userString+" "+userString2;
+		return nama;
+	}
+
 	
 }

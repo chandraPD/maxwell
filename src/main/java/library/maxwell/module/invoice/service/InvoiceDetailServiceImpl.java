@@ -1,9 +1,11 @@
 package library.maxwell.module.invoice.service;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,22 +37,20 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 		for (InvoiceDetailEntity row : invoiceDetailEntity) {
 			
 			InvoiceDetailDto invoiceDetailDto = new InvoiceDetailDto();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm");
 			
-			String borrowerDate = row.getBorrowedBookEntity().getBorrowedDate().format(formatter);
-			String dueOn = row.getBorrowedBookEntity().getThreshold().format(formatter);
-			Duration duration = Duration.between(row.getBorrowedBookEntity().getBorrowedDate(), row.getBorrowedBookEntity().getThreshold());
-			
+			LocalDateTime borrowerDate = row.getBorrowedBookEntity().getBorrowedDate();
+			LocalDateTime dueOn = row.getBorrowedBookEntity().getThreshold();
+			Duration duration = Duration.between(borrowerDate, dueOn);
+
 			Long diffDays = duration.toDays();
 			
 			invoiceDetailDto.setInvoiceDetailId(row.getInvoiceDetailId());
 			invoiceDetailDto.setBorrowedDate(borrowerDate);;
 			invoiceDetailDto.setGrandTotal(row.getTotal());
 			invoiceDetailDto.setTitle(row.getBorrowedBookEntity().getBookDetailEntity().getBookEntity().getTitle());
-			invoiceDetailDto.setTreshold(dueOn);
+			invoiceDetailDto.setThreshold(dueOn);
 			invoiceDetailDto.setLate(diffDays);
 			invoiceDetailDto.setType(row.getType());
-			
 			
 			InvoiceDetails.add(invoiceDetailDto);
 		}

@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     List<UserEntity> findUser(Integer id);
     
     UserEntity findActiveRoleByUserId(Integer id);
+    
+    
 }

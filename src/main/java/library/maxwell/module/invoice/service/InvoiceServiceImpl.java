@@ -1,9 +1,11 @@
 package library.maxwell.module.invoice.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import library.maxwell.config.security.auth.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import library.maxwell.module.invoice.dto.InvoiceDto;
 import library.maxwell.module.invoice.dto.StatusMessageDto;
 import library.maxwell.module.invoice.entity.InvoiceEntity;
 import library.maxwell.module.invoice.repository.InvoiceRepository;
+import library.maxwell.module.topup.entity.UserBalanceEntity;
+import library.maxwell.module.topup.repository.UserBalanceRepository;
 import library.maxwell.module.user.entity.UserDetailEntity;
 import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.repository.UserDetailRepository;
@@ -32,6 +36,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private UserBalanceRepository userBalanceRepository;
 
 	@Override
 	public StatusMessageDto<?> getAll(UserPrincipal userPrincipal, String statusInvoice) {
@@ -116,11 +123,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 		InvoiceDto invoiceDto = new InvoiceDto();
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm");
-		String invoiceDateString = invoiceEntity.getInvoiceDate().format(formatter);
-
-		String treshold = invoiceEntity.getInvoiceDate().plusDays(7).format(formatter);
-
+		LocalDateTime threshold = invoiceEntity.getInvoiceDate().plusDays(7);
+		System.out.println(threshold);
 		UserDetailEntity borrower = userDetailRepository.findByUserEntityUserId(idBorrower);
 		invoiceDto.setInvoiceId(invoiceEntity.getInvoiceId());
 		invoiceDto.setNoInvoice(invoiceEntity.getNoInvoice());
@@ -135,11 +139,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (invoiceEntity.getPaymentDate() == null) {
 			invoiceDto.setPaymentDate(null);
 		} else {
-			String paymentDate = invoiceEntity.getPaymentDate().format(formatter);
+			LocalDateTime paymentDate = invoiceEntity.getPaymentDate();
 			invoiceDto.setPaymentDate(paymentDate);
 		}
-		invoiceDto.setInvoiceDate(invoiceDateString);
-		invoiceDto.setTreshold(treshold);
+		invoiceDto.setInvoiceDate(invoiceEntity.getInvoiceDate());
+		invoiceDto.setThreshold(threshold);
 		invoiceDto.setBorrower(borrower.getFirstName() + " " + borrower.getLastName());
 		invoiceDto.setAddress(borrower.getAddress());
 		invoiceDto.setPhone(borrower.getPhoneNumber());
@@ -150,7 +154,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public InvoiceEntity addInvoice(UserPrincipal userPrincipal) {
+	public InvoiceEntity addInvoice(String typeInvoice, UserPrincipal userPrincipal) {
 		// TODO Auto-generated method stub
 		InvoiceEntity invoiceEntity = new InvoiceEntity();
 		Integer idBorrower = userPrincipal.getId();
@@ -173,11 +177,51 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 		String noInvoice = "INV" + year + seq;
 		invoiceEntity.setNoInvoice(noInvoice);
+		invoiceEntity.setTypeInvoice(typeInvoice);
 		invoiceEntity.setGrandTotal((double) 5000);
 //		payment date pertama kali null, akan berubah pada saat user membayar invoice
 		invoiceEntity.setStatusInvoice("Waiting For Payment");
 		invoiceRepository.save(invoiceEntity);
 		return invoiceEntity;
+	}
+
+	@Override
+	public StatusMessageDto<?> pay(UserPrincipal userPrincipal, Integer invoiceId) {
+		StatusMessageDto<InvoiceEntity> result = new StatusMessageDto<>();
+		
+		Integer userid = userPrincipal.getId();
+		UserEntity userEntity = userRepository.findByUserId(userid);
+		UserBalanceEntity userBalanceEntity = userBalanceRepository.findByUserEntity_UserIdIs(userid);
+		
+		InvoiceEntity invoiceEntity = invoiceRepository.findById(invoiceId).get();
+		
+		if(invoiceEntity.getGrandTotal() >= userBalanceEntity.getNominal()) {
+			result.setMessage("Sorry, Your Current Balance is Insufficient.");
+			result.setStatus(HttpStatus.BAD_GATEWAY.value());
+			result.setData(null);
+			return result;
+		}
+		
+		
+		if(invoiceEntity.getStatusInvoice().equalsIgnoreCase("Paid")) {
+			result.setMessage("Your invoice is already paid.");
+			result.setStatus(HttpStatus.BAD_GATEWAY.value());
+			result.setData(null);
+			return result;
+		}
+		
+//		mengurangi balance user
+		userBalanceEntity.setNominal(userBalanceEntity.getNominal() - invoiceEntity.getGrandTotal());
+		userBalanceRepository.save(userBalanceEntity);
+		
+//		update status invoice menjadi Paid
+		invoiceEntity.setStatusInvoice("Paid");
+		invoiceRepository.save(invoiceEntity);
+		
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage(invoiceEntity.getStatusInvoice());
+		result.setData(invoiceEntity);
+		return result;
 	}
 
 }
