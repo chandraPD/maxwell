@@ -4,11 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.catalina.User;
+import library.maxwell.module.invoice.repository.InvoiceDetailRepository;
+import library.maxwell.module.invoice.repository.InvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,9 +29,7 @@ import library.maxwell.module.invoice.dto.StatusMessageDto;
 import library.maxwell.module.invoice.entity.InvoiceDetailEntity;
 import library.maxwell.module.invoice.entity.InvoiceEntity;
 import library.maxwell.module.invoice.service.InvoiceDetailService;
-import library.maxwell.module.invoice.service.InvoiceDetailServiceImpl;
 import library.maxwell.module.invoice.service.InvoiceService;
-import library.maxwell.module.invoice.service.InvoiceServiceImpl;
 import library.maxwell.module.user.entity.UserDetailEntity;
 import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.repository.UserDetailRepository;
@@ -54,7 +56,13 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 	
 	@Autowired
 	private UserRepository userRepository;
-	
+
+	@Autowired
+	private InvoiceRepository invoiceRepository;
+
+	@Autowired
+	private InvoiceDetailRepository invoiceDetailRepository;
+
 	@Override
 	public StatusMessageDto<?> getById(Integer borrowedBookId) {
 		// TODO Auto-generated method stub
@@ -81,7 +89,6 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			borrowedBookEntities = borrowedBookRepository.findAllByStatusIsTrue();
 		}
 		
-		
 		StatusMessageDto<List<BorrowBookDto>> result = new StatusMessageDto<>();
 		
 		List<BorrowBookDto> borrowBookDtos = new ArrayList<>();
@@ -107,10 +114,33 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		// TODO Auto-generated method stub
 
 		StatusMessageDto<BorrowedBookEntity> result = new StatusMessageDto<>();
+				
+		
+//		check user yang akan meminjam, data nya sudah lengkap atau belum
+		Integer idUser = userPrincipal.getId();
+		UserEntity userEntity = userRepository.findById(idUser).get();
+		
+		UserDetailEntity userDetailEntity = userDetailRepository.findByUserEntityUserId(idUser);
+		if(userDetailEntity.getAddress() == null) {
+			result.setMessage("Gagal meminjam Buku, Alamat anda belum ada, harap melengkapi Profile anda");
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setData(null);
+			return result;
+		}else if (userDetailEntity.getPhoneNumber() == null) {
+			result.setMessage("Gagal meminjam Buku, No HP anda belum ada, harap melengkapi Profile anda");
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setData(null);
+			return result;
+		}else if (userDetailEntity.getDateOfBirth() == null) {
+			result.setMessage("Gagal meminjam Buku, Tanggal Lahir anda belum ada, harap melengkapi Profile anda");
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setData(null);
+		}
+		
 		
 //		check tanggal peminjaman buku tidak boleh kurang dari tanggal hari ini
-		LocalDateTime firstDate = LocalDateTime.parse(dto.getReturnedDate());
-		LocalDateTime secondDate = LocalDateTime.now();
+		LocalDateTime firstDate = dto.getReturnedDate(); 
+		LocalDateTime secondDate = dto.getBorrowedDate();
 		if(firstDate.isBefore(secondDate)) {
 			result.setMessage("Gagal meminjam Buku, Tanggal yang diinputkan lebih kecil dari tanggal sekarang");
 			result.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -119,15 +149,20 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		}
 		
 
+		Long count = bookDetailRepository.countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs("Available", dto.getBookId());
+		if(count == 0 ) {
+			result.setMessage("Gagal meminjam Buku, Buku yang akan dipinjam sudah tidak tersedia");
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setData(null);
+			return result;
+		}
+
 		BorrowedBookEntity borrowedBookEntity = converToBorrowedBookEntity(dto);
 		
-		Integer idUser = userPrincipal.getId();
-		
-		UserEntity userEntity = userRepository.findById(idUser).get();
 		borrowedBookEntity.setUserIdEntity(userEntity);
 		borrowedBookRepository.save(borrowedBookEntity);
 //		Add Invoice
-		InvoiceEntity invoiceEntity =  invoiceService.addInvoice(userPrincipal);
+		InvoiceEntity invoiceEntity =  invoiceService.addInvoice("DP",userPrincipal);
 //		Get ID Invoice
 		Integer idInvoice = invoiceEntity.getInvoiceId();
 //		Add Invoice Detail base on id_invoice and borrowed_book_id
@@ -139,7 +174,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			result.setStatus(HttpStatus.BAD_REQUEST.value());
 			result.setData(null);
 		}else {
-			result.setMessage("Buku berhasil dipinjam");
+			result.setMessage("Berhsil, harap melakukan proses pembayaran");
 			result.setStatus(HttpStatus.OK.value());
 			result.setData(borrowedBookEntity);
 		}
@@ -151,6 +186,18 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		
 		BorrowedBookEntity borrowedBookEntity = new BorrowedBookEntity();
 		
+//		Limit 1 
+		Pageable pageable  = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "bookDetailId"));
+		Page<BookDetailEntity> pageBookDetail = bookDetailRepository.findByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs("Available",dto.getBookId(), pageable);
+		
+//		Store pageBookDetail ke dalam bookDetailEntity dan ambil 1 data
+		BookDetailEntity bookDetailEntity = pageBookDetail.getContent().get(0);
+		
+//		update status book detail menjadi unavailable
+		bookDetailEntity.setStatusBookDetail("Unavailable");
+		bookDetailRepository.save(bookDetailEntity);
+		
+		borrowedBookEntity.setBookDetailEntity(bookDetailEntity);
 		DateTimeFormatter getYearFull = DateTimeFormatter.ofPattern("yyyy");
 		DateTimeFormatter getYear = DateTimeFormatter.ofPattern("yy");
 		String year = LocalDate.now().format(getYear);
@@ -167,17 +214,11 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		String borrowedBookCode = "R" + year + seq;
 		borrowedBookEntity.setBorrowedBookCode(borrowedBookCode);
 		
-		borrowedBookEntity.setDp((double) 5000);
 		borrowedBookEntity.setGrandTotal((double) 5000);
 //		return date pertama kali isi nya null
 		borrowedBookEntity.setStatusBook("Waiting Given By Librarian");
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm");
-		LocalDateTime threshold = LocalDateTime.parse(dto.getReturnedDate());
-		borrowedBookEntity.setThreshold(threshold);
-		Integer idBookDetail = dto.getBookDetailId();
-		BookDetailEntity bookDetailEntity = bookDetailRepository.findByBookDetailId(idBookDetail);
-		borrowedBookEntity.setBookDetailEntity(bookDetailEntity);
+		borrowedBookEntity.setThreshold(dto.getReturnedDate().plusHours(7));
 		return borrowedBookEntity;
 	}
 
@@ -203,23 +244,24 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		}
 		
 		BorrowBookDto dto = new BorrowBookDto();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm");
 		dto.setBorrowedBookId(borrowedBookEntity.getBorrowedBookId());
 		dto.setBorrowedBookCode(borrowedBookEntity.getBorrowedBookCode());
 		dto.setBorrower(borrower);
+		dto.setBookDetailCode(borrowedBookEntity.getBookDetailEntity().getBookDetailCode());
 		dto.setTitle(bookEntity.getTitle());
 		dto.setGivenBy(givenBy);
 		dto.setTakenBy(takenBy);
-		dto.setBorrowedDate(borrowedBookEntity.getBorrowedDate().format(formatter));
+		dto.setBorrowedDate(borrowedBookEntity.getBorrowedDate());
+		dto.setReturnedDate(borrowedBookEntity.getReturnedDate());
 		
 		if(borrowedBookEntity.getReturnedDate() == null) {
-			dto.setReturnedDate("-");
+			dto.setReturnedDate(null);
 		}else {
-			dto.setReturnedDate(borrowedBookEntity.getReturnedDate().format(formatter).toString());
+			dto.setReturnedDate(borrowedBookEntity.getReturnedDate());
 		}
 		
 		dto.setStatusBook(borrowedBookEntity.getStatusBook());
-		dto.setThreshold(borrowedBookEntity.getThreshold().format(formatter));
+		dto.setThreshold(borrowedBookEntity.getThreshold());
 		dto.setGrandTotal(borrowedBookEntity.getGrandTotal());
 				
 		return dto;
@@ -239,12 +281,20 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 	}
 
 	@Override
-	public ResponseEntity<?> accAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
-		
+	public Object accAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
+		StatusMessageDto result = new StatusMessageDto();
 		Integer test = userPrincipal.getId();
-		System.out.println(test);
 		BorrowedBookEntity borrowedBookEntity = borrowedBookRepository.findByBorrowedBookId(borrowedBookId);
-		
+
+//		check invoice sudah dibayar atau belum untuk borrowed_book_id ini
+		InvoiceDetailEntity lastData = invoiceDetailRepository.findTopByBorrowedBookEntity_BorrowedBookId(borrowedBookId);
+		if(lastData.getInvoiceEntity().getStatusInvoice().equalsIgnoreCase("Waiting For Payment")){
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("This Invoice has not been paid");
+			result.setData(null);
+			return result;
+		}
+
 		if(borrowedBookEntity.getStatusBook().equalsIgnoreCase("Waiting Given By Librarian")) {
 			borrowedBookEntity.setStatusBook("Waiting For Return");
 			borrowedBookEntity.setGivenByEntity(userRepository.findByUserId(userPrincipal.getId()));
@@ -254,20 +304,44 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			System.out.println("gagal");
 		}
 		borrowedBookRepository.save(borrowedBookEntity);
-		return ResponseEntity.ok(borrowedBookEntity);
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("Rent has been Accepted!");
+		result.setData(borrowedBookEntity);
+		return result;
+
 	}
 
 	@Override
-	public ResponseEntity<?> decAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
-		
+	public Object decAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
+		StatusMessageDto result = new StatusMessageDto();
 		
 		BorrowedBookEntity borrowedBookEntity = borrowedBookRepository.findByBorrowedBookId(borrowedBookId);
-		
+
+
+//		check invoice sudah dibayar atau belum untuk borrowed_book_id ini
+		InvoiceDetailEntity lastData = invoiceDetailRepository.findTopByBorrowedBookEntity_BorrowedBookId(borrowedBookId);
+
+		if(lastData.getInvoiceEntity().getStatusInvoice().equalsIgnoreCase("Paid")){
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("This Invoice has been paid");
+			result.setData(null);
+			return result;
+		}
+
 		if(borrowedBookEntity.getStatusBook().equalsIgnoreCase("Waiting Given By Librarian")) {
 			borrowedBookEntity.setStatusBook("Canceled");
 		}
+
 		borrowedBookRepository.save(borrowedBookEntity);
-		return ResponseEntity.ok(borrowedBookEntity);
+
+		InvoiceEntity invoiceEntity = lastData.getInvoiceEntity();
+		invoiceEntity.setStatusInvoice("Canceled");
+		invoiceRepository.save(invoiceEntity);
+
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("Rent has been Canceled!");
+		result.setData(borrowedBookEntity);
+		return result;
 	}
-	
+
 }

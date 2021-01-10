@@ -10,13 +10,13 @@ import library.maxwell.module.user.entity.UserEntity;
 public interface HistoryBalanceService {
 	HistoryBalanceEntity getById(Integer id);
 	
-	List<HistoryBalanceEntity> getAll();
+	List<HistoryBalanceEntity> getAll(UserPrincipal usPrincipal);
 	
 	List<HistoryBalanceEntity> getAll2(Integer id);
 	
 	HistoryBalanceEntity post(UserPrincipal userPrincipal,HistoryBalanceDto Dto);
 	
-	HistoryBalanceEntity post2(HistoryBalanceDto Dto);
+	HistoryBalanceEntity post2(UserPrincipal userPrincipal,HistoryBalanceDto Dto);
 	
 	HistoryBalanceEntity accept(UserPrincipal userPrincipal,HistoryBalanceDto Dto,Integer id);
 	

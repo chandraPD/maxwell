@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +79,13 @@ public class LogServiceImpl implements LogService {
 		return logEntity;
 
 }
+
+	@Override
+	public ResponseEntity<?> getLogLastActivity() {
+		// TODO Auto-generated method stub
+		List<LogEntity> logEntities = logRepository.findLastActivity();
+		return ResponseEntity.ok(logEntities);
+	}
 
 
 }

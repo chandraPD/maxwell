@@ -2,6 +2,8 @@ package library.maxwell.module.book.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,6 +20,8 @@ public interface BookDetailRepository extends JpaRepository<BookDetailEntity, In
 	List<BookDetailEntity> findAllInactive();
 	
 	BookDetailEntity findByBookDetailId(Integer idBookDetail);
+	
+	Page<BookDetailEntity> findByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs(String StatusBookDetail, Integer BookId, Pageable pageable);
 	
 	Long countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs(String statusBookDetail,Integer BookId);
 	

@@ -1,7 +1,7 @@
 package library.maxwell.module.slideshow.controller;
 
 
-import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,12 +21,8 @@ import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.log.dto.StatusMessageDto;
 import library.maxwell.module.slideshow.dto.SlideShowDto;
 import library.maxwell.module.slideshow.entity.SlideShowEntity;
-import library.maxwell.module.slideshow.repository.SlideShowRepository;
-import library.maxwell.module.slideshow.service.SlideShowService;
 import library.maxwell.module.slideshow.service.SlideShowServiceImpl;
-import library.maxwell.module.user.entity.UserEntity;
-import library.maxwell.module.user.service.UserService;
-import library.maxwell.module.user.service.UserServiceImpl;
+
 
 
 @RestController
@@ -40,8 +36,7 @@ public class SlideShowController {
 	//GET ALL
 	@GetMapping("/get-all-slideshow")
 	public ResponseEntity<?> getAllSlideShow(){
-		List<SlideShowEntity> slideShowEntities = slideShowService.getAllSlideShow();
-		return ResponseEntity.ok(slideShowEntities);
+		return slideShowService.getAllSlideShow();
 	}
 	
 	//GET BY ID
@@ -61,6 +56,11 @@ public class SlideShowController {
 			return ResponseEntity.ok(result);
 	}
 		
+	//GET BY ACTIVE STATUS
+	@GetMapping("/get-all-active")
+	public ResponseEntity<?> getAllActive(){
+		return slideShowService.getAllActive();
+	}
 	
 	//POST
 	@PostMapping("/add-slideshow")

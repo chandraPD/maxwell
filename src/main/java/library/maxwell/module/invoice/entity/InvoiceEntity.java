@@ -34,10 +34,6 @@ public class InvoiceEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "invoice_id")
 	private Integer invoiceId;
-	
-	@ManyToOne
-	@JoinColumn(name = "checked_by", referencedColumnName = "user_id")
-	private UserEntity checkedByEntity;
 
 	@ManyToOne
 	@JoinColumn(name = "borrower", referencedColumnName = "user_id")
@@ -49,6 +45,9 @@ public class InvoiceEntity {
     @CreatedDate
 	@Column(name = "invoice_date", nullable = false)
 	private LocalDateTime invoiceDate;
+    
+    @Column(name = "type_invoice", nullable = false, length = 30)
+    private String typeInvoice;
 	
 	@Column(name = "grand_total", nullable = false)
 	private Double grandTotal;
