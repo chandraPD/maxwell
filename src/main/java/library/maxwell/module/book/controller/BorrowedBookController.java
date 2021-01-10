@@ -1,5 +1,7 @@
 package library.maxwell.module.book.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import library.maxwell.config.security.auth.CurrentUser;
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.BorrowBookDto;
+import library.maxwell.module.book.entity.BorrowedBookEntity;
 import library.maxwell.module.book.service.BorrowedBookService;
 import library.maxwell.module.book.service.BorrowedBookServiceImpl;
 import library.maxwell.module.invoice.dto.StatusMessageDto;
@@ -53,4 +56,9 @@ public class BorrowedBookController {
 		return borrowImplService.decAct(userPrincipal, idBorrowedBook);
 	}
 	
+	@GetMapping("/getid2")
+	public ResponseEntity<?> findId(@CurrentUser UserPrincipal userPrincipal){
+		List<BorrowedBookEntity> getId=borrowImplService.findId(userPrincipal, 2);
+		return ResponseEntity.ok(getId);
+	}
 }

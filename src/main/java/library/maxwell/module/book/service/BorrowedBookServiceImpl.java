@@ -269,5 +269,11 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		borrowedBookRepository.save(borrowedBookEntity);
 		return ResponseEntity.ok(borrowedBookEntity);
 	}
+
+	@Override
+	public List<BorrowedBookEntity> findId(UserPrincipal userPrincipal, Integer id) {		
+		List<BorrowedBookEntity> bookEntities=borrowedBookRepository.findId2(id);		
+		return bookEntities;
+	}
 	
 }
