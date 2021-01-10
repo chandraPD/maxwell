@@ -17,6 +17,5 @@ public interface BorrowedBookService {
 	StatusMessageDto<?> getAll();
 	StatusMessageDto<?> getAll(UserPrincipal userPrincipal);
 	ResponseEntity<?> accAct(UserPrincipal userPrincipal, Integer borrowedBookId);
-	ResponseEntity<?> decAct(UserPrincipal userPrincipal, Integer borrowedBookId);
-	List<BorrowedBookEntity> findId(UserPrincipal userPrincipal,Integer id);
+	ResponseEntity<?> decAct(UserPrincipal userPrincipal, Integer borrowedBookId);	
 }

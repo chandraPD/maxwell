@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import library.maxwell.config.security.auth.UserPrincipal;
+import library.maxwell.module.log.entity.LogEntity;
+import library.maxwell.module.log.repository.LogRepository;
 import library.maxwell.module.topup.dto.HistoryBalanceDto;
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 import library.maxwell.module.topup.entity.UserBalanceEntity;
@@ -33,6 +35,9 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	UserRepository repo3;
 	
 	@Autowired
+	LogRepository repo4;
+	
+	@Autowired
     private PasswordEncoder passwordEncoder;
 
 	public HistoryBalanceEntity convertToHistoryBalanceEntity (HistoryBalanceDto dto) {
@@ -49,8 +54,17 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	}
 
 	@Override
-	public List<HistoryBalanceEntity> getAll() {		
-		List<HistoryBalanceEntity> historyBalanceEntities= repo.findAll2();		
+	public List<HistoryBalanceEntity> getAll(UserPrincipal userPrincipal) {		
+		LocalDateTime now = LocalDateTime.now();
+		List<HistoryBalanceEntity> historyBalanceEntities= repo.findAll2();
+		UserEntity userEntity=repo3.findByUserId(userPrincipal.getId());
+		LogEntity logEntity=new LogEntity();
+		logEntity.setAction("Get");
+		logEntity.setDateTime(now);
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Melihat Data");
+		repo4.save(logEntity);
 		return historyBalanceEntities;
 	}
 	
@@ -59,7 +73,15 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 		Integer id=userPrincipal.getId();
 		LocalDateTime now = LocalDateTime.now();
 		HistoryBalanceEntity historyBalanceEntity=convertToHistoryBalanceEntity(Dto);
-		UserBalanceEntity userBalanceEntity=repo2.findByUserBalanceId(id);		
+		UserBalanceEntity userBalanceEntity=repo2.findByUserBalanceId(id);
+		UserEntity userEntity=repo3.findByUserId(id);
+		LogEntity logEntity=new LogEntity();
+		logEntity.setAction("Post");
+		logEntity.setDateTime(now);
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Melakukan Topup");
+		repo4.save(logEntity);
 		historyBalanceEntity.setUserBalanceEntity(userBalanceEntity);
 		historyBalanceEntity.setStatus(true);
 		historyBalanceEntity.setStatusPayment("Pending");		
@@ -73,6 +95,7 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();
 		historyBalanceEntity.setNominal(Dto.getNominal());
 		historyBalanceEntity.setPaymentMethod(Dto.getPaymentMethod());
+		
 		return historyBalanceEntity;
 	}
 
@@ -93,6 +116,14 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 		LocalDateTime now = LocalDateTime.now();
 		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();
 		UserBalanceEntity userBalanceEntity= repo2.findById(idbalance).get();
+		UserEntity userEntity=repo3.findByUserId(userPrincipal.getId());
+		LogEntity logEntity=new LogEntity();
+		logEntity.setAction("Update");
+		logEntity.setDateTime(now);
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Accept Topup");
+		repo4.save(logEntity);
 		UserEntity entity=repo3.findById(id3).get();
 		userBalanceEntity.setNominal(nominal+nominal2);
 		repo2.save(userBalanceEntity);
@@ -109,6 +140,14 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 		LocalDateTime now = LocalDateTime.now();
 		HistoryBalanceEntity historyBalanceEntity=repo.findById(id).get();
 		UserEntity entity=repo3.findById(id3).get();
+		UserEntity userEntity=repo3.findByUserId(userPrincipal.getId());
+		LogEntity logEntity=new LogEntity();
+		logEntity.setAction("Update");
+		logEntity.setDateTime(now);
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Cancel Topup");
+		repo4.save(logEntity);
 		historyBalanceEntity.setUserEntity(entity);
 		historyBalanceEntity.setStatusPayment("Cancelled");
 		historyBalanceEntity.setDateAcc(now);
@@ -117,10 +156,18 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	}
 
 	@Override
-	public HistoryBalanceEntity post2(HistoryBalanceDto Dto) {		
+	public HistoryBalanceEntity post2(UserPrincipal userPrincipal,HistoryBalanceDto Dto) {		
 		LocalDateTime now = LocalDateTime.now();
 		HistoryBalanceEntity historyBalanceEntity=convertToHistoryBalanceEntity(Dto);
-		UserBalanceEntity userBalanceEntity=repo2.findByUserBalanceId(Dto.getUser_balance_id());		
+		UserBalanceEntity userBalanceEntity=repo2.findByUserBalanceId(Dto.getUser_balance_id());
+		UserEntity userEntity=repo3.findByUserId(userPrincipal.getId());
+		LogEntity logEntity=new LogEntity();
+		logEntity.setAction("Post");
+		logEntity.setDateTime(now);
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Melakukan Topup");
+		repo4.save(logEntity);
 		historyBalanceEntity.setUserBalanceEntity(userBalanceEntity);
 		historyBalanceEntity.setStatus(true);
 		historyBalanceEntity.setStatusPayment("Pending");		
@@ -131,7 +178,16 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 
 	@Override	
 	public List<HistoryBalanceEntity> getAll2(Integer userPrincipal) {
+		LocalDateTime now = LocalDateTime.now();
 		List<HistoryBalanceEntity> historyBalanceEntities= repo.findall3(userPrincipal);
+		UserEntity userEntity=repo3.findByUserId(userPrincipal);
+		LogEntity logEntity=new LogEntity();
+		logEntity.setAction("Get");
+		logEntity.setDateTime(now);
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Melihat Data");
+		repo4.save(logEntity);
 		return historyBalanceEntities;
 	}
 

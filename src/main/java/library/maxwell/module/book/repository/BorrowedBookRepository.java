@@ -21,6 +21,6 @@ public interface BorrowedBookRepository extends JpaRepository<BorrowedBookEntity
 	
 	BorrowedBookEntity findByBorrowedBookId(Integer borrowedBookId);
 	
-	@Query(value="SELECT borrowed_book_id FROM borrowed_book WHERE user_id=?",nativeQuery = true)
+	@Query(value="SELECT borrowed_book_id FROM `borrowed_book` WHERE user_id=?",nativeQuery = true)
 	List<BorrowedBookEntity> findId2(Integer id);
 }

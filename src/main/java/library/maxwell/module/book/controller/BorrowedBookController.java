@@ -56,9 +56,4 @@ public class BorrowedBookController {
 		return borrowImplService.decAct(userPrincipal, idBorrowedBook);
 	}
 	
-	@GetMapping("/getid2")
-	public ResponseEntity<?> findId(@CurrentUser UserPrincipal userPrincipal){
-		List<BorrowedBookEntity> getId=borrowImplService.findId(userPrincipal, 2);
-		return ResponseEntity.ok(getId);
-	}
 }
