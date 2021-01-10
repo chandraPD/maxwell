@@ -45,7 +45,7 @@ public class HistoryBalanceEntity {
 	@Column(name = "nominal")
 	private Double nominal;
 
-	@Column(name = "paymentMethod")
+	@Column(name = "payment_method")
 	private String paymentMethod;
 
 	@Column(name = "status_payment")

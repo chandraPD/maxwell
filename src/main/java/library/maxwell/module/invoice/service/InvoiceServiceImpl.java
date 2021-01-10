@@ -5,9 +5,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import library.maxwell.config.security.auth.UserPrincipal;
+import library.maxwell.module.topup.entity.HistoryBalanceEntity;
+import library.maxwell.module.topup.repository.HistoryBalanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -40,13 +41,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Autowired
 	private UserBalanceRepository userBalanceRepository;
 
+	@Autowired
+	private HistoryBalanceRepository historyBalanceRepository;
+
 	@Override
 	public StatusMessageDto<?> getAll(UserPrincipal userPrincipal, String statusInvoice) {
 
 		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
 		Integer id = userPrincipal.getId();
-		List<InvoiceEntity> invoiceEntity = new ArrayList<>();
-		if (statusInvoice == "") {
+		List<InvoiceEntity> invoiceEntity;
+		if (statusInvoice.equals("")) {
 //			Get All Invoice
 			invoiceEntity = invoiceRepository.findAllByStatusIsTrueAndBorrowerEntity_UserIdIs(id);
 		} else {
@@ -73,10 +77,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public StatusMessageDto<?> getAll() {
 
-//		List<InvoiceEntity> invoiceEntity2 = invoiceRepository.findAllByBorrowerEntity_UserId(id);
-//		return Optional.ofNullable(invoiceEntity)
-//				.map(invoiceEntities -> StatusMessageDto.success("Data Invoice telah ditemukan", invoiceEntities))
-//				.orElse(StatusMessageDto.error("Data Invoice Belum ditemukan"));
 		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
 		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByStatusIsTrue();
 		List<InvoiceDto> invoiceDtos = new ArrayList<>();
@@ -129,13 +129,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		invoiceDto.setInvoiceId(invoiceEntity.getInvoiceId());
 		invoiceDto.setNoInvoice(invoiceEntity.getNoInvoice());
 		invoiceDto.setGrandTotal(invoiceEntity.getGrandTotal());
-		if (invoiceEntity.getCheckedByEntity() == null) {
-			invoiceDto.setCheckedBy(null);
-		} else {
-			Integer idChecked = invoiceEntity.getCheckedByEntity().getUserId();
-			UserDetailEntity checked = userDetailRepository.findByUserEntityUserId(idChecked);
-			invoiceDto.setCheckedBy(checked.getFirstName() + " " + checked.getLastName());
-		}
+
 		if (invoiceEntity.getPaymentDate() == null) {
 			invoiceDto.setPaymentDate(null);
 		} else {
@@ -188,9 +182,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public StatusMessageDto<?> pay(UserPrincipal userPrincipal, Integer invoiceId) {
 		StatusMessageDto<InvoiceEntity> result = new StatusMessageDto<>();
-		
+
+		LocalDateTime now = LocalDateTime.now();
 		Integer userid = userPrincipal.getId();
-		UserEntity userEntity = userRepository.findByUserId(userid);
 		UserBalanceEntity userBalanceEntity = userBalanceRepository.findByUserEntity_UserIdIs(userid);
 		
 		InvoiceEntity invoiceEntity = invoiceRepository.findById(invoiceId).get();
@@ -213,9 +207,24 @@ public class InvoiceServiceImpl implements InvoiceService {
 //		mengurangi balance user
 		userBalanceEntity.setNominal(userBalanceEntity.getNominal() - invoiceEntity.getGrandTotal());
 		userBalanceRepository.save(userBalanceEntity);
-		
+
+//		insert history top up
+
+		UserEntity admin = userRepository.findByUserId(1);
+
+		HistoryBalanceEntity historyBalanceEntity = new HistoryBalanceEntity();
+		historyBalanceEntity.setUserBalanceEntity(userBalanceEntity);
+		historyBalanceEntity.setUserEntity(admin); //check by admin
+		historyBalanceEntity.setStatusPayment("Success");
+		historyBalanceEntity.setNominal(invoiceEntity.getGrandTotal());
+		historyBalanceEntity.setDateAcc(now);
+		historyBalanceEntity.setStatus(true);
+		historyBalanceEntity.setPaymentMethod("Debit");
+		historyBalanceRepository.save(historyBalanceEntity);
+
 //		update status invoice menjadi Paid
 		invoiceEntity.setStatusInvoice("Paid");
+		invoiceEntity.setPaymentDate(now);
 		invoiceRepository.save(invoiceEntity);
 		
 		result.setStatus(HttpStatus.OK.value());
