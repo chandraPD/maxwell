@@ -54,6 +54,12 @@ public class LogController {
 		
 	}
 	
+	//GET LAST ACTIVITY
+	@GetMapping("/get-log-lastActivity")
+	public ResponseEntity<?> getLastActivity(){
+		return logService.getLogLastActivity();
+	}
+	
 	//POST
 	@PostMapping("/add-log")
 	public ResponseEntity<?> addLog(@CurrentUser UserPrincipal userPrincipal, @RequestBody LogDto dto){
