@@ -34,10 +34,6 @@ public class InvoiceEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "invoice_id")
 	private Integer invoiceId;
-	
-	@ManyToOne
-	@JoinColumn(name = "checked_by", referencedColumnName = "user_id")
-	private UserEntity checkedByEntity;
 
 	@ManyToOne
 	@JoinColumn(name = "borrower", referencedColumnName = "user_id")
