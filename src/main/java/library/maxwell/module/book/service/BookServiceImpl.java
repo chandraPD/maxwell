@@ -170,10 +170,43 @@ public class BookServiceImpl implements BookService {
 		
 		bookEntity.setTitle(dto.getTitle());
 		bookEntity.setDescription(dto.getDescription());
-		bookEntity.setImgBanner(dto.getImgBanner());
-		bookEntity.setImgDetail(dto.getImgDetail());
+		
+		System.out.println("Book Banner: " + bookEntity.getImgBanner());
+		System.out.println("DTO Banner: "+ dto.getImgBanner());
+		
+		System.out.println("Book Detail: " + bookEntity.getImgDetail());
+		System.out.println("DTO Detail: "+ dto.getImgDetail());
+		
+		if(bookEntity.getImgBanner().equals(dto.getImgBanner()) && bookEntity.getImgDetail().equals(dto.getImgDetail())) {
+			System.out.println(bookEntity.getImgBanner().equals(dto.getImgBanner()) && bookEntity.getImgDetail().equals(dto.getImgDetail()));
+			bookEntity.setImgBanner(dto.getImgBanner());
+			bookEntity.setImgDetail(dto.getImgDetail());
+		} else if(!bookEntity.getImgBanner().equals(dto.getImgBanner()) && bookEntity.getImgDetail().equals(dto.getImgDetail())) {
+			byte[] imgBanner = Base64.getMimeDecoder().decode(dto.getImgBanner());
+			Map uploadResultBanner = cloudinary.upload(imgBanner, ObjectUtils.asMap("resourcetype", "auto"));
+			bookEntity.setImgBanner(uploadResultBanner.get("url").toString());
+			
+			bookEntity.setImgDetail(dto.getImgDetail());
+		} else if(bookEntity.getImgBanner().equals(dto.getImgBanner()) && !bookEntity.getImgDetail().equals(dto.getImgDetail())) {
+			bookEntity.setImgBanner(dto.getImgBanner());
+			
+			byte[] imgDetail = Base64.getMimeDecoder().decode(dto.getImgDetail());
+			Map uploadResultDetail = cloudinary.upload(imgDetail, ObjectUtils.asMap("resourcetype", "auto"));
+			bookEntity.setImgDetail(uploadResultDetail.get("url").toString());			
+		} else {
+			byte[] imgDetail = Base64.getMimeDecoder().decode(dto.getImgDetail());
+			byte[] imgBanner = Base64.getMimeDecoder().decode(dto.getImgBanner());
+			
+			Map uploadResultDetail = cloudinary.upload(imgDetail, ObjectUtils.asMap("resourcetype", "auto"));
+			bookEntity.setImgDetail(uploadResultDetail.get("url").toString());
+			
+			Map uploadResultBanner = cloudinary.upload(imgBanner, ObjectUtils.asMap("resourcetype", "auto"));
+			bookEntity.setImgBanner(uploadResultBanner.get("url").toString());
+		}
+		
+
+		
 		bookEntity.setUpdatedAt(dateTime);
-//		bookEntity.setStatusBook(dto.getStatusBook());
 		bookEntity.setPublishDate(dto.getPublishDate());
 		bookEntity.setAuthor(dto.getAuthor());
 		
@@ -240,7 +273,6 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setImgBanner(uploadResultBanner.get("url").toString());
 		
 		bookEntity.setQty(dto.getQty());
-//		bookEntity.setStatusBook(dto.getStatusBook());
 		bookEntity.setPublishDate(dto.getPublishDate());
 		bookEntity.setAuthor(dto.getAuthor());
 		return bookEntity;
@@ -258,6 +290,7 @@ public class BookServiceImpl implements BookService {
 		result.setImgDetail(data.getImgDetail());
 		result.setAuthor(data.getAuthor());
 		result.setQty(data.getQty());
+		result.setPublishDate(data.getPublishDate().toString());
 		
 		Long count = bookdetailRepository.countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs("Available",data.getBookId());
 		if(count == 0) {
