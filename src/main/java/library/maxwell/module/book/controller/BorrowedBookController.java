@@ -45,12 +45,12 @@ public class BorrowedBookController {
 
 	@PutMapping("/acc-act/{idBorrowedBook}")
 	public ResponseEntity<?> accAct(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idBorrowedBook) {
-		return borrowImplService.accAct(userPrincipal, idBorrowedBook);
+		return ResponseEntity.ok(borrowImplService.accAct(userPrincipal, idBorrowedBook));
 	}
 
 	@PutMapping("/dec-act/{idBorrowedBook}")
 	public ResponseEntity<?> decAct(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idBorrowedBook) {
-		return borrowImplService.decAct(userPrincipal, idBorrowedBook);
+		return ResponseEntity.ok(borrowImplService.decAct(userPrincipal, idBorrowedBook));
 	}
 	
 }

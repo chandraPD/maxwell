@@ -2,13 +2,12 @@ package library.maxwell.module.book.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.catalina.User;
+import library.maxwell.module.invoice.repository.InvoiceDetailRepository;
+import library.maxwell.module.invoice.repository.InvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -57,7 +56,13 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 	
 	@Autowired
 	private UserRepository userRepository;
-	
+
+	@Autowired
+	private InvoiceRepository invoiceRepository;
+
+	@Autowired
+	private InvoiceDetailRepository invoiceDetailRepository;
+
 	@Override
 	public StatusMessageDto<?> getById(Integer borrowedBookId) {
 		// TODO Auto-generated method stub
@@ -276,12 +281,20 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 	}
 
 	@Override
-	public ResponseEntity<?> accAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
-		
+	public Object accAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
+		StatusMessageDto result = new StatusMessageDto();
 		Integer test = userPrincipal.getId();
-		System.out.println(test);
 		BorrowedBookEntity borrowedBookEntity = borrowedBookRepository.findByBorrowedBookId(borrowedBookId);
-		
+
+//		check invoice sudah dibayar atau belum untuk borrowed_book_id ini
+		InvoiceDetailEntity lastData = invoiceDetailRepository.findTopByBorrowedBookEntity_BorrowedBookId(borrowedBookId);
+		if(lastData.getInvoiceEntity().getStatusInvoice().equalsIgnoreCase("Waiting For Payment")){
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("This Invoice has not been paid");
+			result.setData(null);
+			return result;
+		}
+
 		if(borrowedBookEntity.getStatusBook().equalsIgnoreCase("Waiting Given By Librarian")) {
 			borrowedBookEntity.setStatusBook("Waiting For Return");
 			borrowedBookEntity.setGivenByEntity(userRepository.findByUserId(userPrincipal.getId()));
@@ -291,20 +304,44 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			System.out.println("gagal");
 		}
 		borrowedBookRepository.save(borrowedBookEntity);
-		return ResponseEntity.ok(borrowedBookEntity);
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("Rent has been Accepted!");
+		result.setData(borrowedBookEntity);
+		return result;
+
 	}
 
 	@Override
-	public ResponseEntity<?> decAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
-		
+	public Object decAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
+		StatusMessageDto result = new StatusMessageDto();
 		
 		BorrowedBookEntity borrowedBookEntity = borrowedBookRepository.findByBorrowedBookId(borrowedBookId);
-		
+
+
+//		check invoice sudah dibayar atau belum untuk borrowed_book_id ini
+		InvoiceDetailEntity lastData = invoiceDetailRepository.findTopByBorrowedBookEntity_BorrowedBookId(borrowedBookId);
+
+		if(lastData.getInvoiceEntity().getStatusInvoice().equalsIgnoreCase("Paid")){
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("This Invoice has been paid");
+			result.setData(null);
+			return result;
+		}
+
 		if(borrowedBookEntity.getStatusBook().equalsIgnoreCase("Waiting Given By Librarian")) {
 			borrowedBookEntity.setStatusBook("Canceled");
 		}
+
 		borrowedBookRepository.save(borrowedBookEntity);
-		return ResponseEntity.ok(borrowedBookEntity);
+
+		InvoiceEntity invoiceEntity = lastData.getInvoiceEntity();
+		invoiceEntity.setStatusInvoice("Canceled");
+		invoiceRepository.save(invoiceEntity);
+
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("Rent has been Canceled!");
+		result.setData(borrowedBookEntity);
+		return result;
 	}
 	
 }
