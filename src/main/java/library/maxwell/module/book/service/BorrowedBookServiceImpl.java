@@ -343,5 +343,5 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		result.setData(borrowedBookEntity);
 		return result;
 	}
-	
+
 }
