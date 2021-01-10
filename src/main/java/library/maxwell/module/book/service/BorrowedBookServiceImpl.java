@@ -306,5 +306,5 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		borrowedBookRepository.save(borrowedBookEntity);
 		return ResponseEntity.ok(borrowedBookEntity);
 	}
-	
+
 }
