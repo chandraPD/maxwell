@@ -88,6 +88,9 @@ public class UserServiceImpl implements UserService {
         //Set initial detail and balance entity
         userDetailEntity.setUserEntity(userEntity);
         userDetailEntity.setImg("https://www.oneworldplayproject.com/wp-content/uploads/2016/03/avatar-1024x1024.jpg");
+        userDetailEntity.setFirstName(registrationDto.getFirstName());
+        userDetailEntity.setLastName(registrationDto.getLastName());
+
         userBalanceEntity.setUserEntity(userEntity);
         userDetailRepository.save(userDetailEntity);
         userBalanceEntity.setNominal((double) 0);
@@ -178,6 +181,7 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findById(userPrincipal.getId()).get();
         UserDetailEntity userDetail = userDetailRepository.findByUserEntityUserId(user.getUserId());
 
+        System.out.println(profileDto.getImg());
         //Upload image
         try {
             //Covert Base64 to bytes
@@ -188,18 +192,19 @@ public class UserServiceImpl implements UserService {
 
             userDetail.setImg(uploadResult.get("url").toString());
 
-            userDetail.setFirstName(profileDto.getFirstName());
-            userDetail.setLastName(profileDto.getLastName());
-            userDetail.setAddress(profileDto.getAddress());
-            userDetail.setPhoneNumber(profileDto.getPhoneNumber());
-            userDetail.setDateOfBirth(profileDto.getDateOfBirth());
-
-            userDetailRepository.save(userDetail);
-            profileDto.setImg(userDetail.getImg());
-
         } catch (Exception e) {
             e.getMessage();
         }
+
+        userDetail.setFirstName(profileDto.getFirstName());
+        userDetail.setLastName(profileDto.getLastName());
+        userDetail.setAddress(profileDto.getAddress());
+        userDetail.setPhoneNumber(profileDto.getPhoneNumber());
+        userDetail.setDateOfBirth(profileDto.getDateOfBirth());
+
+        userDetailRepository.save(userDetail);
+        profileDto.setImg(userDetail.getImg());
+
         return profileDto;
     }
 
