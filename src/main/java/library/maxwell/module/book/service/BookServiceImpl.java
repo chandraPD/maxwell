@@ -120,22 +120,6 @@ public class BookServiceImpl implements BookService {
 			return ResponseEntity.ok(bookEntities);
 		}		
 	}
-
-	@Override	
-	public ResponseEntity<?> findByAuthor(String author) {
-		// TODO Auto-generated method stub
-		List<BookEntity> bookEntities = bookRepository.findByAuthor(author);
-		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
-		
-		if(bookEntities == null) {
-			result.setStatus(HttpStatus.BAD_REQUEST.value());
-			result.setMessage("Book not found!");
-			result.setData(null);
-			return ResponseEntity.ok(result);
-		}else {
-			return ResponseEntity.ok(bookEntities);
-		}	
-	}
 	
 	
 	@Override
