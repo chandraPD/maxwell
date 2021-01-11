@@ -23,4 +23,8 @@ public interface BookService {
 	ResponseEntity<?> getOldestFive();
 	ResponseEntity<?> getRecommendedDetail(Integer categoryId, Integer bookId);
 	ResponseEntity<?> getQtyBook();
+	ResponseEntity<?> getBookByCategoryId(Integer categoryId);
+	ResponseEntity<?> getBookByCategoryAndYear(Integer categoryId, String yearBook);
+	ResponseEntity<?> getBookByYear(String yearBook);
+
 }
