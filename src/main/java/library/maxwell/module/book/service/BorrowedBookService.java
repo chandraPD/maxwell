@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.BorrowBookDto;
+import library.maxwell.module.book.entity.BorrowedBookEntity;
 import library.maxwell.module.invoice.dto.StatusMessageDto;
 
 
