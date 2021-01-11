@@ -22,4 +22,5 @@ public interface BookService {
 	ResponseEntity<?> getRecentFive();
 	ResponseEntity<?> getOldestFive();
 	ResponseEntity<?> getRecommendedDetail(Integer categoryId, Integer bookId);
+	ResponseEntity<?> getQtyBook();
 }
