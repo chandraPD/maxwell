@@ -15,5 +15,7 @@ public class LogDto {
 	private String description;
 	private LocalDateTime dateTime;
 	private Boolean status = true;
+	private String name;
+	private String email;
 	private Integer userId;
 }
