@@ -222,5 +222,33 @@ public class UserServiceImpl implements UserService {
 		return nama;
 	}
 
-	
+    @Override
+    public List<UserManageDto> getUserManagement(UserPrincipal userPrincipal) {
+        List<UserEntity> userEntities = userRepository.findAll();
+
+        List<UserManageDto> userManageDtos = new ArrayList<>();
+
+        for (UserEntity userEntity : userEntities) {
+            UserManageDto userManageDto = new UserManageDto();
+            UserDetailEntity userDetailEntity = userDetailRepository.findByUserEntityUserId(userEntity.getUserId());
+
+            userManageDto.setId(userEntity.getUserId());
+            userManageDto.setFullName(userDetailEntity.getFirstName() + " " + userDetailEntity.getLastName());
+            userManageDto.setImg(userDetailEntity.getImg());
+            userManageDto.setEmail(userEntity.getEmail());
+            if (userEntity.getStatus()) {
+                userManageDto.setStatus("active");
+            } else {
+                userManageDto.setStatus("inactive");
+            }
+            userManageDto.setActiveRole(userEntity.getActiveRole());
+            userManageDto.setRegisteredRoles(userEntity.getRoles());
+
+            userManageDtos.add(userManageDto);
+        }
+
+        return userManageDtos;
+    }
+
+
 }
