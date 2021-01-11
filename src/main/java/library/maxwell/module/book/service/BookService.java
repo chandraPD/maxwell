@@ -14,7 +14,7 @@ public interface BookService {
 	ResponseEntity<?> getActiveBook();
 	ResponseEntity<?> getInactiveBook();
 	ResponseEntity<?> findByTitle(String title);
-	ResponseEntity<?> findByAuthor(String author);
+//	ResponseEntity<?> findByAuthor(String author);
 	ResponseEntity<?> addBook(UserPrincipal userPrincipal, BookDto dto);
 	ResponseEntity<?> updateBook(UserPrincipal userPrincipal, Integer id, BookDto dto);
 	ResponseEntity<?> deleteBook(Integer id);

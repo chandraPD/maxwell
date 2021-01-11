@@ -12,7 +12,7 @@ import library.maxwell.module.book.entity.BookEntity;
 public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	
 	List<BookEntity> findByTitleLike(String title);
-	List<BookEntity> findByAuthor(String author);
+
 	
 	@Query(value = "SELECT * FROM book WHERE status IS true", nativeQuery = true)
 	List<BookEntity> findActiveBook();

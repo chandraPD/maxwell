@@ -114,21 +114,21 @@ public class BookServiceImpl implements BookService {
 		}		
 	}
 
-	@Override
-	public ResponseEntity<?> findByAuthor(String author) {
-		// TODO Auto-generated method stub
-		List<BookEntity> bookEntities = bookRepository.findByAuthor(author);
-		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
-		
-		if(bookEntities == null) {
-			result.setStatus(HttpStatus.BAD_REQUEST.value());
-			result.setMessage("Book not found!");
-			result.setData(null);
-			return ResponseEntity.ok(result);
-		}else {
-			return ResponseEntity.ok(bookEntities);
-		}	
-	}
+//	@Override
+//	public ResponseEntity<?> findByAuthor(String author) {
+//		// TODO Auto-generated method stub
+//		List<BookEntity> bookEntities = bookRepository.findByAuthor(author);
+//		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
+//		
+//		if(bookEntities == null) {
+//			result.setStatus(HttpStatus.BAD_REQUEST.value());
+//			result.setMessage("Book not found!");
+//			result.setData(null);
+//			return ResponseEntity.ok(result);
+//		}else {
+//			return ResponseEntity.ok(bookEntities);
+//		}	
+//	}
 
 	@Override
 	public ResponseEntity<?> addBook(UserPrincipal userPrincipal, BookDto dto) {
@@ -208,7 +208,7 @@ public class BookServiceImpl implements BookService {
 		
 		bookEntity.setUpdatedAt(dateTime);
 		bookEntity.setPublishDate(dto.getPublishDate());
-		bookEntity.setAuthor(dto.getAuthor());
+//		bookEntity.setAuthor(dto.getAuthor());
 		
 		bookEntity.setCategoryEntity(categoryEntity);
 		bookEntity.setUpdatedByEntity(updatedByEntity);
@@ -274,7 +274,7 @@ public class BookServiceImpl implements BookService {
 		
 		bookEntity.setQty(dto.getQty());
 		bookEntity.setPublishDate(dto.getPublishDate());
-		bookEntity.setAuthor(dto.getAuthor());
+//		bookEntity.setAuthor(dto.getAuthor());
 		return bookEntity;
 	}
 	
@@ -288,7 +288,7 @@ public class BookServiceImpl implements BookService {
 		result.setDescription(data.getDescription());
 		result.setImgBanner(data.getImgBanner());
 		result.setImgDetail(data.getImgDetail());
-		result.setAuthor(data.getAuthor());
+//		result.setAuthor(data.getAuthor());
 		result.setQty(data.getQty());
 		result.setPublishDate(data.getPublishDate().toString());
 		
