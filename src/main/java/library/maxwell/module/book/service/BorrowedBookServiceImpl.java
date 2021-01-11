@@ -361,6 +361,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 //		check invoice sudah dibayar atau belum untuk borrowed_book_id ini
 		InvoiceDetailEntity lastData = invoiceDetailRepository.findTopByBorrowedBookEntity_BorrowedBookId(borrowedBookId);
 
+
 		if(lastData.getInvoiceEntity().getStatusInvoice().equalsIgnoreCase("Paid")){
 //			Jika sudah dibayar lakukan input saldo ke user yang melakukan pembayaran
 			Integer userId = lastData.getInvoiceEntity().getBorrowerEntity().getUserId();
@@ -368,6 +369,10 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			UserBalanceEntity userBalanceEntity = userBalanceRepository.findByUserEntity_UserIdIs(userId);
 			userBalanceEntity.setNominal(userBalanceEntity.getNominal()+lastData.getTotal());
 			userBalanceRepository.save(userBalanceEntity);
+
+			BookDetailEntity bookDetailEntity = lastData.getBorrowedBookEntity().getBookDetailEntity();
+			bookDetailEntity.setStatusBookDetail("Available");
+			bookDetailRepository.save(bookDetailEntity);
 
 			borrowedBookEntity.setStatusBook("Canceled");
 			borrowedBookRepository.save(borrowedBookEntity);
@@ -383,6 +388,10 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			historyBalanceEntity.setPaymentMethod("Cancel Invoice");
 			historyBalanceRepository.save(historyBalanceEntity);
 
+			InvoiceEntity invoiceEntity = lastData.getInvoiceEntity();
+			invoiceEntity.setStatusInvoice("Canceled");
+			invoiceRepository.save(invoiceEntity);
+
 			result.setStatus(HttpStatus.OK.value());
 			result.setMessage("Rent has been Canceled, and balance has been add to user");
 			result.setData(null);
@@ -393,7 +402,6 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			borrowedBookEntity.setStatusBook("Canceled");
 			borrowedBookRepository.save(borrowedBookEntity);
 		}
-
 
 		InvoiceEntity invoiceEntity = lastData.getInvoiceEntity();
 		invoiceEntity.setStatusInvoice("Canceled");
