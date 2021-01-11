@@ -1,6 +1,8 @@
 package library.maxwell.module.log.service;
 
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +75,10 @@ public class LogServiceImpl implements LogService {
 	
 	public LogEntity convertToLogEntity(LogDto dto) {
 		LogEntity logEntity = new LogEntity();
-		logEntity.setDateTime(LocalDateTime.now());
+		LocalDateTime today = LocalDateTime.now();
+		DateTimeFormatter date = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+		String dateUpdate = today.format(date);
+		logEntity.setDateTime(LocalDateTime.parse(dateUpdate, date));
 		logEntity.setAction(dto.getAction());
 		logEntity.setDescription(dto.getDescription());
 		return logEntity;
@@ -86,6 +91,14 @@ public class LogServiceImpl implements LogService {
 		List<LogEntity> logEntities = logRepository.findLastActivity();
 		return ResponseEntity.ok(logEntities);
 	}
+
+//	@Override
+//	public ResponseEntity<?> getLogUser(UserPrincipal userPrincipal) {
+//		// TODO Auto-generated method stub
+//		Integer userId = userPrincipal.getId();
+//		List<LogEntity> logEntities = logRepository.findByUserEntity_UserIdIs(userId);
+//		return ResponseEntity.ok(logEntities);
+//	}
 
 
 }

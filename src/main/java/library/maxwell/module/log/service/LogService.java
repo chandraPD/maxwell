@@ -12,6 +12,7 @@ public interface LogService {
 	List<LogEntity> getAllLog();
 	LogEntity getLogById(Integer idLog);
 	ResponseEntity<?> getLogLastActivity();
+//	ResponseEntity<?> getLogUser(UserPrincipal userPrincipal);
 	LogEntity addLog(UserPrincipal userPrincipal, LogDto dto);
 	LogEntity updateLog(Integer idLog, LogDto dto);
 	LogEntity deleteLog(Integer idLog);

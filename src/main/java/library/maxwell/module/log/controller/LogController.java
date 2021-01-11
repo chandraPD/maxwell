@@ -60,6 +60,12 @@ public class LogController {
 		return logService.getLogLastActivity();
 	}
 	
+//	//GET LOG USER
+//	@GetMapping("/get-log-user")
+//	public ResponseEntity<?> getLogUser(@CurrentUser UserPrincipal userPrincipal){
+//		return logService.getLogUser(userPrincipal);
+//	}
+	
 	//POST
 	@PostMapping("/add-log")
 	public ResponseEntity<?> addLog(@CurrentUser UserPrincipal userPrincipal, @RequestBody LogDto dto){
