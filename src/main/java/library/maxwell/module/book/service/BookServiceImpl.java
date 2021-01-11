@@ -99,6 +99,13 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
+	public ResponseEntity<?> getQtyBook() {
+		// TODO Auto-generated method stub
+		BookEntity bookEntity = bookRepository.getMaxQtyBook();
+		return ResponseEntity.ok(bookEntity);
+	}
+	
+	@Override
 	public ResponseEntity<?> findByTitle(String title) {
 		// TODO Auto-generated method stub
 		List<BookEntity> bookEntities = bookRepository.findByTitleLike( "%" + title + "%");
@@ -300,6 +307,8 @@ public class BookServiceImpl implements BookService {
 		}
 		return result;
 	}
+
+	
 
 	
 

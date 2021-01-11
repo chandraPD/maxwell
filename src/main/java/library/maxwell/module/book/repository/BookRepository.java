@@ -32,6 +32,9 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	@Query(value = "SELECT book_code FROM book WHERE YEAR(created_at) = ? ORDER BY book_code DESC LIMIT 1", nativeQuery = true)
 	String getLastBookCode(Integer year);
 	
+	@Query(value = "SELECT * FROM book WHERE qty = (SELECT MAX(qty) FROM book) AND STATUS is true LIMIT 1", nativeQuery = true)
+	BookEntity getMaxQtyBook();
+	
 	Boolean existsByTitle(String title);
 	
 }

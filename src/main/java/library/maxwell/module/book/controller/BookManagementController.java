@@ -60,6 +60,11 @@ public class BookManagementController {
 		return bookService.getOldestFive();
 	}
 	
+	@GetMapping("/get-max-qty")
+	public ResponseEntity<?> getQtyBook() {
+		return bookService.getQtyBook();
+	}
+	
 	@GetMapping("/get-rec-detail/{categoryId}/{bookId}")
 	public ResponseEntity<?> getRecommendedDetail(@PathVariable Integer categoryId, @PathVariable Integer bookId) {
 		return bookService.getRecommendedDetail(categoryId, bookId);
