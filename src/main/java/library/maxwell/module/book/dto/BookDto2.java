@@ -1,5 +1,6 @@
 package library.maxwell.module.book.dto;
 
+import library.maxwell.module.book.entity.AuthorEntity;
 import library.maxwell.module.book.entity.CategoryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,5 @@ public class BookDto2 {
 	private String updatedBy;
 	private String publishDate;
 	private String statusBook;
-	private String author;
+	private AuthorEntity authorEntity;
 }
