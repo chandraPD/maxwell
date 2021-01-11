@@ -32,7 +32,7 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
 		List<InvoiceDetailEntity> invoiceDetailEntity = invoiceDetailRepository.getByInvoiceId(InvoiceId);
 		
-		List<InvoiceDetailDto> InvoiceDetails = new ArrayList<InvoiceDetailDto>();
+		List<InvoiceDetailDto> InvoiceDetails = new ArrayList<>();
 		
 		for (InvoiceDetailEntity row : invoiceDetailEntity) {
 			
@@ -41,11 +41,10 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 			LocalDateTime borrowerDate = row.getBorrowedBookEntity().getBorrowedDate();
 			LocalDateTime dueOn = row.getBorrowedBookEntity().getThreshold();
 			Duration duration = Duration.between(borrowerDate, dueOn);
-
 			Long diffDays = duration.toDays();
 			
 			invoiceDetailDto.setInvoiceDetailId(row.getInvoiceDetailId());
-			invoiceDetailDto.setBorrowedDate(borrowerDate);;
+			invoiceDetailDto.setBorrowedDate(borrowerDate);
 			invoiceDetailDto.setGrandTotal(row.getTotal());
 			invoiceDetailDto.setTitle(row.getBorrowedBookEntity().getBookDetailEntity().getBookEntity().getTitle());
 			invoiceDetailDto.setThreshold(dueOn);
@@ -54,17 +53,11 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 			
 			InvoiceDetails.add(invoiceDetailDto);
 		}
-		
-		if(invoiceDetailEntity != null) {
-			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data ditemukan");
-			result.setData(InvoiceDetails);
-		}else {
-			result.setMessage("Data belum ada");
-			result.setStatus(HttpStatus.BAD_GATEWAY.value());
-			result.setData(null);
-		}
-		
+
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("Data ditemukan");
+		result.setData(InvoiceDetails);
+
 		return result;
 	}
 
@@ -80,6 +73,19 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 		
 		invoiceDetailRepository.save(invoiceDetailEntity);
 		return invoiceDetailEntity;
+	}
+
+	@Override
+	public InvoiceDetailEntity addInvoiceDetails(InvoiceEntity invoiceEntity, List<InvoiceDetailDto> invoiceDetailDtos) {
+		for (InvoiceDetailDto e: invoiceDetailDtos) {
+			InvoiceDetailEntity invoiceDetailEntity = new InvoiceDetailEntity();
+			invoiceDetailEntity.setBorrowedBookEntity(e.getBorrowedBookEntity());
+			invoiceDetailEntity.setInvoiceEntity(invoiceEntity);
+			invoiceDetailEntity.setTotal(e.getGrandTotal());
+			invoiceDetailEntity.setType(e.getType());
+			invoiceDetailRepository.save(invoiceDetailEntity);
+		}
+		return null;
 	}
 
 }

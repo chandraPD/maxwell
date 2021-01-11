@@ -148,7 +148,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public InvoiceEntity addInvoice(String typeInvoice, UserPrincipal userPrincipal) {
+	public InvoiceEntity addInvoice(Double grandTotal, String typeInvoice, String statusInvoice, UserPrincipal userPrincipal) {
 		// TODO Auto-generated method stub
 		InvoiceEntity invoiceEntity = new InvoiceEntity();
 		Integer idBorrower = userPrincipal.getId();
@@ -172,9 +172,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		String noInvoice = "INV" + year + seq;
 		invoiceEntity.setNoInvoice(noInvoice);
 		invoiceEntity.setTypeInvoice(typeInvoice);
-		invoiceEntity.setGrandTotal((double) 5000);
+		invoiceEntity.setGrandTotal(grandTotal);
 //		payment date pertama kali null, akan berubah pada saat user membayar invoice
-		invoiceEntity.setStatusInvoice("Waiting For Payment");
+		invoiceEntity.setStatusInvoice(statusInvoice);
 		invoiceRepository.save(invoiceEntity);
 		return invoiceEntity;
 	}
