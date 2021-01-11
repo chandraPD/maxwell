@@ -99,6 +99,13 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
+	public ResponseEntity<?> getQtyBook() {
+		// TODO Auto-generated method stub
+		BookEntity bookEntity = bookRepository.getMaxQtyBook();
+		return ResponseEntity.ok(bookEntity);
+	}
+	
+	@Override
 	public ResponseEntity<?> findByTitle(String title) {
 		// TODO Auto-generated method stub
 		List<BookEntity> bookEntities = bookRepository.findByTitleLike( "%" + title + "%");
@@ -114,21 +121,67 @@ public class BookServiceImpl implements BookService {
 		}		
 	}
 
-//	@Override
-//	public ResponseEntity<?> findByAuthor(String author) {
-//		// TODO Auto-generated method stub
-//		List<BookEntity> bookEntities = bookRepository.findByAuthor(author);
-//		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
-//		
-//		if(bookEntities == null) {
-//			result.setStatus(HttpStatus.BAD_REQUEST.value());
-//			result.setMessage("Book not found!");
-//			result.setData(null);
-//			return ResponseEntity.ok(result);
-//		}else {
-//			return ResponseEntity.ok(bookEntities);
-//		}	
-//	}
+	@Override	
+	public ResponseEntity<?> findByAuthor(String author) {
+		// TODO Auto-generated method stub
+		List<BookEntity> bookEntities = bookRepository.findByAuthor(author);
+		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
+		
+		if(bookEntities == null) {
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("Book not found!");
+			result.setData(null);
+			return ResponseEntity.ok(result);
+		}else {
+			return ResponseEntity.ok(bookEntities);
+		}	
+	}
+	
+	
+	@Override
+	public ResponseEntity<?> getBookByCategoryId(Integer categoryId) {
+		// TODO Auto-generated method stub
+		List<BookEntity> bookEntities = bookRepository.getBookByCategory(categoryId);
+		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
+		if(bookEntities == null) {
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("Book not found!");
+			result.setData(null);
+			return ResponseEntity.ok(result);
+		}else {
+			return ResponseEntity.ok(bookEntities);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<?> getBookByCategoryAndYear(Integer categoryId, String yearBook) {
+		// TODO Auto-generated method stub
+		List<BookEntity> bookEntities = bookRepository.getBookByCategoryAndYear(categoryId, yearBook);
+		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
+		if(bookEntities == null) {
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("Book not found!");
+			result.setData(null);
+			return ResponseEntity.ok(result);
+		}else {
+			return ResponseEntity.ok(bookEntities);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<?> getBookByYear(String yearBook) {
+		// TODO Auto-generated method stub
+		List<BookEntity> bookEntities = bookRepository.getBookByYear(yearBook);
+		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
+		if(bookEntities == null) {
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("Book not found!");
+			result.setData(null);
+			return ResponseEntity.ok(result);
+		}else {
+			return ResponseEntity.ok(bookEntities);
+		}
+	}
 
 	@Override
 	public ResponseEntity<?> addBook(UserPrincipal userPrincipal, BookDto dto) {
@@ -300,8 +353,6 @@ public class BookServiceImpl implements BookService {
 		}
 		return result;
 	}
-
-	
 
 	
 }

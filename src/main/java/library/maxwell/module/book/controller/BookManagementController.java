@@ -40,6 +40,7 @@ public class BookManagementController {
 		return bookService.getInactiveBook();
 	}
 	
+	
 	@GetMapping("/get-by-id/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		return bookService.getBookById(id);
@@ -50,6 +51,21 @@ public class BookManagementController {
 		return bookService.findByTitle(title);
 	}
 	
+	@GetMapping("/get-by-category/{categoryId}")
+	public ResponseEntity<?> getByCategory(@PathVariable Integer categoryId) {
+		return bookService.getBookByCategoryId(categoryId);
+	}
+	
+	@GetMapping("/get-by-category-year/{categoryId}/{yearBook}")
+	public ResponseEntity<?> getByCategoryAndYear(@PathVariable Integer categoryId, @PathVariable String yearBook) {
+		return bookService.getBookByCategoryAndYear(categoryId, yearBook);
+	}
+	
+	@GetMapping("/get-by-year/{yearBook}")
+	public ResponseEntity<?> getByYear(@PathVariable String yearBook) {
+		return bookService.getBookByYear(yearBook);
+	}
+	
 	@GetMapping("/get-recent-five")
 	public ResponseEntity<?> getRecentFive() {
 		return bookService.getRecentFive();
@@ -58,6 +74,11 @@ public class BookManagementController {
 	@GetMapping("/get-oldest-five")
 	public ResponseEntity<?> getOldestFive() {
 		return bookService.getOldestFive();
+	}
+	
+	@GetMapping("/get-max-qty")
+	public ResponseEntity<?> getQtyBook() {
+		return bookService.getQtyBook();
 	}
 	
 	@GetMapping("/get-rec-detail/{categoryId}/{bookId}")

@@ -22,4 +22,10 @@ public interface BookService {
 	ResponseEntity<?> getRecentFive();
 	ResponseEntity<?> getOldestFive();
 	ResponseEntity<?> getRecommendedDetail(Integer categoryId, Integer bookId);
+	ResponseEntity<?> getQtyBook();
+	ResponseEntity<?> getBookByCategoryId(Integer categoryId);
+	ResponseEntity<?> getBookByCategoryAndYear(Integer categoryId, String yearBook);
+	ResponseEntity<?> getBookByYear(String yearBook);
+	ResponseEntity<?> findByAuthor(String author);
+
 }
