@@ -8,6 +8,7 @@ import java.util.List;
 
 import library.maxwell.module.invoice.repository.InvoiceDetailRepository;
 import library.maxwell.module.invoice.repository.InvoiceRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -114,7 +115,6 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		// TODO Auto-generated method stub
 
 		StatusMessageDto<BorrowedBookEntity> result = new StatusMessageDto<>();
-				
 		
 //		check user yang akan meminjam, data nya sudah lengkap atau belum
 		Integer idUser = userPrincipal.getId();
@@ -281,7 +281,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 	}
 
 	@Override
-	public Object accAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
+	public ResponseEntity<StatusMessageDto> accAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
 		StatusMessageDto result = new StatusMessageDto();
 		Integer test = userPrincipal.getId();
 		BorrowedBookEntity borrowedBookEntity = borrowedBookRepository.findByBorrowedBookId(borrowedBookId);
@@ -292,7 +292,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			result.setStatus(HttpStatus.BAD_REQUEST.value());
 			result.setMessage("This Invoice has not been paid");
 			result.setData(null);
-			return result;
+			return ResponseEntity.ok(result);
 		}
 
 		if(borrowedBookEntity.getStatusBook().equalsIgnoreCase("Waiting Given By Librarian")) {
@@ -307,12 +307,12 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		result.setStatus(HttpStatus.OK.value());
 		result.setMessage("Rent has been Accepted!");
 		result.setData(borrowedBookEntity);
-		return result;
+        return ResponseEntity.ok(result);
 
 	}
 
 	@Override
-	public Object decAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
+	public ResponseEntity<StatusMessageDto> decAct(UserPrincipal userPrincipal, Integer borrowedBookId) {
 		StatusMessageDto result = new StatusMessageDto();
 		
 		BorrowedBookEntity borrowedBookEntity = borrowedBookRepository.findByBorrowedBookId(borrowedBookId);
@@ -325,7 +325,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			result.setStatus(HttpStatus.BAD_REQUEST.value());
 			result.setMessage("This Invoice has been paid");
 			result.setData(null);
-			return result;
+            return ResponseEntity.ok(result);
 		}
 
 		if(borrowedBookEntity.getStatusBook().equalsIgnoreCase("Waiting Given By Librarian")) {
@@ -341,7 +341,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		result.setStatus(HttpStatus.OK.value());
 		result.setMessage("Rent has been Canceled!");
 		result.setData(borrowedBookEntity);
-		return result;
+        return ResponseEntity.ok(result);
 	}
 
 }
