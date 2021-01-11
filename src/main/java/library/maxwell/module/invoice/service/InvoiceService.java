@@ -11,7 +11,7 @@ public interface InvoiceService {
 	StatusMessageDto<?> getAll();
 	
 	StatusMessageDto<?> getAll(UserPrincipal userPrincipal, String param);
-	InvoiceEntity addInvoice(String typeInvoice, UserPrincipal userPrincipal);
+	InvoiceEntity addInvoice(Double grandTotal, String typeInvoice, String statausInvoice, UserPrincipal userPrincipal);
 	
 	StatusMessageDto<?> pay(UserPrincipal userPrincipal, Integer invoiceId);
 }
