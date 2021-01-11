@@ -46,6 +46,12 @@ public class BorrowedBookController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("/get-all-borrowed")
+	public ResponseEntity<?> getAllBorrowed(@CurrentUser UserPrincipal userPrincipal){
+		StatusMessageDto<?> result = borrowImplService.getAll(userPrincipal);
+		return ResponseEntity.ok(result);
+	}
+
 	@PutMapping("/acc-act/{idBorrowedBook}")
 	public ResponseEntity<?> accAct(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idBorrowedBook) {
 		return ResponseEntity.ok(borrowImplService.accAct(userPrincipal, idBorrowedBook));
