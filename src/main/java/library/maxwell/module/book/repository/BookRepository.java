@@ -11,8 +11,7 @@ import library.maxwell.module.book.entity.BookEntity;
 @Repository
 public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	
-	List<BookEntity> findByTitleLike(String title);
-	List<BookEntity> findByAuthor(String author);
+	List<BookEntity> findByTitleLike(String title);	
 	
 	@Query(value = "SELECT * FROM book WHERE status IS true", nativeQuery = true)
 	List<BookEntity> findActiveBook();
