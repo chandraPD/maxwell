@@ -9,7 +9,7 @@ import library.maxwell.module.invoice.dto.StatusMessageDto;
 
 
 public interface BorrowedBookService {
-	
+
 	StatusMessageDto<?> borrowBook(UserPrincipal userPrincipal,BorrowBookDto dto);
 	StatusMessageDto<?> getById(Integer borrowedBookId);
 	StatusMessageDto<?> getAll();
