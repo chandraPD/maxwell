@@ -30,4 +30,3 @@ public interface BorrowedBookRepository extends JpaRepository<BorrowedBookEntity
 	List<BorrowedBookEntity> findId2(Integer id);
 
 }
-
