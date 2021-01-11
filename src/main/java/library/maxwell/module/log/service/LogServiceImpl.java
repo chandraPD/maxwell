@@ -100,7 +100,9 @@ public class LogServiceImpl implements LogService {
 			LogDto logDto2 = new LogDto();
 			Integer userId = logEntity.getUserEntity().getUserId();
 			
+			//Untuk Mendapatkan Email
 			UserEntity userEntity = userRepository.findById(userId).get();
+			//Untuk mendapatkan name (firstName + lastName)
 			UserDetailEntity userDetail = userDetailRepository.findByUserEntityUserId(userId);
 			
 			logDto2.setLogId(logEntity.getLogId());
@@ -121,7 +123,23 @@ public class LogServiceImpl implements LogService {
 	@Override
 	public ResponseEntity<?> getLogUser(UserPrincipal userPrincipal) {
 		// TODO Auto-generated method stub
-		return null;
+		Integer userId = userPrincipal.getId();
+		List<LogEntity> logEntities = logRepository.findLogUser(userId);
+		List<LogDto> logDto = new ArrayList<>();
+		for(LogEntity logEntity : logEntities) {
+			LogDto logDtoUser = new LogDto();
+			Integer id = logEntity.getUserEntity().getUserId();
+			
+			UserDetailEntity userDetail = userDetailRepository.findByUserEntityUserId(id);
+			logDtoUser.setAction(logEntity.getAction());
+			logDtoUser.setDescription(logEntity.getDescription());
+			logDtoUser.setDateTime(logEntity.getDateTime());
+			logDtoUser.setName(userDetail.getFirstName() + " " + userDetail.getLastName());
+			logDtoUser.setUserId(id);
+			
+			logDto.add(logDtoUser);
+		}
+		return ResponseEntity.ok(logDto);
 	}
 
 }
