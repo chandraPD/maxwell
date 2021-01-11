@@ -2,6 +2,7 @@ package library.maxwell.module.invoice.repository;
 
 import java.util.List;
 
+import library.maxwell.module.invoice.entity.InvoiceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,5 +14,6 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetailEnti
 	
 	@Query(value = "select * from invoice_detail where invoice_id = ?", nativeQuery = true)
 	List<InvoiceDetailEntity> getByInvoiceId(Integer invoiceId);
-	
+
+	InvoiceDetailEntity findTopByBorrowedBookEntity_BorrowedBookId(Integer borrowedBookId);
 }

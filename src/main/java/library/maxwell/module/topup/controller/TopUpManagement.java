@@ -56,7 +56,7 @@ public class TopUpManagement {
 		System.out.println(pass);
 		System.out.println(role);
 		if (role.equals("ROLE_ADMIN")) {
-			List<HistoryBalanceEntity> historyBalanceEntities=service.getAll();
+			List<HistoryBalanceEntity> historyBalanceEntities=service.getAll(userprincipal);
 			return ResponseEntity.ok(historyBalanceEntities);
 		} else {
 			List<HistoryBalanceEntity> historyBalanceEntities=service.getAll2(id);

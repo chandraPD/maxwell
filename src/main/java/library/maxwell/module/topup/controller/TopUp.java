@@ -96,7 +96,7 @@ public class TopUp {
 				result.setData(null);
 				return ResponseEntity.ok(result);
 			} else {				
-				HistoryBalanceEntity historyBalanceEntity=service.post2(Dto);
+				HistoryBalanceEntity historyBalanceEntity=service.post2(userprincipal,Dto);
 				result.setStatus(HttpStatus.OK.value());
 				result.setMessage("Berhasil Insert");
 				result.setData(historyBalanceEntity);

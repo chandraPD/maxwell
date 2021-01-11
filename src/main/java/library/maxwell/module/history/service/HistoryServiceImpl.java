@@ -1,8 +1,9 @@
 package library.maxwell.module.history.service;
 
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.entity.BorrowedBookEntity;
+import library.maxwell.module.book.repository.BorrowedBookRepository;
 import library.maxwell.module.history.dto.HistoryDto;
-import library.maxwell.module.history.repository.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +13,20 @@ import java.util.List;
 public class HistoryServiceImpl implements  HistoryService{
 
     @Autowired
-    private HistoryRepository historyRepository;
+    private BorrowedBookRepository borrowedBookRepository;
 
     @Override
-    public List<BorrowedBookEntity> getAllHistory() {
+    public List<BorrowedBookEntity> getAllBorrowedBook(UserPrincipal userPrincipal) {
+    Integer idUser = userPrincipal.getId();
+    List<BorrowedBookEntity> borrowedBookEntities = borrowedBookRepository.findByStatusBookAndUserIdEntityUserId("Returned", idUser);
+        return borrowedBookEntities;
+    }
 
-        return null;
+    @Override
+    public List<BorrowedBookEntity> getAllCurrentRead(UserPrincipal userPrincipal) {
+        Integer idUser = userPrincipal.getId();
+        List<BorrowedBookEntity> borrowedBookEntities = borrowedBookRepository.findByStatusBookNotAndStatusBookNotAndUserIdEntityUserId("Returned", "Canceled", idUser);
+        return borrowedBookEntities;
     }
 
     @Override
