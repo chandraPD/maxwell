@@ -23,7 +23,7 @@ public class WishlistEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "wishlist_id")
-	private Integer bookId;
+	private Integer wishlistId;
 	
 	@ManyToOne
 	@JoinColumn(name = "book_id", referencedColumnName = "book_id")
