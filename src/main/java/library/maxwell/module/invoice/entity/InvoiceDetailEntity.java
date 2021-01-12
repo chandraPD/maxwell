@@ -35,7 +35,7 @@ public class InvoiceDetailEntity {
 	@JoinColumn(name = "borrowed_book_id", referencedColumnName = "borrowed_book_id")
 	private BorrowedBookEntity borrowedBookEntity;
 	
-	@Column(name = "type", length = 30, nullable = false)
+	@Column(name = "type", length = 255, nullable = false)
 	private String type;
 	
 	@Column(name = "total", nullable = false)

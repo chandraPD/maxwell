@@ -24,6 +24,6 @@ public class BookDto {
 	private Integer createdBy;
 	private Integer updatedBy;
 	private Date publishDate;
-	private String author;
+	private Integer authorId;
 	private Boolean status;
 }

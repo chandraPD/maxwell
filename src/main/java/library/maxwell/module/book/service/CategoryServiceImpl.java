@@ -2,6 +2,7 @@ package library.maxwell.module.book.service;
 
 
 
+import java.io.Console;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
 		CategoryEntity categoryEntity = convertToCategoryEntity(dto);
 		
 		Boolean existsByCategory = categoryRepository.existsByCategory(dto.getCategory());
-		
+		System.out.println(existsByCategory);
 		if(existsByCategory) {
 			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
 			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

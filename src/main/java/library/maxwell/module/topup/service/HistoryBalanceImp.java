@@ -54,17 +54,8 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	}
 
 	@Override
-	public List<HistoryBalanceEntity> getAll(UserPrincipal userPrincipal) {		
-		LocalDateTime now = LocalDateTime.now();
-		List<HistoryBalanceEntity> historyBalanceEntities= repo.findAll2();
-		UserEntity userEntity=repo3.findByUserId(userPrincipal.getId());
-		LogEntity logEntity=new LogEntity();
-		logEntity.setAction("Get");
-		logEntity.setDateTime(now);
-		logEntity.setStatus(true);
-		logEntity.setUserEntity(userEntity);
-		logEntity.setDescription("Melihat Data");
-		repo4.save(logEntity);
+	public List<HistoryBalanceEntity> getAll() {				
+		List<HistoryBalanceEntity> historyBalanceEntities= repo.findAll2();	
 		return historyBalanceEntities;
 	}
 	
@@ -177,17 +168,8 @@ public class HistoryBalanceImp implements HistoryBalanceService{
 	}
 
 	@Override	
-	public List<HistoryBalanceEntity> getAll2(Integer userPrincipal) {
-		LocalDateTime now = LocalDateTime.now();
-		List<HistoryBalanceEntity> historyBalanceEntities= repo.findall3(userPrincipal);
-		UserEntity userEntity=repo3.findByUserId(userPrincipal);
-		LogEntity logEntity=new LogEntity();
-		logEntity.setAction("Get");
-		logEntity.setDateTime(now);
-		logEntity.setStatus(true);
-		logEntity.setUserEntity(userEntity);
-		logEntity.setDescription("Melihat Data");
-		repo4.save(logEntity);
+	public List<HistoryBalanceEntity> getAll2(Integer userPrincipal) {		
+		List<HistoryBalanceEntity> historyBalanceEntities= repo.findall3(userPrincipal);		
 		return historyBalanceEntities;
 	}
 
