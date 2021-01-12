@@ -107,8 +107,8 @@ public class BookManagementController {
 	}
 	
 	@PutMapping("/delete-book/{id}")
-	public ResponseEntity<?> deleteBook(@PathVariable Integer id) {
-		return bookService.deleteBook(id);
+	public ResponseEntity<?> deleteBook(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id) {
+		return bookService.deleteBook(userPrincipal, id);
 	}
 	
 }
