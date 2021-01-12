@@ -2,6 +2,7 @@ package library.maxwell.module.book.service;
 
 import org.springframework.http.ResponseEntity;
 
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.CategoryDto;
 
 
@@ -11,7 +12,7 @@ public interface CategoryService {
 	ResponseEntity<?> getCategoryById(Integer id);
 	ResponseEntity<?> getActiveCategory();
 	ResponseEntity<?> getInactiveCategory();
-	ResponseEntity<?> addCategory(CategoryDto dto);
-	ResponseEntity<?> updateCategory(Integer id, CategoryDto dto);
-	ResponseEntity<?> deleteCategory(Integer id);
+	ResponseEntity<?> addCategory(UserPrincipal userPrincipal, CategoryDto dto);
+	ResponseEntity<?> updateCategory(UserPrincipal userPrincipal, Integer id, CategoryDto dto);
+	ResponseEntity<?> deleteCategory(UserPrincipal userPrincipal, Integer id);
 }
