@@ -10,7 +10,7 @@ public interface ReviewService {
 	List<ReviewEntity> getAll(Integer id);
 	ReviewEntity post(UserPrincipal userPrincipal,Integer id,ReviewDto Dto);
 	ReviewEntity update(UserPrincipal userPrincipal,Integer id,ReviewDto Dto);
-	ReviewEntity Update2(UserPrincipal userPrincipal,Integer id);
+	ReviewEntity delete(UserPrincipal userPrincipal,Integer id);
 	Boolean get(UserPrincipal userPrincipal,Integer id);
 	Double findRate(Integer id);
 }
