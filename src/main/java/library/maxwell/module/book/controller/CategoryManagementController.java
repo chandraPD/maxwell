@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import library.maxwell.config.security.auth.CurrentUser;
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.CategoryDto;
 import library.maxwell.module.book.service.CategoryService;
 
@@ -49,18 +51,18 @@ public class CategoryManagementController {
 	}
 	
 	@PostMapping("/add-category")
-	public ResponseEntity<?> addCategory(@RequestBody CategoryDto dto) {
-		return categoryService.addCategory(dto);
+	public ResponseEntity<?> addCategory(@CurrentUser UserPrincipal userPrincipal,@RequestBody CategoryDto dto) {
+		return categoryService.addCategory(userPrincipal, dto);
 	}
 	
 	@PutMapping("/update-category/{id}")
-	public ResponseEntity<?> updateCategory(@PathVariable Integer id, @RequestBody CategoryDto dto) {
-		return categoryService.updateCategory(id, dto);
+	public ResponseEntity<?> updateCategory(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id, @RequestBody CategoryDto dto) {
+		return categoryService.updateCategory(userPrincipal, id, dto);
 	}
 	
 	@PutMapping("/delete-category/{id}")
-	public ResponseEntity<?> deleteCategory(@PathVariable Integer id) {
-		return categoryService.deleteCategory(id);
+	public ResponseEntity<?> deleteCategory(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id) {
+		return categoryService.deleteCategory(userPrincipal, id);
 	}
 	
 }

@@ -81,6 +81,12 @@ public class BookManagementController {
 		return bookService.getQtyBook();
 	}
 	
+	@GetMapping("/get-year")
+	public ResponseEntity<?> getYear() {
+		return bookService.getYear();
+	}
+	
+	
 	@GetMapping("/get-rec-detail/{categoryId}/{bookId}")
 	public ResponseEntity<?> getRecommendedDetail(@PathVariable Integer categoryId, @PathVariable Integer bookId) {
 		return bookService.getRecommendedDetail(categoryId, bookId);
@@ -107,8 +113,8 @@ public class BookManagementController {
 	}
 	
 	@PutMapping("/delete-book/{id}")
-	public ResponseEntity<?> deleteBook(@PathVariable Integer id) {
-		return bookService.deleteBook(id);
+	public ResponseEntity<?> deleteBook(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id) {
+		return bookService.deleteBook(userPrincipal, id);
 	}
 	
 }

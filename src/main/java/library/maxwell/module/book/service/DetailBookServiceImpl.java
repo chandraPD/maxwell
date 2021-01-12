@@ -1,6 +1,7 @@
 package library.maxwell.module.book.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.BookDetailDto;
 import library.maxwell.module.book.dto.StatusMessageDto;
 import library.maxwell.module.book.entity.BookDetailEntity;
@@ -17,6 +19,10 @@ import library.maxwell.module.book.entity.BookEntity;
 import library.maxwell.module.book.entity.CategoryEntity;
 import library.maxwell.module.book.repository.BookDetailRepository;
 import library.maxwell.module.book.repository.BookRepository;
+import library.maxwell.module.log.entity.LogEntity;
+import library.maxwell.module.log.repository.LogRepository;
+import library.maxwell.module.user.entity.UserEntity;
+import library.maxwell.module.user.repository.UserRepository;
 
 @Service
 @Transactional
@@ -27,6 +33,12 @@ public class DetailBookServiceImpl implements BookDetailService{
 	
 	@Autowired
 	BookRepository bookRepository;
+	
+	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
+	LogRepository logRepository;
 	
 	@Override
 	public ResponseEntity<?> getAllDetail() {
@@ -97,35 +109,64 @@ public class DetailBookServiceImpl implements BookDetailService{
 	}
 
 	@Override
-	public ResponseEntity<?> addDetailBook(BookDetailDto dto) {
+	public ResponseEntity<?> addDetailBook(UserPrincipal userPrincipal, BookDetailDto dto) {
 		// TODO Auto-generated method stub
 		BookDetailEntity bookDetailEntity = convertToBookDetailEntity(dto);
 		BookEntity bookEntity = bookRepository.findById(dto.getBookId()).get();
+		LogEntity logEntity = new LogEntity();
+		UserEntity userEntity = userRepository.findByUserId(userPrincipal.getId());
+		LocalDateTime now = LocalDateTime.now();
 		bookDetailEntity.setBookEntity(bookEntity);
 		bookDetailRepository.save(bookDetailEntity);
+		logEntity.setAction("Post");
+		logEntity.setDateTime(now);
+		logEntity.setDescription("Menambahkan Detail Buku: " + dto.getBookId());
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logRepository.save(logEntity);
 		return ResponseEntity.ok(bookDetailEntity);
 	}
 
 	@Override
-	public ResponseEntity<?> updateDetailBook(Integer id, BookDetailDto dto) {
+	public ResponseEntity<?> updateDetailBook(UserPrincipal userPrincipal, Integer id, BookDetailDto dto) {
 		// TODO Auto-generated method stub
 		BookDetailEntity bookDetailEntity = bookDetailRepository.findById(id).get();
 		BookEntity bookEntity = bookRepository.findById(dto.getBookId()).get();
+		LogEntity logEntity = new LogEntity();
+		UserEntity userEntity = userRepository.findByUserId(userPrincipal.getId());
+		LocalDateTime now = LocalDateTime.now();
 		bookDetailEntity.setBookEntity(bookEntity);
 		bookDetailEntity.setTypeOfDamage(dto.getTypeOfDamage());
 		bookDetailEntity.setDescOfDamage(dto.getDescOfDamage());
 		bookDetailEntity.setStatusBookDetail(dto.getStatusBookDetail());
 		
 		bookDetailRepository.save(bookDetailEntity);
+		
+		logEntity.setAction("Update");
+		logEntity.setDateTime(now);
+		logEntity.setDescription("Mengupdate Detail Buku: " + dto.getBookId());
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logRepository.save(logEntity);
 		return ResponseEntity.ok(bookDetailEntity);
 	}
 
 	@Override
-	public ResponseEntity<?> deleteDetailBook(Integer id) {
+	public ResponseEntity<?> deleteDetailBook(UserPrincipal userPrincipal, Integer id) {
 		// TODO Auto-generated method stub
 		BookDetailEntity bookDetailEntity = bookDetailRepository.findById(id).get();
+		LogEntity logEntity = new LogEntity();
+		UserEntity userEntity = userRepository.findByUserId(userPrincipal.getId());
+		LocalDateTime now = LocalDateTime.now();
 		bookDetailEntity.setStatus(false);
 		bookDetailRepository.save(bookDetailEntity);
+		
+		logEntity.setAction("Update");
+		logEntity.setDateTime(now);
+		logEntity.setDescription("Mengupdate Detail Buku: " + bookDetailEntity.getBookDetailId());
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logRepository.save(logEntity);
 		
 		return ResponseEntity.ok(bookDetailEntity);
 	}
@@ -153,6 +194,13 @@ public class DetailBookServiceImpl implements BookDetailService{
 		bookDetailEntity.setTypeOfDamage(dto.getTypeOfDamage());
 		bookDetailEntity.setDescOfDamage(dto.getDescOfDamage());
 		return bookDetailEntity;
+	}
+
+	@Override
+	public ResponseEntity<?> getBookActiveCount(String statusBookDetail, Integer bookId) {
+		// TODO Auto-generated method stub
+		Long detailBook = bookDetailRepository.countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs(statusBookDetail, bookId);
+		return ResponseEntity.ok(detailBook);
 	}
 
 	

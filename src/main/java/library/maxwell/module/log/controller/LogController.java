@@ -101,4 +101,18 @@ public class LogController {
 		result.setData(logEntity);
 		return ResponseEntity.ok(result);
 	}
+	
+	//GET LOG USER
+	@GetMapping("/get-log-user")
+	public ResponseEntity<?> getLogUser(@CurrentUser UserPrincipal userPrincipal){
+		return logService.getLogUser(userPrincipal);
+	}
+	
 }
+
+
+
+
+
+
+

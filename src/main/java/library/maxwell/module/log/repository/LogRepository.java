@@ -12,4 +12,8 @@ import library.maxwell.module.log.entity.LogEntity;
 public interface LogRepository  extends JpaRepository<LogEntity, Integer>{
 	@Query(value = "SELECT * FROM log ORDER BY date_time DESC ", nativeQuery = true)
 	List<LogEntity> findLastActivity();
+	
+	@Query(value = "SELECT * FROM log WHERE user_id = ? ORDER BY date_time DESC LIMIT 20", nativeQuery = true)
+	List<LogEntity> findLogUser(Integer id);
+
 }

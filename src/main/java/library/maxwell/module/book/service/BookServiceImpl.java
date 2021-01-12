@@ -29,6 +29,8 @@ import library.maxwell.module.book.repository.AuthorRepository;
 import library.maxwell.module.book.repository.BookDetailRepository;
 import library.maxwell.module.book.repository.BookRepository;
 import library.maxwell.module.book.repository.CategoryRepository;
+import library.maxwell.module.log.entity.LogEntity;
+import library.maxwell.module.log.repository.LogRepository;
 import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.repository.UserRepository;
 
@@ -50,6 +52,9 @@ public class BookServiceImpl implements BookService {
 	
 	@Autowired
 	AuthorRepository authorRepository;
+	
+	@Autowired
+	LogRepository logRepository;
 	
 	@Autowired
 	private CloudinaryConfig cloudinary;
@@ -178,6 +183,8 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		Integer userId = userPrincipal.getId();
 		BookEntity bookEntity = convertToBookEntity(dto);
+		LogEntity logEntity = new LogEntity();
+		LocalDateTime now = LocalDateTime.now();
 		
 		Boolean existsByTitle = bookRepository.existsByTitle(dto.getTitle());
 		
@@ -199,6 +206,13 @@ public class BookServiceImpl implements BookService {
 			bookEntity.setUpdatedByEntity(updatedByEntity);
 			bookRepository.save(bookEntity);
 			
+			logEntity.setAction("Post");
+			logEntity.setDateTime(now);
+			logEntity.setDescription("Menambahkan Buku: " + dto.getTitle());
+			logEntity.setStatus(true);
+			logEntity.setUserEntity(createdByEntity);
+			logRepository.save(logEntity);
+			
 			return ResponseEntity.ok(bookEntity);
 		}
 		
@@ -213,6 +227,7 @@ public class BookServiceImpl implements BookService {
 		AuthorEntity authorEntity = authorRepository.findById(dto.getAuthorId()).get();
 		UserEntity updatedByEntity = userRepository.findById(userId).get();
 		LocalDateTime dateTime = LocalDateTime.now();
+		LogEntity logEntity = new LogEntity();
 		
 		bookEntity.setTitle(dto.getTitle());
 		bookEntity.setDescription(dto.getDescription());
@@ -260,6 +275,13 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setUpdatedByEntity(updatedByEntity);
 		bookRepository.save(bookEntity);
 		
+		logEntity.setAction("Update");
+		logEntity.setDateTime(dateTime);
+		logEntity.setDescription("Mengupdate Buku: " + dto.getTitle());
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(updatedByEntity);
+		logRepository.save(logEntity);
+		
 		return ResponseEntity.ok(bookEntity);
 	}
 	
@@ -275,11 +297,20 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteBook(Integer id) {
+	public ResponseEntity<?> deleteBook(UserPrincipal userPrincipal, Integer id) {
 		// TODO Auto-generated method stub
 		BookEntity bookEntity = bookRepository.findById(id).get();
+		UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();
+		LocalDateTime dateTime = LocalDateTime.now();
+		LogEntity logEntity = new LogEntity();
 		bookEntity.setStatus(false);
 		bookRepository.save(bookEntity);
+		logEntity.setAction("Delete");
+		logEntity.setDateTime(dateTime);
+		logEntity.setDescription("Menghapus Buku: " + bookEntity.getTitle());
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logRepository.save(logEntity);
 		return ResponseEntity.ok(bookEntity);
 	}
 
@@ -347,5 +378,11 @@ public class BookServiceImpl implements BookService {
 		return result;
 	}
 
+	@Override
+	public ResponseEntity<?> getYear() {
+		// TODO Auto-generated method stub
+		List<String> yearList = bookRepository.getYear();
+		return ResponseEntity.ok(yearList);
+	}
 	
 }
