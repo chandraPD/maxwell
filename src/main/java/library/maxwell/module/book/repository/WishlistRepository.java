@@ -10,7 +10,7 @@ import library.maxwell.module.book.entity.WishlistEntity;
 
 @Repository
 public interface WishlistRepository extends JpaRepository<WishlistEntity, Integer>{
-	Boolean existsByBookEntityBookId(Integer id);
+	Boolean existsByBookEntityBookIdAndUserEntityUserId(Integer id,Integer id2);
 	
 	@Query(value="Select status from wishlist where book_id=? AND user_id=?",nativeQuery = true)
 	Boolean findStatus(Integer id,Integer id2);
