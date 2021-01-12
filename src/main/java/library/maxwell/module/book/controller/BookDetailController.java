@@ -54,6 +54,11 @@ public class BookDetailController {
 		return bookDetailService.getByTypeofDamage(typeOfDamage);
 	}
 	
+	@GetMapping("/get-book-detail-count/{statusBookDetail}/{bookId}")
+	public ResponseEntity<?> getBookDetailCount(@PathVariable String statusBookDetail, @PathVariable Integer bookId){
+		return bookDetailService.getBookActiveCount(statusBookDetail, bookId);
+	}
+	
 	@PostMapping("/add-detail")
 	public ResponseEntity<?> addDetailBook(@CurrentUser UserPrincipal userPrincipal, @RequestBody BookDetailDto dto) {
 		return bookDetailService.addDetailBook(userPrincipal, dto);
