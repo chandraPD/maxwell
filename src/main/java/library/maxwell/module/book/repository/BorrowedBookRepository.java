@@ -15,7 +15,11 @@ public interface BorrowedBookRepository extends JpaRepository<BorrowedBookEntity
 	List<BorrowedBookEntity> findAllByStatusIsTrueAndUserIdEntity_UserIdIs(int userId);
 	
 	List<BorrowedBookEntity> findAllByStatusIsTrue();
-	
+
+	@Query(value ="SELECT DISTINCT (user_id) from borrowed_book where status_book = ?", nativeQuery = true)
+	List<BorrowedBookEntity> getDistinct(String statusBook);
+
+	List<BorrowedBookEntity> findDistinctByStatusBook(String statusBook);
 
 	@Query(value = "select borrowed_book_code from borrowed_book where YEAR(borrowed_date) = ? order by borrowed_book_id DESC limit 1  ", nativeQuery = true)
 	String getLastBorrowed(Integer year);

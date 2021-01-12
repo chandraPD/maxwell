@@ -15,5 +15,8 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetailEnti
 	@Query(value = "select * from invoice_detail where invoice_id = ?", nativeQuery = true)
 	List<InvoiceDetailEntity> getByInvoiceId(Integer invoiceId);
 
-	InvoiceDetailEntity findTopByBorrowedBookEntity_BorrowedBookId(Integer borrowedBookId);
+	InvoiceDetailEntity findTopByBorrowedBookEntity_BorrowedBookIdOrderByInvoiceDetailIdDesc(Integer borrowedBookId);
+
+	List<InvoiceDetailEntity> findByInvoiceEntityInvoiceId(Integer invoiceId);
+
 }

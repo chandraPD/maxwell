@@ -10,11 +10,14 @@ public class InvoiceDetailDto {
 	
 	private Integer invoiceDetailId;
 	private String title;
+	private String borrowedBookCode;
+	private String bookDetailCode;
 	private Integer invoiceId;
 	private BorrowedBookEntity borrowedBookEntity;
 	private LocalDateTime borrowedDate;
+	private LocalDateTime returnDate;
 	private LocalDateTime threshold;
-	private Double grandTotal;
+	private Double total;
 	private String type;
 	private Long late;
 	

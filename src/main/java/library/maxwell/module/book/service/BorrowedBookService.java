@@ -13,19 +13,14 @@ import java.util.List;
 
 public interface BorrowedBookService {
 
-	StatusMessageDto<?> borrowBook(UserPrincipal userPrincipal, BorrowBookDto dto);
-
+	StatusMessageDto<?> borrowBook(UserPrincipal userPrincipal,BorrowBookDto dto);
 	StatusMessageDto<?> getById(Integer borrowedBookId);
-
 	StatusMessageDto<?> getAll();
-
 	StatusMessageDto<?> getAll(UserPrincipal userPrincipal);
-
 	StatusMessageDto<?> getAllBorrowed(UserPrincipal userPrincipal);
-
+	StatusMessageDto<?> getAllBorrowedByUserId(Integer userId);
 	StatusMessageDto<?> accAct(UserPrincipal userPrincipal, Integer borrowedBookId);
-
 	StatusMessageDto<?> decAct(UserPrincipal userPrincipal, Integer borrowedBookId);
-
 	StatusMessageDto returnBook(UserPrincipal userPrincipal, List<ReturnBookDto> dtos);
+	StatusMessageDto<?> getAllBorrowerBook();
 }
