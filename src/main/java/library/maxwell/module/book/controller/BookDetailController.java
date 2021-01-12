@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import library.maxwell.config.security.auth.CurrentUser;
+import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.BookDetailDto;
 import library.maxwell.module.book.service.BookDetailService;
 
@@ -52,19 +54,24 @@ public class BookDetailController {
 		return bookDetailService.getByTypeofDamage(typeOfDamage);
 	}
 	
+	@GetMapping("/get-book-detail-count/{statusBookDetail}/{bookId}")
+	public ResponseEntity<?> getBookDetailCount(@PathVariable String statusBookDetail, @PathVariable Integer bookId){
+		return bookDetailService.getBookActiveCount(statusBookDetail, bookId);
+	}
+	
 	@PostMapping("/add-detail")
-	public ResponseEntity<?> addDetailBook(@RequestBody BookDetailDto dto) {
-		return bookDetailService.addDetailBook(dto);
+	public ResponseEntity<?> addDetailBook(@CurrentUser UserPrincipal userPrincipal, @RequestBody BookDetailDto dto) {
+		return bookDetailService.addDetailBook(userPrincipal, dto);
 	}
 	
 	@PutMapping("/update-detail/{id}")
-	public ResponseEntity<?> updateDetailBook(@PathVariable Integer id, @RequestBody BookDetailDto dto) {
-		return bookDetailService.updateDetailBook(id, dto);
+	public ResponseEntity<?> updateDetailBook(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id, @RequestBody BookDetailDto dto) {
+		return bookDetailService.updateDetailBook(userPrincipal, id, dto);
 	}
 	
 	@PutMapping("/delete-detail/{id}")
-	public ResponseEntity<?> deleteDetailBook(@PathVariable Integer id) {
-		return bookDetailService.deleteDetailBook(id);
+	public ResponseEntity<?> deleteDetailBook(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id) {
+		return bookDetailService.deleteDetailBook(userPrincipal, id);
 	}
  	
 }
