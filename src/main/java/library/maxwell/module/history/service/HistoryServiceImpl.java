@@ -26,6 +26,7 @@ public class HistoryServiceImpl implements  HistoryService{
     public List<BorrowedBookEntity> getAllCurrentRead(UserPrincipal userPrincipal) {
         Integer idUser = userPrincipal.getId();
         List<BorrowedBookEntity> borrowedBookEntities = borrowedBookRepository.findByStatusBookNotAndStatusBookNotAndUserIdEntityUserId("Returned", "Canceled", idUser);
+
         return borrowedBookEntities;
     }
 
