@@ -378,5 +378,11 @@ public class BookServiceImpl implements BookService {
 		return result;
 	}
 
+	@Override
+	public ResponseEntity<?> getYear() {
+		// TODO Auto-generated method stub
+		List<String> yearList = bookRepository.getYear();
+		return ResponseEntity.ok(yearList);
+	}
 	
 }

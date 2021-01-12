@@ -196,6 +196,13 @@ public class DetailBookServiceImpl implements BookDetailService{
 		return bookDetailEntity;
 	}
 
+	@Override
+	public ResponseEntity<?> getBookActiveCount(String statusBookDetail, Integer bookId) {
+		// TODO Auto-generated method stub
+		Long detailBook = bookDetailRepository.countByStatusIsTrueAndStatusBookDetailIsAndBookEntity_BookIdIs(statusBookDetail, bookId);
+		return ResponseEntity.ok(detailBook);
+	}
+
 	
 
 }

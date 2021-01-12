@@ -81,6 +81,12 @@ public class BookManagementController {
 		return bookService.getQtyBook();
 	}
 	
+	@GetMapping("/get-year")
+	public ResponseEntity<?> getYear() {
+		return bookService.getYear();
+	}
+	
+	
 	@GetMapping("/get-rec-detail/{categoryId}/{bookId}")
 	public ResponseEntity<?> getRecommendedDetail(@PathVariable Integer categoryId, @PathVariable Integer bookId) {
 		return bookService.getRecommendedDetail(categoryId, bookId);

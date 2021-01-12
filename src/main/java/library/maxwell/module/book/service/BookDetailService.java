@@ -15,5 +15,5 @@ public interface BookDetailService {
 	public ResponseEntity<?> addDetailBook(UserPrincipal userPrincipal, BookDetailDto dto);
 	public ResponseEntity<?> updateDetailBook(UserPrincipal userPrincipal, Integer id, BookDetailDto dto);
 	public ResponseEntity<?> deleteDetailBook(UserPrincipal userPrincipal, Integer id);
-	
+	public ResponseEntity<?> getBookActiveCount(String statusBookDetail, Integer bookId);
 }
