@@ -107,4 +107,41 @@ public class AuthorServiceImpl implements AuthorService {
 		return authorEntity;
 	}
 
+	@Override
+	public AuthorEntity post2(UserPrincipal userPrincipal,AuthorDto dto) {
+		LocalDateTime now = LocalDateTime.now();
+		AuthorEntity authorEntity=repo.authorEntity(dto.getAuthorName());
+		authorEntity.setStatus(true);
+		repo.save(authorEntity);
+		UserEntity userEntity=repo3.findByUserId(userPrincipal.getId());
+		LogEntity logEntity=new LogEntity();
+		logEntity.setAction("Post");
+		logEntity.setDateTime(now);
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Melakukan Tambah Author");
+		repo2.save(logEntity);
+		return authorEntity;
+	}
+
+	@Override
+	public AuthorEntity update2(UserPrincipal userPrincipal, AuthorDto dto,Integer id) {
+		LocalDateTime now = LocalDateTime.now();
+		AuthorEntity authorEntity=repo.findById(id).get();
+		AuthorEntity authorEntity2=repo.authorEntity(dto.getAuthorName());		
+		authorEntity.setStatus(false);
+		authorEntity2.setStatus(true);
+		repo.save(authorEntity);
+		repo.save(authorEntity2);
+		UserEntity userEntity=repo3.findByUserId(userPrincipal.getId());
+		LogEntity logEntity=new LogEntity();
+		logEntity.setAction("Update");
+		logEntity.setDateTime(now);
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Melakukan Update data Author");
+		repo2.save(logEntity);
+		return authorEntity;
+	}
+
 }
