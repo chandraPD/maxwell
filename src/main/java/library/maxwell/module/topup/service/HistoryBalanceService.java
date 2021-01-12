@@ -10,7 +10,7 @@ import library.maxwell.module.user.entity.UserEntity;
 public interface HistoryBalanceService {
 	HistoryBalanceEntity getById(Integer id);
 	
-	List<HistoryBalanceEntity> getAll(UserPrincipal usPrincipal);
+	List<HistoryBalanceEntity> getAll();
 	
 	List<HistoryBalanceEntity> getAll2(Integer id);
 	

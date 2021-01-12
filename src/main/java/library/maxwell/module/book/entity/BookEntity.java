@@ -54,6 +54,10 @@ public class BookEntity {
 	@Type(type = "text")
 	private String description;
 	
+	@ManyToOne
+	@JoinColumn(name = "author_id",referencedColumnName = "id")	
+	private AuthorEntity authorEntity;
+	
 	@Column(name = "img_banner")
 	private String imgBanner;
 	
@@ -80,10 +84,7 @@ public class BookEntity {
 	private UserEntity updatedByEntity;
 	
 	@Column(name = "publish_date")
-	private Date publishDate;
-	
-	@Column(name = "author", length = 50)
-	private String author;
+	private Date publishDate;	
 	
 	@Column(name = "status")
 	private Boolean status = true;

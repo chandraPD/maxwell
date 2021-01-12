@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +22,10 @@ import library.maxwell.module.book.dto.BookDto;
 import library.maxwell.module.book.dto.BookDto2;
 import library.maxwell.module.book.dto.StatusMessageDto;
 import library.maxwell.module.book.dto.UpdateQtyBookDto;
+import library.maxwell.module.book.entity.AuthorEntity;
 import library.maxwell.module.book.entity.BookEntity;
 import library.maxwell.module.book.entity.CategoryEntity;
+import library.maxwell.module.book.repository.AuthorRepository;
 import library.maxwell.module.book.repository.BookDetailRepository;
 import library.maxwell.module.book.repository.BookRepository;
 import library.maxwell.module.book.repository.CategoryRepository;
@@ -44,6 +47,9 @@ public class BookServiceImpl implements BookService {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	AuthorRepository authorRepository;
 	
 	@Autowired
 	private CloudinaryConfig cloudinary;
@@ -120,22 +126,6 @@ public class BookServiceImpl implements BookService {
 			return ResponseEntity.ok(bookEntities);
 		}		
 	}
-
-	@Override
-	public ResponseEntity<?> findByAuthor(String author) {
-		// TODO Auto-generated method stub
-		List<BookEntity> bookEntities = bookRepository.findByAuthor(author);
-		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
-		
-		if(bookEntities == null) {
-			result.setStatus(HttpStatus.BAD_REQUEST.value());
-			result.setMessage("Book not found!");
-			result.setData(null);
-			return ResponseEntity.ok(result);
-		}else {
-			return ResponseEntity.ok(bookEntities);
-		}	
-	}
 	
 	
 	@Override
@@ -201,6 +191,8 @@ public class BookServiceImpl implements BookService {
 			UserEntity createdByEntity = userRepository.findById(userId).get();
 			UserEntity updatedByEntity = userRepository.findById(userId).get();
 			CategoryEntity categoryEntity = categoryRepository.findById(dto.getCategoryId()).get();
+			AuthorEntity authorEntity = authorRepository.findById(dto.getAuthorId()).get();
+			bookEntity.setAuthorEntity(authorEntity);
 			bookEntity.setQty(0);
 			bookEntity.setCategoryEntity(categoryEntity);
 			bookEntity.setCreatedByEntity(createdByEntity);
@@ -218,6 +210,7 @@ public class BookServiceImpl implements BookService {
 		Integer userId = userPrincipal.getId();
 		BookEntity bookEntity = bookRepository.findById(id).get();
 		CategoryEntity categoryEntity = categoryRepository.findById(dto.getCategoryId()).get();
+		AuthorEntity authorEntity = authorRepository.findById(dto.getAuthorId()).get();
 		UserEntity updatedByEntity = userRepository.findById(userId).get();
 		LocalDateTime dateTime = LocalDateTime.now();
 		
@@ -261,7 +254,7 @@ public class BookServiceImpl implements BookService {
 		
 		bookEntity.setUpdatedAt(dateTime);
 		bookEntity.setPublishDate(dto.getPublishDate());
-		bookEntity.setAuthor(dto.getAuthor());
+		bookEntity.setAuthorEntity(authorEntity);
 		
 		bookEntity.setCategoryEntity(categoryEntity);
 		bookEntity.setUpdatedByEntity(updatedByEntity);
@@ -327,7 +320,7 @@ public class BookServiceImpl implements BookService {
 		
 		bookEntity.setQty(dto.getQty());
 		bookEntity.setPublishDate(dto.getPublishDate());
-		bookEntity.setAuthor(dto.getAuthor());
+//		bookEntity.setAuthor(dto.getAuthor());
 		return bookEntity;
 	}
 	
@@ -341,7 +334,7 @@ public class BookServiceImpl implements BookService {
 		result.setDescription(data.getDescription());
 		result.setImgBanner(data.getImgBanner());
 		result.setImgDetail(data.getImgDetail());
-		result.setAuthor(data.getAuthor());
+		result.setAuthorEntity(data.getAuthorEntity());
 		result.setQty(data.getQty());
 		result.setPublishDate(data.getPublishDate().toString());
 		

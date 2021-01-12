@@ -5,9 +5,6 @@ import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.user.dto.*;
 import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.service.UserServiceImpl;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -116,5 +115,18 @@ public class UserController {
         result.setData(updatedProfile);
 
         return ResponseEntity.ok(result);
+    }
+
+    //User management
+    @GetMapping("/user/manage")
+    public ResponseEntity<?> getUserManagement(@CurrentUser UserPrincipal userPrincipal) {
+
+        List<UserManageDto> userManageDtos = userService.getUserManagement(userPrincipal);
+
+        result.setStatus(200);
+        result.setMessages("success");
+        result.setData(userManageDtos);
+
+        return ResponseEntity.ok(userManageDtos);
     }
 }
