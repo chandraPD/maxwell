@@ -18,7 +18,9 @@ public interface BorrowedBookService {
 	StatusMessageDto<?> getAll();
 	StatusMessageDto<?> getAll(UserPrincipal userPrincipal);
 	StatusMessageDto<?> getAllBorrowed(UserPrincipal userPrincipal);
+	StatusMessageDto<?> getAllBorrowedByUserId(Integer userId);
 	StatusMessageDto<?> accAct(UserPrincipal userPrincipal, Integer borrowedBookId);
 	StatusMessageDto<?> decAct(UserPrincipal userPrincipal, Integer borrowedBookId);
 	StatusMessageDto returnBook(UserPrincipal userPrincipal, List<ReturnBookDto> dtos);
+	StatusMessageDto<?> getAllBorrowerBook();
 }

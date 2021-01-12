@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BorrowBookDto {
 	private Integer borrowedBookId;
+	private Integer invoiceId;
 	private String borrowedBookCode;
 	private LocalDateTime borrowedDate;
 	private String bookDetailCode;

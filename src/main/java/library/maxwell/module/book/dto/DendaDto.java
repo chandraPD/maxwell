@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DendaDto {
-    private String title;
-    private Integer lateBy;
-    private Double fine;
+    private Double total;
+    private String type;
 }

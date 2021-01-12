@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import library.maxwell.config.security.auth.UserPrincipal;
+import library.maxwell.module.book.entity.BookDetailEntity;
+import library.maxwell.module.book.entity.BorrowedBookEntity;
+import library.maxwell.module.book.repository.BookDetailRepository;
+import library.maxwell.module.book.repository.BorrowedBookRepository;
+import library.maxwell.module.invoice.entity.InvoiceDetailEntity;
+import library.maxwell.module.invoice.repository.InvoiceDetailRepository;
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 import library.maxwell.module.topup.repository.HistoryBalanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +39,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 	private InvoiceRepository invoiceRepository;
 
 	@Autowired
+	private InvoiceDetailRepository invoiceDetailRepository;
+
+	@Autowired
+	private BorrowedBookRepository borrowedBookRepository;
+
+	@Autowired
 	private UserDetailRepository userDetailRepository;
 
 	@Autowired
@@ -43,6 +55,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	private HistoryBalanceRepository historyBalanceRepository;
+
+	@Autowired
+	private BookDetailRepository bookDetailRepository;
 
 	@Override
 	public StatusMessageDto<?> getAll(UserPrincipal userPrincipal, String statusInvoice) {
@@ -59,7 +74,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 		List<InvoiceDto> invoiceDtos = new ArrayList<>();
 
-		if (invoiceEntity != null) {
+		if (!invoiceEntity.isEmpty()) {
 			for (InvoiceEntity row : invoiceEntity) {
 				invoiceDtos.add(convertToInvoiceDto(row));
 			}
@@ -90,7 +105,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 				invoiceDtos.add(convertToInvoiceDto(row));
 			}
 			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data Invoice telah ditemukan1");
+			result.setMessage("Data Invoice telah ditemukan");
 			result.setData(invoiceDtos);
 		}
 		return result;
@@ -124,7 +139,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 		InvoiceDto invoiceDto = new InvoiceDto();
 
 		LocalDateTime threshold = invoiceEntity.getInvoiceDate().plusDays(7);
-		System.out.println(threshold);
 		UserDetailEntity borrower = userDetailRepository.findByUserEntityUserId(idBorrower);
 		invoiceDto.setInvoiceId(invoiceEntity.getInvoiceId());
 		invoiceDto.setNoInvoice(invoiceEntity.getNoInvoice());
@@ -136,6 +150,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			LocalDateTime paymentDate = invoiceEntity.getPaymentDate();
 			invoiceDto.setPaymentDate(paymentDate);
 		}
+		invoiceDto.setTypeInvoice(invoiceEntity.getTypeInvoice());
 		invoiceDto.setInvoiceDate(invoiceEntity.getInvoiceDate());
 		invoiceDto.setThreshold(threshold);
 		invoiceDto.setBorrower(borrower.getFirstName() + " " + borrower.getLastName());
@@ -148,12 +163,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public InvoiceEntity addInvoice(Double grandTotal, String typeInvoice, String statusInvoice, UserPrincipal userPrincipal) {
+	public InvoiceEntity addInvoice(Double grandTotal, String typeInvoice, String statusInvoice, UserEntity userEntity) {
 		// TODO Auto-generated method stub
 		InvoiceEntity invoiceEntity = new InvoiceEntity();
-		Integer idBorrower = userPrincipal.getId();
-		UserEntity borrower = userRepository.findById(idBorrower).get();
-		invoiceEntity.setBorrowerEntity(borrower);
+		invoiceEntity.setBorrowerEntity(userEntity);
 
 		DateTimeFormatter getYearFull = DateTimeFormatter.ofPattern("yyyy");
 		DateTimeFormatter getYear = DateTimeFormatter.ofPattern("yy");
@@ -218,15 +231,31 @@ public class InvoiceServiceImpl implements InvoiceService {
 		historyBalanceEntity.setStatusPayment("Success");
 		historyBalanceEntity.setNominal(invoiceEntity.getGrandTotal());
 		historyBalanceEntity.setDateAcc(now);
+		historyBalanceEntity.setDateTopup(now);
 		historyBalanceEntity.setStatus(true);
-		historyBalanceEntity.setPaymentMethod("Debit");
+		historyBalanceEntity.setPaymentMethod("Debit Invooice " + invoiceEntity.getNoInvoice());
 		historyBalanceRepository.save(historyBalanceEntity);
 
 //		update status invoice menjadi Paid
 		invoiceEntity.setStatusInvoice("Paid");
 		invoiceEntity.setPaymentDate(now);
 		invoiceRepository.save(invoiceEntity);
-		
+
+		if(invoiceEntity.getTypeInvoice().equalsIgnoreCase("Denda")){
+			List<InvoiceDetailEntity> invoiceDetailEntities = invoiceDetailRepository.findByInvoiceEntityInvoiceId(invoiceEntity.getInvoiceId());
+
+			for (InvoiceDetailEntity e: invoiceDetailEntities) {
+				BorrowedBookEntity borrowedBookEntity = e.getBorrowedBookEntity();
+				borrowedBookEntity.setStatusBook("Returned");
+				borrowedBookRepository.save(borrowedBookEntity);
+
+				BookDetailEntity bookDetailEntity = borrowedBookEntity.getBookDetailEntity();
+				bookDetailEntity.setStatusBookDetail("Available");
+				bookDetailRepository.save(bookDetailEntity);
+			}
+
+		}
+
 		result.setStatus(HttpStatus.OK.value());
 		result.setMessage(invoiceEntity.getStatusInvoice());
 		result.setData(invoiceEntity);
