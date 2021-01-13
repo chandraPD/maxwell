@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class StatusMessageDto<T> {
-	private String status;
+	private Integer status;
 	private String message;
 	private T data;
 }

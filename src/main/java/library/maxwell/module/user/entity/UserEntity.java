@@ -25,6 +25,8 @@ import java.util.Set;
         allowGetters = true
 )
 public class UserEntity implements Serializable {
+
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_id")
@@ -46,6 +48,9 @@ public class UserEntity implements Serializable {
 
     @Column(name = "status")
     private Boolean status=true;
+
+    @Column
+    private String activeRole;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_akses",

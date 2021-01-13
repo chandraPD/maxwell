@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Data
 public class UserPrincipal implements UserDetails {
 
-    private Integer id;
+	private Integer id;
 
     @JsonIgnore
     private String email;
@@ -43,6 +43,10 @@ public class UserPrincipal implements UserDetails {
                 user.getPassword(),
                 authorities
         );
+    }
+    
+    public Integer getId() {
+    	return id;
     }
 
     @Override

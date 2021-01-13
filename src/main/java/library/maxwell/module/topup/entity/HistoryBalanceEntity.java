@@ -42,101 +42,10 @@ public class HistoryBalanceEntity {
 	@Column(name = "date_topup")
 	private LocalDateTime dateTopup;
 	
-	public Integer getHistoryBalanceId() {
-		return historyBalanceId;
-	}
-
-	public void setHistoryBalanceId(Integer historyBalanceId) {
-		this.historyBalanceId = historyBalanceId;
-	}
-
-	public UserEntity getUserEntity() {
-		return userEntity;
-	}
-
-	public void setUserEntity(UserEntity userEntity) {
-		this.userEntity = userEntity;
-	}
-
-	public UserBalanceEntity getUserBalanceEntity() {
-		return userBalanceEntity;
-	}
-
-	public void setUserBalanceEntity(UserBalanceEntity userBalanceEntity) {
-		this.userBalanceEntity = userBalanceEntity;
-	}
-
-	public LocalDateTime getDateTopup() {
-		return dateTopup;
-	}
-
-	public void setDateTopup(LocalDateTime dateTopup) {
-		this.dateTopup = dateTopup;
-	}
-
-	public Double getNominal() {
-		return nominal;
-	}
-
-	public void setNominal(Double nominal) {
-		this.nominal = nominal;
-	}
-
-	public String getPaymentMethod() {
-		return paymentMethod;
-	}
-
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
-	}
-
-	public String getStatusPayment() {
-		return statusPayment;
-	}
-
-	public void setStatusPayment(String statusPayment) {
-		this.statusPayment = statusPayment;
-	}
-
-	public LocalDateTime getDateAcc() {
-		return dateAcc;
-	}
-
-	public void setDateAcc(LocalDateTime dateAcc) {
-		this.dateAcc = dateAcc;
-	}
-
-	public Boolean getStatus() {
-		return status;
-	}
-
-	public void setStatus(Boolean status) {
-		this.status = status;
-	}
-
-	public HistoryBalanceEntity(Integer historyBalanceId, UserEntity userEntity, UserBalanceEntity userBalanceEntity,
-			LocalDateTime dateTopup, Double nominal, String paymentMethod, String statusPayment, LocalDateTime dateAcc,
-			Boolean status) {
-		super();
-		this.historyBalanceId = historyBalanceId;
-		this.userEntity = userEntity;
-		this.userBalanceEntity = userBalanceEntity;
-		this.dateTopup = dateTopup;
-		this.nominal = nominal;
-		this.paymentMethod = paymentMethod;
-		this.statusPayment = statusPayment;
-		this.dateAcc = dateAcc;
-		this.status = status;
-	}
-
-	public HistoryBalanceEntity() {
-		super();
-	}
-
 	@Column(name = "nominal")
 	private Double nominal;
 
-	@Column(name = "paymentMethod")
+	@Column(name = "payment_method")
 	private String paymentMethod;
 
 	@Column(name = "status_payment")

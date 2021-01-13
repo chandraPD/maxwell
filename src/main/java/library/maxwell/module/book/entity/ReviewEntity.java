@@ -1,4 +1,4 @@
-package library.maxwell.module.user.entity;
+package library.maxwell.module.book.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,31 +9,36 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import library.maxwell.module.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "user_akses")
+@Table(name="review")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserAksesEntity {
-
+@NoArgsConstructor
+public class ReviewEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_akses_id")
-	private Integer userAksesId;
-
+	@Column(name = "id")
+	private Integer Id;
+	
+	@Column(name="rate")
+	private Double rate;
+	
+	@Column(name="comment")
+	private String comment;
+	
 	@ManyToOne
-	@JoinColumn(name = "level_id", referencedColumnName = "level_id")
-	private LevelEntity levelEntity;
-
+	@JoinColumn(name = "book_id", referencedColumnName = "book_id")
+	private BookEntity bookEntity;
+	
 	@ManyToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
+	@JoinColumn(name= "user_id")
 	private UserEntity userEntity;
-
-	@Column(name = "status")
-	private Boolean status = true;
-
+	
+	@Column(name = "status",unique = false, length= 20 )
+	private boolean status;
 }

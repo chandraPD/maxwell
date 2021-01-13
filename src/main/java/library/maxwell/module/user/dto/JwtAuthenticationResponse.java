@@ -11,10 +11,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class JwtAuthenticationResponse {
 
-    private String token;
+	private String token;
     private String tokenType = "Bearer";
+    private UserInfoDto userInfo;
 
-    public JwtAuthenticationResponse(String jwt) {
+    public JwtAuthenticationResponse(String jwt, UserInfoDto userInfo) {
         this.token = jwt;
+        this.userInfo = userInfo;
     }
 }

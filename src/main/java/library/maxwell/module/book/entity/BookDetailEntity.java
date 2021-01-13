@@ -24,6 +24,9 @@ public class BookDetailEntity {
 	@Column(name = "book_detail_id")
 	private Integer bookDetailId;
 	
+	@Column(name = "book_detail_code", unique = true, length = 10)
+	private String bookDetailCode;
+	
 	@ManyToOne
 	@JoinColumn(name = "book_id", referencedColumnName = "book_id")
 	private BookEntity bookEntity;
@@ -33,6 +36,9 @@ public class BookDetailEntity {
 	
 	@Column(name = "desc_of_damage", length = 500)
 	private String descOfDamage;
+	
+	@Column(name = "status_book_detail", length = 50)
+	private String statusBookDetail;
 	
 	@Column(name = "status")
 	private Boolean status = true;

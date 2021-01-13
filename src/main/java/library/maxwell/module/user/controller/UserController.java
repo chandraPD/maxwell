@@ -1,23 +1,28 @@
 package library.maxwell.module.user.controller;
 
-import library.maxwell.module.user.dto.JwtAuthenticationResponse;
-import library.maxwell.module.user.dto.LoginDto;
-import library.maxwell.module.user.dto.RegistrationDto;
-import library.maxwell.module.user.dto.StatusMessageDto;
+import library.maxwell.config.security.auth.CurrentUser;
+import library.maxwell.config.security.auth.UserPrincipal;
+import library.maxwell.module.user.dto.*;
+import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class UserController {
 
     @Autowired
     private UserServiceImpl userService;
-
+    
     private StatusMessageDto result = new StatusMessageDto();
 
     //Regis new user
@@ -26,7 +31,6 @@ public class UserController {
 
         try {
             RegistrationDto registeredUser = userService.createNewUser(registrationDto);
-
             result.setStatus(200);
             result.setMessages("registration success");
             result.setData(registeredUser);
@@ -53,6 +57,7 @@ public class UserController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
 
         try {
+
             JwtAuthenticationResponse token = userService.authenticateUser(loginDto);
 
             result.setStatus(200);
@@ -74,5 +79,62 @@ public class UserController {
             return ResponseEntity.status(500).body(error);
         }
 
+    }
+    
+
+    //Check profiles
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfiles(@CurrentUser UserPrincipal userPrincipal) {
+        UserDetailDto user = userService.getProfiles(userPrincipal);
+        return ResponseEntity.ok(user);
+    }
+    
+    @GetMapping("/user")
+    public ResponseEntity<?> getUser(){
+    	List<UserEntity> userEntities=userService.getUser(1);
+    	return ResponseEntity.ok(userEntities);
+
+    }
+    
+    @GetMapping("/name")
+    public ResponseEntity<?> getName(@CurrentUser UserPrincipal userPrincipal){
+    	Integer id=userPrincipal.getId();
+    	String nama=userService.getName(id);
+    	return ResponseEntity.ok(nama);
+    }
+    
+    @GetMapping("/name/{id}")
+    public ResponseEntity<?> getName1(@CurrentUser UserPrincipal userPrincipal,@PathVariable Integer id){
+    	Integer id2=userPrincipal.getId();
+    	String nama=userService.getName2(id);
+    	return ResponseEntity.ok(nama);
+    }
+    
+    //Update profile
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @PostMapping("/profile")
+    public ResponseEntity<?> updateProfile(@CurrentUser UserPrincipal userPrincipal,
+                                           @RequestBody UpdateProfileDto updateProfileDto) {
+        UpdateProfileDto updatedProfile = userService.updateProfile(userPrincipal, updateProfileDto);
+
+        result.setStatus(200);
+        result.setMessages("profile updated");
+        result.setData(updatedProfile);
+
+        return ResponseEntity.ok(result);
+    }
+
+    //User management
+    @GetMapping("/user/manage")
+    public ResponseEntity<?> getUserManagement(@CurrentUser UserPrincipal userPrincipal) {
+
+        List<UserManageDto> userManageDtos = userService.getUserManagement(userPrincipal);
+
+        result.setStatus(200);
+        result.setMessages("success");
+        result.setData(userManageDtos);
+
+        return ResponseEntity.ok(userManageDtos);
     }
 }

@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StatusMessageDto<T> {
 
-    private Integer status;
+
+	private Integer status;
 
     private String messages;
 

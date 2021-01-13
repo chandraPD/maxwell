@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +16,11 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import library.maxwell.module.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
@@ -26,11 +32,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties(value = {"createdAt", "updatedAt"}, allowGetters = true)
 public class BookEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "book_id")
-	private Integer BookId;
+	private Integer bookId;
+	
+	@Column(name = "book_code", unique = true, length = 10)
+	private String bookCode;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id", referencedColumnName = "category_id")
@@ -41,7 +52,11 @@ public class BookEntity {
 	
 	@Column(name = "description", columnDefinition = "TEXT")
 	@Type(type = "text")
-	private Long description;
+	private String description;
+	
+	@ManyToOne
+	@JoinColumn(name = "author_id",referencedColumnName = "id")	
+	private AuthorEntity authorEntity;
 	
 	@Column(name = "img_banner")
 	private String imgBanner;
@@ -50,7 +65,7 @@ public class BookEntity {
 	private String imgDetail;
 	
 	@Column(name = "qty")
-	private Integer qty;
+	private Integer qty = 0;
 	
     @CreatedDate
 	@Column(name = "created_at")
@@ -68,14 +83,8 @@ public class BookEntity {
     @JoinColumn(name = "update_by", referencedColumnName = "user_id")
 	private UserEntity updatedByEntity;
 	
-	@Column(name = "status_book", length = 50)
-	private String statusBook;
-	
 	@Column(name = "publish_date")
-	private Date publishDate;
-	
-	@Column(name = "author", length = 50)
-	private String author;
+	private Date publishDate;	
 	
 	@Column(name = "status")
 	private Boolean status = true;
