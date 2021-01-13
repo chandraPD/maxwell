@@ -384,5 +384,11 @@ public class BookServiceImpl implements BookService {
 		List<String> yearList = bookRepository.getYear();
 		return ResponseEntity.ok(yearList);
 	}
+
+	@Override
+	public Integer getCount(Integer id) {
+		Integer count=bookRepository.count(id);
+		return count;
+	}
 	
 }

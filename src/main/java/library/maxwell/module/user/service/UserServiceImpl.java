@@ -221,6 +221,14 @@ public class UserServiceImpl implements UserService {
 		String nama=userString+" "+userString2;
 		return nama;
 	}
+	
+	@Override
+	public String getName2(Integer id) {
+		String userString=userDetailRepository.findFirst(id);
+		String userString2=userDetailRepository.findLast(id);
+		String nama=userString+" "+userString2;
+		return nama;
+	}
 
     @Override
     public List<UserManageDto> getUserManagement(UserPrincipal userPrincipal) {

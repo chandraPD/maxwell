@@ -20,4 +20,10 @@ public interface UserDetailRepository extends JpaRepository<UserDetailEntity, In
 	
 	@Query(value="Select last_name from user_detail where user_id=?",nativeQuery = true)
 	String findLast(Integer id);
+	
+	@Query(value="Select first_name from user_detail where user_id=?",nativeQuery = true)
+	String findFirst2(Integer id);
+	
+	@Query(value="Select last_name from user_detail where user_id=?",nativeQuery = true)
+	String findLast2(Integer id);
 }
