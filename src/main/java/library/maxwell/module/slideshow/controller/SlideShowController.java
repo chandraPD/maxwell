@@ -93,17 +93,7 @@ public class SlideShowController {
 		return ResponseEntity.ok(result);
 	}
 	
-	//DELETE
-	@PutMapping("/delete-slideshow/{idSlideShow}")
-	public ResponseEntity<?> deleteSlideShow(@CurrentUser UserPrincipal userPrincipal , @PathVariable Integer idSlideShow){
-		SlideShowEntity slideShowEntity = slideShowService.deleteSlideShow(userPrincipal, idSlideShow);
-		StatusMessageDto<SlideShowEntity> result = new StatusMessageDto<>();
-		result.setStatus(HttpStatus.OK.value());
-		result.setMessage("Data berhasil dihapus!");
-		result.setData(slideShowEntity);
-		return ResponseEntity.ok(result);
-	}
-	
+
 	//DELETE DATA SLIDESHOW YANG DIGUNAKAN
 	@DeleteMapping("/delete-data-slideshow/{idSlideShow}")
 	public ResponseEntity<?> deleteDataSlideShow(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idSlideShow){
