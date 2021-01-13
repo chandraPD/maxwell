@@ -7,6 +7,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import library.maxwell.config.security.auth.CurrentUser;
@@ -74,38 +75,73 @@ public class ReviewServiceImpl implements ReviewService {
 		logEntity.setDateTime(now);
 		logEntity.setStatus(true);
 		logEntity.setUserEntity(userEntity);
-		logEntity.setDescription("Melakukan Tambah Wishlist");
+		logEntity.setDescription("Melakukan Tambah Review");
 		repo4.save(logEntity);
 		return entity;
 	}
 
 	@Override
-	public ReviewEntity update(UserPrincipal userPrincipal, Integer id,ReviewDto Dto) {
+	public ReviewEntity update(UserPrincipal userPrincipal, Integer id,ReviewDto Dto) {		
 		LocalDateTime now = LocalDateTime.now();
 		Integer id2=userPrincipal.getId();
 		UserEntity userEntity=repo3.findByUserId(id2);
 		BookEntity bookEntity=repo2.findById(id).get();
 		ReviewEntity entity=repo.getEntities(id, id2);
-		entity.setStatus(true);
-		entity.setBookEntity(bookEntity);
-		entity.setUserEntity(userEntity);
-		entity.setComment(Dto.getComment());
-		entity.setRate(Dto.getRate());
-		repo.save(entity);
-		LogEntity logEntity=new LogEntity();
-		logEntity.setAction("Update");
-		logEntity.setDateTime(now);
-		logEntity.setStatus(true);
-		logEntity.setUserEntity(userEntity);
-		logEntity.setDescription("Melakukan Cancel Wishlist");
-		repo4.save(logEntity);
-		return entity;
+		Boolean status= repo.findStatus(id,id2);
+		System.out.println(status);
+		if(status) {
+			entity.setStatus(true);
+			entity.setBookEntity(bookEntity);
+			entity.setUserEntity(userEntity);
+			entity.setComment(Dto.getComment());
+			entity.setRate(Dto.getRate());
+			repo.save(entity);
+			LogEntity logEntity=new LogEntity();
+			logEntity.setAction("Update");
+			logEntity.setDateTime(now);
+			logEntity.setStatus(true);
+			logEntity.setUserEntity(userEntity);
+			logEntity.setDescription("Melakukan Update Review");
+			repo4.save(logEntity);
+			return entity;
+		} else {
+			entity.setStatus(true);
+			entity.setBookEntity(bookEntity);
+			entity.setUserEntity(userEntity);
+			entity.setComment(Dto.getComment());
+			entity.setRate(Dto.getRate());
+			repo.save(entity);
+			LogEntity logEntity=new LogEntity();
+			logEntity.setAction("Post");
+			logEntity.setDateTime(now);
+			logEntity.setStatus(true);
+			logEntity.setUserEntity(userEntity);
+			logEntity.setDescription("Melakukan Tambah Review");
+			repo4.save(logEntity);
+			return entity;
+		}			
+		
 	}
 
 	@Override
-	public ReviewEntity Update2(UserPrincipal userPrincipal, Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+	public ReviewEntity delete(UserPrincipal userPrincipal, Integer id) {
+		LocalDateTime now = LocalDateTime.now();
+		Integer id2=userPrincipal.getId();
+		UserEntity userEntity=repo3.findByUserId(id2);
+		BookEntity bookEntity=repo2.findById(id).get();
+		ReviewEntity entity=repo.getEntities(id, id2);
+		entity.setStatus(false);
+		entity.setBookEntity(bookEntity);
+		entity.setUserEntity(userEntity);
+		repo.save(entity);
+		LogEntity logEntity=new LogEntity();
+		logEntity.setAction("Delete");
+		logEntity.setDateTime(now);
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Melakukan Delete Review");
+		repo4.save(logEntity);
+		return entity;
 	}
 
 	@Override

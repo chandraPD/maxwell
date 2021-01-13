@@ -83,17 +83,17 @@ public class WishlistServiceImpl implements WishlistService{
 		Integer id2=userPrincipal.getId();
 		UserEntity userEntity=repo3.findByUserId(id2);
 		BookEntity bookEntity=repo2.findById(id).get();
-		WishlistEntity entity=repo.getEntities(id, id2);
+		WishlistEntity entity=repo.getEntities(id, id2);		
 		entity.setStatus(true);
 		entity.setBookEntity(bookEntity);
 		entity.setUserEntity(userEntity);
 		repo.save(entity);
 		LogEntity logEntity=new LogEntity();
-		logEntity.setAction("Update");
+		logEntity.setAction("Post");
 		logEntity.setDateTime(now);
 		logEntity.setStatus(true);
 		logEntity.setUserEntity(userEntity);
-		logEntity.setDescription("Melakukan Update Wishlist");
+		logEntity.setDescription("Melakukan Tambah Wishlist");
 		repo4.save(logEntity);
 		return entity;
 	}
