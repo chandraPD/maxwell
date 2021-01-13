@@ -25,7 +25,7 @@ import library.maxwell.module.user.service.UserServiceImpl;
 
 @RestController
 @RequestMapping("/top_up")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class TopUp {
 	@Autowired
 	private HistoryBalanceService service;

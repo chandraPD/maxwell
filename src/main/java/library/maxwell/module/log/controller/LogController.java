@@ -22,7 +22,7 @@ import library.maxwell.module.log.service.LogServiceImpl;
 
 @RestController
 @RequestMapping("/log")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class LogController {
 	@Autowired
 	private LogServiceImpl logService;

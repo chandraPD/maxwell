@@ -28,7 +28,7 @@ import library.maxwell.module.book.service.WishlistService;
 
 @RestController
 @RequestMapping("/review")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class ReviewController {
 	@Autowired
 	ReviewService service;

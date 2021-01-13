@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/donate")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class DonateController {
     @Autowired
     private DonateServiceImpl donateService;

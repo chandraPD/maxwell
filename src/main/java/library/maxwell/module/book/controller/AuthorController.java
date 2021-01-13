@@ -27,7 +27,7 @@ import library.maxwell.module.book.service.BookService;
 
 @RestController
 @RequestMapping("/author")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class AuthorController {
 	@Autowired
 	AuthorService authorService;

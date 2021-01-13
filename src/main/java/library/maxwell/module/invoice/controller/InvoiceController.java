@@ -15,7 +15,7 @@ import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.invoice.dto.StatusMessageDto;
 import library.maxwell.module.invoice.service.InvoiceService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 @RestController
 @RequestMapping("invoice")
 public class InvoiceController {
