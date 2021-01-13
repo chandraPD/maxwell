@@ -12,9 +12,9 @@ import library.maxwell.module.book.entity.BorrowedBookEntity;
 @Repository
 public interface BorrowedBookRepository extends JpaRepository<BorrowedBookEntity, Integer> {
 
-	List<BorrowedBookEntity> findAllByStatusIsTrueAndUserIdEntity_UserIdIs(int userId);
-	
-	List<BorrowedBookEntity> findAllByStatusIsTrue();
+	List<BorrowedBookEntity> findAllByStatusIsTrueAndUserIdEntity_UserIdIsOrderByBorrowedBookIdDesc(int userId);
+
+	List<BorrowedBookEntity> findAllByStatusIsTrueOrderByBorrowedBookIdDesc();
 
 	@Query(value ="SELECT DISTINCT (user_id) from borrowed_book where status_book = ?", nativeQuery = true)
 	List<BorrowedBookEntity> getDistinct(String statusBook);
