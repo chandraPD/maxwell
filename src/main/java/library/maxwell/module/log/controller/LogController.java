@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,29 +78,6 @@ public class LogController {
 		}
 	}
 	
-	//UPDATE
-	@PutMapping("/update-log/{idLog}")
-	public ResponseEntity<?> updateLog(@PathVariable Integer idLog,
-			@RequestBody LogDto dto){
-		LogEntity logEntity = logService.updateLog(idLog, dto);
-		StatusMessageDto<LogEntity> result = new StatusMessageDto<>();
-		result.setStatus(HttpStatus.OK.value());
-		result.setMessage("Data berhasil diupdate!");
-		result.setData(logEntity);
-		return ResponseEntity.ok(result);
-	}
-	
-	//DELETE
-	@PutMapping("/delete-log/{idLog}")
-	public ResponseEntity<?> deleteLog(@PathVariable Integer idLog){
-		LogEntity logEntity = logService.deleteLog(idLog);
-		StatusMessageDto<LogEntity> result = new StatusMessageDto<>();
-		result.setStatus(HttpStatus.OK.value());
-		result.setMessage("Data berhasil dihapus !");
-		result.setData(logEntity);
-		return ResponseEntity.ok(result);
-	}
-	
 	//GET LOG USER
 	@GetMapping("/get-log-user")
 	public ResponseEntity<?> getLogUser(@CurrentUser UserPrincipal userPrincipal){
@@ -109,6 +85,8 @@ public class LogController {
 	}
 	
 }
+
+
 
 
 

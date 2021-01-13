@@ -18,10 +18,7 @@ public interface LogService {
 	ResponseEntity<?> getLogUser(UserPrincipal userPrincipal);
 	
 	LogEntity addLog(UserPrincipal userPrincipal, LogDto dto);
-	
-	LogEntity updateLog(Integer idLog, LogDto dto);
-	
-	LogEntity deleteLog(Integer idLog);
+
 	
 	
 }
