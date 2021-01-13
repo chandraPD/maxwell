@@ -100,8 +100,13 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public String author(String author) {
-		String authorEntity = repo.findByStatusIsTrueAndAuthorNameIs(author).getAuthorName();
-		return authorEntity;
+		String authorName = repo.findByStatusIsTrueAndAuthorNameIs(author).getAuthorName();
+
+		if(authorName.equalsIgnoreCase("")){
+			return "kosong";
+		}else{
+			return "ada";
+		}
 	}
 
 	@Override
