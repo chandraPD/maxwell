@@ -11,12 +11,12 @@ import library.maxwell.module.invoice.entity.InvoiceEntity;
 @Repository
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Integer>{
 	
-	List<InvoiceEntity> findAllByStatusIsTrue();
+	List<InvoiceEntity> findAllByStatusIsTrueOrderByInvoiceIdDesc();
 	List<InvoiceEntity> findAllByBorrowerEntity_UserIdIs(int userId);
 
 
-	List<InvoiceEntity> findAllByStatusIsTrueAndBorrowerEntity_UserIdIs(int userId);
-	List<InvoiceEntity> findAllByStatusIsTrueAndBorrowerEntity_UserIdIsAndStatusInvoiceIs(int userId, String statusInvoice);
+	List<InvoiceEntity> findAllByStatusIsTrueAndBorrowerEntity_UserIdIsOrderByInvoiceIdDesc(int userId);
+	List<InvoiceEntity> findAllByStatusIsTrueAndBorrowerEntity_UserIdIsAndStatusInvoiceIsOrderByInvoiceIdDesc(int userId, String statusInvoice);
 	
 	List<InvoiceEntity> findAllByStatusIsTrueAndStatusInvoiceIs(String statusInvoice);
 	

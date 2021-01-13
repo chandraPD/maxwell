@@ -13,6 +13,8 @@ import library.maxwell.module.book.repository.BookDetailRepository;
 import library.maxwell.module.book.repository.BorrowedBookRepository;
 import library.maxwell.module.invoice.entity.InvoiceDetailEntity;
 import library.maxwell.module.invoice.repository.InvoiceDetailRepository;
+import library.maxwell.module.log.entity.LogEntity;
+import library.maxwell.module.log.repository.LogRepository;
 import library.maxwell.module.topup.entity.HistoryBalanceEntity;
 import library.maxwell.module.topup.repository.HistoryBalanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Autowired
 	private BookDetailRepository bookDetailRepository;
 
+	@Autowired
+	private LogRepository logRepository;
+
 	@Override
 	public StatusMessageDto<?> getAll(UserPrincipal userPrincipal, String statusInvoice) {
 
@@ -67,25 +72,20 @@ public class InvoiceServiceImpl implements InvoiceService {
 		List<InvoiceEntity> invoiceEntity;
 		if (statusInvoice.equals("")) {
 //			Get All Invoice
-			invoiceEntity = invoiceRepository.findAllByStatusIsTrueAndBorrowerEntity_UserIdIs(id);
+			invoiceEntity = invoiceRepository.findAllByStatusIsTrueAndBorrowerEntity_UserIdIsOrderByInvoiceIdDesc(id);
 		} else {
 //			Get All Invoice is status Invoice = Waiting for Payment
-			invoiceEntity = invoiceRepository.findAllByStatusIsTrueAndBorrowerEntity_UserIdIsAndStatusInvoiceIs(id,statusInvoice);
+			invoiceEntity = invoiceRepository.findAllByStatusIsTrueAndBorrowerEntity_UserIdIsAndStatusInvoiceIsOrderByInvoiceIdDesc(id,statusInvoice);
 		}
 		List<InvoiceDto> invoiceDtos = new ArrayList<>();
 
-		if (!invoiceEntity.isEmpty()) {
-			for (InvoiceEntity row : invoiceEntity) {
-				invoiceDtos.add(convertToInvoiceDto(row));
-			}
-			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data Invoice telah ditemukan");
-			result.setData(invoiceDtos);
-		} else {
-			result.setMessage("Data belum ada");
-			result.setStatus(HttpStatus.BAD_GATEWAY.value());
-			result.setData(null);
+		for (InvoiceEntity row : invoiceEntity) {
+			invoiceDtos.add(convertToInvoiceDto(row));
 		}
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("Success");
+		result.setData(invoiceDtos);
+
 		return result;
 	}
 
@@ -93,7 +93,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	public StatusMessageDto<?> getAll() {
 
 		StatusMessageDto<List<?>> result = new StatusMessageDto<>();
-		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByStatusIsTrue();
+		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByStatusIsTrueOrderByInvoiceIdDesc();
 		List<InvoiceDto> invoiceDtos = new ArrayList<>();
 
 		if (invoiceEntity.isEmpty()) {
@@ -195,13 +195,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public StatusMessageDto<?> pay(UserPrincipal userPrincipal, Integer invoiceId) {
 		StatusMessageDto<InvoiceEntity> result = new StatusMessageDto<>();
-
+		LogEntity logEntity = new LogEntity();
 		LocalDateTime now = LocalDateTime.now();
-		Integer userid = userPrincipal.getId();
-		UserBalanceEntity userBalanceEntity = userBalanceRepository.findByUserEntity_UserIdIs(userid);
-		
+
+		Integer userId = userPrincipal.getId();
+		UserEntity userEntity = userRepository.findByUserId(userId);
+		UserBalanceEntity userBalanceEntity = userBalanceRepository.findByUserEntity_UserIdIs(userId);
 		InvoiceEntity invoiceEntity = invoiceRepository.findById(invoiceId).get();
-		
+		UserDetailEntity userDetailEntity = userDetailRepository.findByUserEntityUserId(userPrincipal.getId());
+		String nama = userDetailEntity.getFirstName() + " " + userDetailEntity.getLastName();
+
 		if(invoiceEntity.getGrandTotal() >= userBalanceEntity.getNominal()) {
 			result.setMessage("Sorry, Your Current Balance is Insufficient.");
 			result.setStatus(HttpStatus.BAD_GATEWAY.value());
@@ -233,7 +236,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		historyBalanceEntity.setDateAcc(now);
 		historyBalanceEntity.setDateTopup(now);
 		historyBalanceEntity.setStatus(true);
-		historyBalanceEntity.setPaymentMethod("Debit Invooice " + invoiceEntity.getNoInvoice());
+		historyBalanceEntity.setPaymentMethod("Debit Invoice " + invoiceEntity.getNoInvoice());
 		historyBalanceRepository.save(historyBalanceEntity);
 
 //		update status invoice menjadi Paid
@@ -255,6 +258,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 
 		}
+
+		logEntity.setAction("Update");
+		logEntity.setDateTime(now);
+		logEntity.setDescription(" melakukan pembayaran untuk invoice dengan No : " + invoiceEntity.getNoInvoice());
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logRepository.save(logEntity);
 
 		result.setStatus(HttpStatus.OK.value());
 		result.setMessage(invoiceEntity.getStatusInvoice());

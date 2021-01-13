@@ -14,6 +14,8 @@ import com.cloudinary.utils.ObjectUtils;
 
 import library.maxwell.config.CloudinaryConfig;
 import library.maxwell.config.security.auth.UserPrincipal;
+import library.maxwell.module.log.entity.LogEntity;
+import library.maxwell.module.log.repository.LogRepository;
 import library.maxwell.module.slideshow.dto.SlideShowDto;
 import library.maxwell.module.slideshow.entity.SlideShowEntity;
 import library.maxwell.module.slideshow.repository.SlideShowRepository;
@@ -25,8 +27,12 @@ import library.maxwell.module.user.repository.UserRepository;
 public class SlideShowServiceImpl implements SlideShowService{
 	@Autowired
 	private SlideShowRepository slideShowRepository;
+	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private LogRepository logRepository;
 	
 	@Autowired
 	private CloudinaryConfig cloudinary;
@@ -73,8 +79,9 @@ public class SlideShowServiceImpl implements SlideShowService{
             //Covert Base64 to bytes
             byte[] slideShowImage = Base64.getMimeDecoder().decode(dto.getImg());
 
+            //UNTUK MAPPING FILE UPLOAD 
             Map uploadResult = cloudinary.upload(slideShowImage,
-                    ObjectUtils.asMap("resourcetype", "auto"));
+                    ObjectUtils.asMap("resourcetype", "auto"));            
             
             slideShowEntity.setUserEntity(userEntity);
             slideShowEntity.setImg(uploadResult.get("url").toString());
@@ -83,7 +90,15 @@ public class SlideShowServiceImpl implements SlideShowService{
         } catch (Exception e) {
             e.getMessage();
         }
-		
+        
+        //MENGIRIM AKTIVITAS KE LOG
+		LogEntity logEntity = new LogEntity();
+		logEntity.setAction("Post");
+		logEntity.setDateTime(LocalDateTime.now());
+		logEntity.setStatus(true);
+		logEntity.setUserEntity(userEntity);
+		logEntity.setDescription("Melakukan Penambahan Data Pada Slide Show dengan judul : " + dto.getTitle());
+		logRepository.save(logEntity);
 		
 		return slideShowEntity;
 	}
@@ -107,11 +122,19 @@ public class SlideShowServiceImpl implements SlideShowService{
         } catch (Exception e) {
             e.getMessage();
         }
-		        
+		
+      //MENGIRIM AKTIVITAS KE LOG
+  		LogEntity logEntity = new LogEntity();
+  		logEntity.setAction("Update");
+  		logEntity.setDateTime(LocalDateTime.now());
+  		logEntity.setStatus(true);
+  		logEntity.setUserEntity(userEntity);
+  		logEntity.setDescription("Melakukan Update Data Pada Slide Show");
+  		logRepository.save(logEntity);
+      		
         slideShowEntity.setCreatedAt(LocalDateTime.now());
 		slideShowEntity.setTitle(dto.getTitle());
 		slideShowEntity.setSubTitle(dto.getSubTitle());
-
 		slideShowEntity.setStatusShow(dto.getStatusShow());
 		slideShowEntity.setUserEntity(userEntity);
 		slideShowRepository.save(slideShowEntity);
@@ -119,24 +142,12 @@ public class SlideShowServiceImpl implements SlideShowService{
 		return slideShowEntity;
 	}
 	
-	@Override
-	public SlideShowEntity deleteSlideShow(UserPrincipal userPrincipal, Integer idSlideShow) {
-		// TODO Auto-generated method stub
-		Integer userId = userPrincipal.getId();
-		UserEntity userEntity = userRepository.findById(userId).get();
-		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
-		slideShowEntity.setStatus(false);
-		slideShowEntity.setUserEntity(userEntity);
-		slideShowRepository.save(slideShowEntity);
-		return slideShowEntity;
-	}
-	
 	public SlideShowEntity convertToSlideShowEntity(SlideShowDto dto) {
 		SlideShowEntity slideShowEntity = new SlideShowEntity();
+		slideShowEntity.setSlideShowId(dto.getSlideShowId());
 		slideShowEntity.setCreatedAt(LocalDateTime.now());
 		slideShowEntity.setTitle(dto.getTitle());
 		slideShowEntity.setSubTitle(dto.getSubTitle());
-//		slideShowEntity.setImg(dto.getImg());
 		return slideShowEntity;
 	}
 	
@@ -147,6 +158,16 @@ public class SlideShowServiceImpl implements SlideShowService{
 		Integer userId = userPrincipal.getId();
 		UserEntity userEntity = userRepository.findById(userId).get();
 		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
+		 
+		//MENGIRIM AKTIVITAS KE LOG
+  		LogEntity logEntity = new LogEntity();
+  		logEntity.setAction("Delete");
+  		logEntity.setDateTime(LocalDateTime.now());
+  		logEntity.setStatus(true);
+  		logEntity.setUserEntity(userEntity);
+  		logEntity.setDescription("Menghapus Data Slide Show");
+  		logRepository.save(logEntity);
+		
 		slideShowEntity.setUserEntity(userEntity);
 		slideShowRepository.delete(slideShowEntity);
 		return slideShowEntity;
@@ -158,6 +179,16 @@ public class SlideShowServiceImpl implements SlideShowService{
 		Integer userId = userPrincipal.getId();
 		SlideShowEntity slideShowEntity = slideShowRepository.findById(idSlideShow).get();
 		UserEntity userEntity = userRepository.findById(userId).get();
+		
+		//MENGIRIM AKTIVITAS KE LOG
+  		LogEntity logEntity = new LogEntity();
+  		logEntity.setAction("Update Status");
+  		logEntity.setDateTime(LocalDateTime.now());
+  		logEntity.setStatus(true);
+  		logEntity.setUserEntity(userEntity);
+  		logEntity.setDescription("Melakukan Update Status Pada Slide Show");
+  		logRepository.save(logEntity);
+		
 		slideShowEntity.setUserEntity(userEntity);
 		slideShowEntity.setStatusShow(status);
 		slideShowRepository.save(slideShowEntity);

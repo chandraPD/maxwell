@@ -120,16 +120,7 @@ public class BookServiceImpl implements BookService {
 	public ResponseEntity<?> findByTitle(String title) {
 		// TODO Auto-generated method stub
 		List<BookEntity> bookEntities = bookRepository.findByTitleLike( "%" + title + "%");
-		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();
-		
-		if(bookEntities == null) {
-			result.setStatus(HttpStatus.BAD_REQUEST.value());
-			result.setMessage("Book not found!");
-			result.setData(null);
-			return ResponseEntity.ok(result);
-		} else {
-			return ResponseEntity.ok(bookEntities);
-		}		
+		return ResponseEntity.ok(bookEntities);			
 	}
 	
 	
@@ -183,22 +174,52 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		Integer userId = userPrincipal.getId();
 		BookEntity bookEntity = convertToBookEntity(dto);
+		BookEntity bookExists = bookRepository.findByTitle(dto.getTitle());
 		LogEntity logEntity = new LogEntity();
 		LocalDateTime now = LocalDateTime.now();
+		UserEntity createdByEntity = userRepository.findById(userId).get();
+		UserEntity updatedByEntity = userRepository.findById(userId).get();
+		CategoryEntity categoryEntity = categoryRepository.findById(dto.getCategoryId()).get();
+		AuthorEntity authorEntity = authorRepository.findById(dto.getAuthorId()).get();
 		
 		Boolean existsByTitle = bookRepository.existsByTitle(dto.getTitle());
+		Boolean existsByStatus = bookRepository.existsByStatusTitle(dto.getTitle());
 		
-		if (existsByTitle) {
+		if (existsByTitle == true && existsByStatus && true) {
 			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
 			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			result.setMessage("Book already exist!");
 			result.setData(null);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-		} else {
-			UserEntity createdByEntity = userRepository.findById(userId).get();
-			UserEntity updatedByEntity = userRepository.findById(userId).get();
-			CategoryEntity categoryEntity = categoryRepository.findById(dto.getCategoryId()).get();
-			AuthorEntity authorEntity = authorRepository.findById(dto.getAuthorId()).get();
+		} else if(existsByTitle == true && existsByStatus == false) { 
+			bookExists.setStatus(true);
+			bookExists.setAuthorEntity(authorEntity);
+			bookExists.setCategoryEntity(categoryEntity);
+			bookExists.setDescription(dto.getDescription());
+			
+			byte[] imgDetail = Base64.getMimeDecoder().decode(dto.getImgDetail());
+			byte[] imgBanner = Base64.getMimeDecoder().decode(dto.getImgBanner());
+			
+			Map uploadResultDetail = cloudinary.upload(imgDetail, ObjectUtils.asMap("resourcetype", "auto"));
+			bookExists.setImgDetail(uploadResultDetail.get("url").toString());
+			
+			Map uploadResultBanner = cloudinary.upload(imgBanner, ObjectUtils.asMap("resourcetype", "auto"));
+			bookExists.setImgBanner(uploadResultBanner.get("url").toString());
+			
+			bookExists.setPublishDate(dto.getPublishDate());
+			
+			bookRepository.save(bookExists);
+			logEntity.setAction("Post");
+			logEntity.setDateTime(now);
+			logEntity.setDescription("Menambahkan Buku: " + dto.getTitle());
+			logEntity.setStatus(true);
+			logEntity.setUserEntity(createdByEntity);
+			logRepository.save(logEntity);
+			
+			return ResponseEntity.ok(bookEntity);
+		}
+		else {
+			
 			bookEntity.setAuthorEntity(authorEntity);
 			bookEntity.setQty(0);
 			bookEntity.setCategoryEntity(categoryEntity);
@@ -390,5 +411,13 @@ public class BookServiceImpl implements BookService {
 		Integer count=bookRepository.count(id);
 		return count;
 	}
+
+	@Override
+	public Integer getCountCategory(Integer categoryId) {
+		// TODO Auto-generated method stub
+		Integer countCategory = bookRepository.countCategory(categoryId);
+		return countCategory;
+	}
+
 	
 }
