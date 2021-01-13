@@ -15,36 +15,36 @@ import library.maxwell.module.user.repository.UserRepository;
 
 @Service
 @Transactional
-public class UserBalanceImp implements UserBalanceService{
+public class UserBalanceImp implements UserBalanceService {
 	@Autowired
 	UserBalanceRepository repo;
-	
+
 	@Autowired
 	UserRepository repo2;
 
 	public UserBalanceEntity convertToUserBalanceEntity(UserBalanceDto Dto) {
-		UserBalanceEntity userBalanceEntity=new UserBalanceEntity();
-		userBalanceEntity.setNominal(Dto.getNominal());		
+		UserBalanceEntity userBalanceEntity = new UserBalanceEntity();
+		userBalanceEntity.setNominal(Dto.getNominal());
 		return userBalanceEntity;
 	}
-	
+
 	@Override
 	public UserBalanceEntity getById(Integer id) {
-		UserBalanceEntity userBalanceEntity=repo.findById(id).get();
+		UserBalanceEntity userBalanceEntity = repo.findById(id).get();
 		return userBalanceEntity;
 	}
 
 	@Override
 	public List<UserBalanceEntity> getAll() {
-		List<UserBalanceEntity> userBalanceEntities=repo.findAll();
+		List<UserBalanceEntity> userBalanceEntities = repo.findAll();
 		return userBalanceEntities;
 	}
 
 	@Override
-	public UserBalanceEntity post(UserBalanceDto Dto) {	
-		UserBalanceEntity userBalanceEntity=new UserBalanceEntity();
-		UserEntity userEntity=repo2.findById(Dto.getUser_id()).get();
-		userBalanceEntity.setStatus(true);		
+	public UserBalanceEntity post(UserBalanceDto Dto) {
+		UserBalanceEntity userBalanceEntity = new UserBalanceEntity();
+		UserEntity userEntity = repo2.findById(Dto.getUser_id()).get();
+		userBalanceEntity.setStatus(true);
 		userBalanceEntity.setNominal((double) 0);
 		userBalanceEntity.setUserEntity(userEntity);
 		repo.save(userBalanceEntity);
@@ -53,16 +53,16 @@ public class UserBalanceImp implements UserBalanceService{
 
 	@Override
 	public UserBalanceEntity update(UserBalanceDto Dto, Integer id) {
-		Double nominal=repo.findNominal(id);
-		UserBalanceEntity userBalanceEntity= repo.findById(id).get();
-		userBalanceEntity.setNominal(Dto.getNominal()+nominal);
+		Double nominal = repo.findNominal(id);
+		UserBalanceEntity userBalanceEntity = repo.findById(id).get();
+		userBalanceEntity.setNominal(Dto.getNominal() + nominal);
 		repo.save(userBalanceEntity);
 		return userBalanceEntity;
 	}
 
 	@Override
 	public UserBalanceEntity delete(Integer id) {
-		UserBalanceEntity userBalanceEntity= repo.findById(id).get();
+		UserBalanceEntity userBalanceEntity = repo.findById(id).get();
 		userBalanceEntity.setStatus(false);
 		repo.save(userBalanceEntity);
 		return userBalanceEntity;

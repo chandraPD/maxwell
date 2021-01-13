@@ -22,16 +22,16 @@ import lombok.NoArgsConstructor;
 public class UserBalanceEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="user_balance_id")
+	@Column(name = "user_balance_id")
 	private Integer userBalanceId;
-	
+
 	@OneToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
 	private UserEntity userEntity;
 
-	@Column(name="nominal")
+	@Column(name = "nominal")
 	private Double nominal;
-	
-	@Column(name="status")
-	private Boolean status=true;
+
+	@Column(name = "status")
+	private Boolean status = true;
 }

@@ -16,16 +16,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthorEntity {	
+public class AuthorEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer authorId;
-	
+
 	@Column(name = "author_name")
 	private String authorName;
-	
+
 	@Column(name = "status")
-	private Boolean status=true;
+	private Boolean status = true;
 
 }

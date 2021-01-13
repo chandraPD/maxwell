@@ -37,11 +37,11 @@ public class HistoryBalanceEntity {
 	@ManyToOne
 	@JoinColumn(name = "user_balance_id", referencedColumnName = "user_balance_id")
 	private UserBalanceEntity userBalanceEntity;
-	
+
 	@CreatedDate
 	@Column(name = "date_topup")
 	private LocalDateTime dateTopup;
-	
+
 	@Column(name = "nominal")
 	private Double nominal;
 
