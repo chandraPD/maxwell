@@ -12,7 +12,5 @@ public class StatusMessageDto<T> {
 	private String Message;
 	private Integer status;
 	private T data;
-	
-
 
 }

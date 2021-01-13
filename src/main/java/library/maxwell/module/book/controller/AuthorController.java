@@ -19,8 +19,6 @@ import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.AuthorDto;
 import library.maxwell.module.book.dto.StatusMessageDto;
 import library.maxwell.module.book.entity.AuthorEntity;
-import library.maxwell.module.book.entity.CategoryEntity;
-import library.maxwell.module.book.entity.ReviewEntity;
 import library.maxwell.module.book.repository.AuthorRepository;
 import library.maxwell.module.book.service.AuthorService;
 import library.maxwell.module.book.service.BookService;
@@ -31,89 +29,84 @@ import library.maxwell.module.book.service.BookService;
 public class AuthorController {
 	@Autowired
 	AuthorService authorService;
-	
+
 	@Autowired
 	AuthorRepository repo;
-	
+
 	@Autowired
 	BookService service;
-	
+
 	@GetMapping("/getAll")
-	public ResponseEntity<?> getAll(){
-		List<AuthorEntity> authorEntities=authorService.findAll();
+	public ResponseEntity<?> getAll() {
+		List<AuthorEntity> authorEntities = authorService.findAll();
 		return ResponseEntity.ok(authorEntities);
 	}
-	
+
 	@PostMapping("/post")
-	public ResponseEntity<?> post(@CurrentUser UserPrincipal user, @RequestBody AuthorDto dto){			
-		System.out.println(dto.getAuthorName());
+	public ResponseEntity<?> post(@CurrentUser UserPrincipal user, @RequestBody AuthorDto dto) {
 		Boolean existsByAuthor = repo.existsByAuthorName(dto.getAuthorName());
-		System.out.println(existsByAuthor);
-		if(existsByAuthor) {
-			Boolean status= repo.findStatus(dto.getAuthorName());
-			System.out.println(status);
-			if(!status) {
-				AuthorEntity authorEntity=authorService.post2(user,dto);
+		if (existsByAuthor) {
+			Boolean status = repo.findStatus(dto.getAuthorName());
+			if (!status) {
+				AuthorEntity authorEntity = authorService.post2(user, dto);
 				return ResponseEntity.ok(authorEntity);
-			} else {				
+			} else {
 				StatusMessageDto<AuthorEntity> result = new StatusMessageDto<>();
 				result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 				result.setMessage("Category already exist!");
 				result.setData(null);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-			}				
+			}
 		} else {
-			AuthorEntity authorEntity=authorService.post(user,dto);
+			AuthorEntity authorEntity = authorService.post(user, dto);
 			return ResponseEntity.ok(authorEntity);
 		}
 	}
-	
+
 	@GetMapping("/getid/{id}")
-	public ResponseEntity<?> getId(@PathVariable Integer id){		
-		AuthorEntity authorEntities=authorService.getId(id);
+	public ResponseEntity<?> getId(@PathVariable Integer id) {
+		AuthorEntity authorEntities = authorService.getId(id);
 		return ResponseEntity.ok(authorEntities);
 	}
-	
+
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> update(@CurrentUser UserPrincipal user,@RequestBody AuthorDto dto,@PathVariable Integer id){			
-		System.out.println(dto.getAuthorName());
+	public ResponseEntity<?> update(@CurrentUser UserPrincipal user, @RequestBody AuthorDto dto,
+			@PathVariable Integer id) {
 		Boolean existsByAuthor = repo.existsByAuthorName(dto.getAuthorName());
-		System.out.println(existsByAuthor);
-		if(existsByAuthor) {
-			Boolean status= repo.findStatus(dto.getAuthorName());
-			System.out.println(status);
-			if(!status) {
-				AuthorEntity authorEntity=authorService.update2(user,dto,id);
+		if (existsByAuthor) {
+			Boolean status = repo.findStatus(dto.getAuthorName());
+			if (!status) {
+				AuthorEntity authorEntity = authorService.update2(user, dto, id);
 				return ResponseEntity.ok(authorEntity);
-			} else {				
+			} else {
 				StatusMessageDto<AuthorEntity> result = new StatusMessageDto<>();
 				result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 				result.setMessage("Category already exist!");
 				result.setData(null);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-			}				
+			}
 		} else {
-			AuthorEntity authorEntity=authorService.update(user,id, dto);
+			AuthorEntity authorEntity = authorService.update(user, id, dto);
 			return ResponseEntity.ok(authorEntity);
 		}
 	}
-	
+
 	@PutMapping("/delete/{id}")
-	public ResponseEntity<?> delete(@CurrentUser UserPrincipal user,@PathVariable Integer id){					
-			AuthorEntity authorEntity=authorService.delete(user,id);
-			return ResponseEntity.ok(authorEntity);		
+	public ResponseEntity<?> delete(@CurrentUser UserPrincipal user, @PathVariable Integer id) {
+		AuthorEntity authorEntity = authorService.delete(user, id);
+		return ResponseEntity.ok(authorEntity);
 	}
-	
+
 	@GetMapping("/getAuthor/{author}")
-	public ResponseEntity<?> author(@PathVariable String author){
-		String author2=authorService.author(author);
+	public ResponseEntity<?> author(@PathVariable String author) {
+		String author2 = authorService.author(author);
 		return ResponseEntity.ok(author2);
 	}
-	
+
 	@GetMapping("/getCount/{id}")
-	public ResponseEntity<?> author(@PathVariable Integer id){
-		Integer author2=service.getCount(id);
+	public ResponseEntity<?> author(@PathVariable Integer id) {
+		Integer author2 = service.getCount(id);
 		return ResponseEntity.ok(author2);
 	}
-	
+
 }
