@@ -29,4 +29,6 @@ public interface UserService {
 
     List<UserManageDto> getUserManagement(UserPrincipal userPrincipal);
 
+	String getName2(Integer id);
+
 }

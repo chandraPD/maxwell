@@ -45,9 +45,12 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 			
 			invoiceDetailDto.setInvoiceDetailId(row.getInvoiceDetailId());
 			invoiceDetailDto.setBorrowedDate(borrowerDate);
-			invoiceDetailDto.setGrandTotal(row.getTotal());
+			invoiceDetailDto.setTotal(row.getTotal());
+			invoiceDetailDto.setBorrowedBookCode(row.getBorrowedBookEntity().getBorrowedBookCode());
+			invoiceDetailDto.setBookDetailCode(row.getBorrowedBookEntity().getBookDetailEntity().getBookDetailCode());
 			invoiceDetailDto.setTitle(row.getBorrowedBookEntity().getBookDetailEntity().getBookEntity().getTitle());
 			invoiceDetailDto.setThreshold(dueOn);
+			invoiceDetailDto.setReturnDate(row.getBorrowedBookEntity().getReturnedDate());
 			invoiceDetailDto.setLate(diffDays);
 			invoiceDetailDto.setType(row.getType());
 			
@@ -81,7 +84,7 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 			InvoiceDetailEntity invoiceDetailEntity = new InvoiceDetailEntity();
 			invoiceDetailEntity.setBorrowedBookEntity(e.getBorrowedBookEntity());
 			invoiceDetailEntity.setInvoiceEntity(invoiceEntity);
-			invoiceDetailEntity.setTotal(e.getGrandTotal());
+			invoiceDetailEntity.setTotal(e.getTotal());
 			invoiceDetailEntity.setType(e.getType());
 			invoiceDetailRepository.save(invoiceDetailEntity);
 		}

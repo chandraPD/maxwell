@@ -51,6 +51,13 @@ public class BorrowedBookController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("/get-all-borrowed-by-userid/{userId}")
+	public ResponseEntity<?> getAllBorrowedByUserId(@PathVariable Integer userId){
+		StatusMessageDto<?> result = borrowImplService.getAllBorrowedByUserId(userId);
+		return ResponseEntity.ok(result);
+	}
+
+
 	@PutMapping("/acc-act/{idBorrowedBook}")
 	public ResponseEntity<?> accAct(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer idBorrowedBook) {
 		return ResponseEntity.ok(borrowImplService.accAct(userPrincipal, idBorrowedBook));
@@ -64,5 +71,11 @@ public class BorrowedBookController {
 	@PostMapping("/return")
 	public ResponseEntity<?> returnBook(@CurrentUser UserPrincipal userPrincipal, @RequestBody List<ReturnBookDto> dtos ){
 		return ResponseEntity.ok(borrowImplService.returnBook(userPrincipal, dtos));
+	}
+
+	@GetMapping("/get-all-borrower-book")
+	public ResponseEntity<?> getAllBorrowerBook(){
+		StatusMessageDto<?> result = borrowImplService.getAllBorrowerBook();
+		return ResponseEntity.ok(result);
 	}
 }

@@ -19,8 +19,11 @@ import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.AuthorDto;
 import library.maxwell.module.book.dto.StatusMessageDto;
 import library.maxwell.module.book.entity.AuthorEntity;
+import library.maxwell.module.book.entity.CategoryEntity;
+import library.maxwell.module.book.entity.ReviewEntity;
 import library.maxwell.module.book.repository.AuthorRepository;
 import library.maxwell.module.book.service.AuthorService;
+import library.maxwell.module.book.service.BookService;
 
 @RestController
 @RequestMapping("/author")
@@ -31,6 +34,9 @@ public class AuthorController {
 	
 	@Autowired
 	AuthorRepository repo;
+	
+	@Autowired
+	BookService service;
 	
 	@GetMapping("/getAll")
 	public ResponseEntity<?> getAll(){
@@ -44,11 +50,18 @@ public class AuthorController {
 		Boolean existsByAuthor = repo.existsByAuthorName(dto.getAuthorName());
 		System.out.println(existsByAuthor);
 		if(existsByAuthor) {
-			StatusMessageDto<AuthorEntity> result = new StatusMessageDto<>();
-			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			result.setMessage("Author already exist!");
-			result.setData(null);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+			Boolean status= repo.findStatus(dto.getAuthorName());
+			System.out.println(status);
+			if(!status) {
+				AuthorEntity authorEntity=authorService.post2(user,dto);
+				return ResponseEntity.ok(authorEntity);
+			} else {				
+				StatusMessageDto<AuthorEntity> result = new StatusMessageDto<>();
+				result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+				result.setMessage("Category already exist!");
+				result.setData(null);
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+			}				
 		} else {
 			AuthorEntity authorEntity=authorService.post(user,dto);
 			return ResponseEntity.ok(authorEntity);
@@ -67,11 +80,18 @@ public class AuthorController {
 		Boolean existsByAuthor = repo.existsByAuthorName(dto.getAuthorName());
 		System.out.println(existsByAuthor);
 		if(existsByAuthor) {
-			StatusMessageDto<AuthorEntity> result = new StatusMessageDto<>();
-			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			result.setMessage("Author already exist!");
-			result.setData(null);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+			Boolean status= repo.findStatus(dto.getAuthorName());
+			System.out.println(status);
+			if(!status) {
+				AuthorEntity authorEntity=authorService.update2(user,dto,id);
+				return ResponseEntity.ok(authorEntity);
+			} else {				
+				StatusMessageDto<AuthorEntity> result = new StatusMessageDto<>();
+				result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+				result.setMessage("Category already exist!");
+				result.setData(null);
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+			}				
 		} else {
 			AuthorEntity authorEntity=authorService.update(user,id, dto);
 			return ResponseEntity.ok(authorEntity);
@@ -87,6 +107,12 @@ public class AuthorController {
 	@GetMapping("/getAuthor/{author}")
 	public ResponseEntity<?> author(@PathVariable String author){
 		String author2=authorService.author(author);
+		return ResponseEntity.ok(author2);
+	}
+	
+	@GetMapping("/getCount/{id}")
+	public ResponseEntity<?> author(@PathVariable Integer id){
+		Integer author2=service.getCount(id);
 		return ResponseEntity.ok(author2);
 	}
 	

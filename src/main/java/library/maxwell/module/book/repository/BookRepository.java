@@ -43,7 +43,12 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	@Query(value = "SELECT * FROM book WHERE YEAR(publish_date) = ? AND status IS true", nativeQuery = true)
 	List<BookEntity> getBookByYear(String yearBook);
 	
+	@Query(value = "SELECT DISTINCT YEAR(publish_date) as year FROM book ORDER BY publish_date DESC", nativeQuery = true)
+	List<String> getYear();
 	
 	Boolean existsByTitle(String title);
+	
+	@Query(value="SELECT COUNT(author_id) FROM `book` WHERE author_id=?",nativeQuery = true)
+	Integer count(Integer id);
 	
 }

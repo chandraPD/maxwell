@@ -35,7 +35,7 @@ public class WishlistController {
 	@PostMapping("/post/{id}")
 	public ResponseEntity<?> post(@CurrentUser UserPrincipal userPrincipal,@PathVariable Integer id){
 		Integer id3=userPrincipal.getId();
-		Boolean existsByAuthor = repo.existsByBookEntityBookId(id);
+		Boolean existsByAuthor = repo.existsByBookEntityBookIdAndUserEntityUserId(id,id3);
 		System.out.println(existsByAuthor);
 		if(existsByAuthor) {
 			Boolean status= repo.findStatus(id,id3);
