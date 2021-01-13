@@ -2,7 +2,6 @@ package library.maxwell.module.log.service;
 
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.log.dto.LogDto;
 import library.maxwell.module.log.entity.LogEntity;
 import library.maxwell.module.log.repository.LogRepository;
-import library.maxwell.module.user.dto.UserDetailDto;
 import library.maxwell.module.user.entity.UserDetailEntity;
 import library.maxwell.module.user.entity.UserEntity;
 import library.maxwell.module.user.repository.UserDetailRepository;
@@ -42,8 +40,14 @@ public class LogServiceImpl implements LogService {
 	@Override
 	public LogEntity getLogById(Integer idLog) {
 		// TODO Auto-generated method stub
-		LogEntity logEntity = logRepository.findById(idLog).get();
-		return logEntity;
+		Boolean findLogEntity = logRepository.existsByLogId(idLog);
+		
+		if(findLogEntity) {
+			LogEntity logEntity = logRepository.findById(idLog).get();
+			return logEntity;
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -56,35 +60,11 @@ public class LogServiceImpl implements LogService {
 		logRepository.save(logEntity);
 		return logEntity;
 	}
-
-
-	@Override
-	public LogEntity updateLog(Integer idLog, LogDto dto) {
-		// TODO Auto-generated method stub
-		LogEntity logEntity = logRepository.findById(idLog).get();
-		logEntity.setDateTime(LocalDateTime.now());
-		logEntity.setAction(dto.getAction());
-		logEntity.setDescription(dto.getDescription());
-		logRepository.save(logEntity);
-		return logEntity;
-	}
-
-	@Override
-	public LogEntity deleteLog(Integer idLog) {
-		// TODO Auto-generated method stub
-		LogEntity logEntity = logRepository.findById(idLog).get();
-		logEntity.setStatus(false);
-		logRepository.save(logEntity);
-		return logEntity;
-	}
-	
 	
 	public LogEntity convertToLogEntity(LogDto dto) {
 		LogEntity logEntity = new LogEntity();
 		LocalDateTime today = LocalDateTime.now();
-		DateTimeFormatter date = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-		String dateUpdate = today.format(date);
-		logEntity.setDateTime(LocalDateTime.parse(dateUpdate, date));
+		logEntity.setDateTime(today);
 		logEntity.setAction(dto.getAction());
 		logEntity.setDescription(dto.getDescription());
 		return logEntity;
@@ -111,7 +91,7 @@ public class LogServiceImpl implements LogService {
 			logDto2.setDateTime(logEntity.getDateTime());
 			logDto2.setName(userDetail.getFirstName() + " " + userDetail.getLastName());
 			logDto2.setEmail(userEntity.getEmail());
-			logDto2.setUserId(userId);
+			logDto2.setUserId(userId);	
 			
 			logDto.add(logDto2);
 		
@@ -141,5 +121,7 @@ public class LogServiceImpl implements LogService {
 		}
 		return ResponseEntity.ok(logDto);
 	}
+	
+
 
 }

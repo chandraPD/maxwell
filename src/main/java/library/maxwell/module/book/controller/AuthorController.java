@@ -23,6 +23,7 @@ import library.maxwell.module.book.entity.CategoryEntity;
 import library.maxwell.module.book.entity.ReviewEntity;
 import library.maxwell.module.book.repository.AuthorRepository;
 import library.maxwell.module.book.service.AuthorService;
+import library.maxwell.module.book.service.BookService;
 
 @RestController
 @RequestMapping("/author")
@@ -33,6 +34,9 @@ public class AuthorController {
 	
 	@Autowired
 	AuthorRepository repo;
+	
+	@Autowired
+	BookService service;
 	
 	@GetMapping("/getAll")
 	public ResponseEntity<?> getAll(){
@@ -103,6 +107,12 @@ public class AuthorController {
 	@GetMapping("/getAuthor/{author}")
 	public ResponseEntity<?> author(@PathVariable String author){
 		String author2=authorService.author(author);
+		return ResponseEntity.ok(author2);
+	}
+	
+	@GetMapping("/getCount/{id}")
+	public ResponseEntity<?> author(@PathVariable Integer id){
+		Integer author2=service.getCount(id);
 		return ResponseEntity.ok(author2);
 	}
 	

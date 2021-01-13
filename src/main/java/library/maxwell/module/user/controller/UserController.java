@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -100,6 +101,13 @@ public class UserController {
     public ResponseEntity<?> getName(@CurrentUser UserPrincipal userPrincipal){
     	Integer id=userPrincipal.getId();
     	String nama=userService.getName(id);
+    	return ResponseEntity.ok(nama);
+    }
+    
+    @GetMapping("/name/{id}")
+    public ResponseEntity<?> getName1(@CurrentUser UserPrincipal userPrincipal,@PathVariable Integer id){
+    	Integer id2=userPrincipal.getId();
+    	String nama=userService.getName2(id);
     	return ResponseEntity.ok(nama);
     }
     
