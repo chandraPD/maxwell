@@ -4,6 +4,7 @@ import java.util.List;
 
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.AuthorDto;
+import library.maxwell.module.book.dto.StatusMessageDto;
 import library.maxwell.module.book.entity.AuthorEntity;
 
 public interface AuthorService {
@@ -17,7 +18,7 @@ public interface AuthorService {
 
 	AuthorEntity delete(UserPrincipal userPrincipal, Integer id);
 
-	String author(String author);
+	StatusMessageDto author(String author);
 
 	AuthorEntity post2(UserPrincipal userPrincipal, AuthorDto dto);
 

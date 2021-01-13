@@ -407,9 +407,19 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Integer getCount(Integer id) {
+	public StatusMessageDto getCount(Integer id) {
+		StatusMessageDto result = new StatusMessageDto();
 		Integer count=bookRepository.count(id);
-		return count;
+		if(!count.equals(0)){
+			result.setStatus(HttpStatus.OK.value());
+			result.setMessage("Data berhasil ditemukan");
+			result.setData(count);
+		}else{
+			result.setStatus(HttpStatus.OK.value());
+			result.setMessage("Data gagal ditemukan");
+			result.setData(count);
+		}
+		return result;
 	}
 
 	@Override

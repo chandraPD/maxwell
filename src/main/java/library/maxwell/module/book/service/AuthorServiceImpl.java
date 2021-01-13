@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import library.maxwell.module.book.dto.StatusMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import library.maxwell.config.security.auth.UserPrincipal;
@@ -99,14 +101,20 @@ public class AuthorServiceImpl implements AuthorService {
 	}
 
 	@Override
-	public String author(String author) {
+	public StatusMessageDto<?> author(String author) {
 		String authorName = repo.findByStatusIsTrueAndAuthorNameIs(author).getAuthorName();
+		StatusMessageDto result = new StatusMessageDto<>();
 
 		if(authorName.equalsIgnoreCase("")){
-			return "kosong";
+			result.setStatus(HttpStatus.OK.value());
+			result.setMessage("Data berhasil ditemukan");
+			result.setData(authorName);
 		}else{
-			return "ada";
+			result.setStatus(HttpStatus.OK.value());
+			result.setMessage("Data gagal ditemukan");
+			result.setData(authorName);
 		}
+		return result;
 	}
 
 	@Override
