@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import library.maxwell.module.invoice.dto.StatusMessageDto;
 import library.maxwell.module.invoice.service.InvoiceDetailServiceImpl;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 @RestController
 @RequestMapping("invoice-detail")
 public class InvoiceDetailController {

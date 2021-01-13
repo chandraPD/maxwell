@@ -27,7 +27,7 @@ import library.maxwell.module.slideshow.service.SlideShowServiceImpl;
 
 @RestController
 @RequestMapping("/slideshow")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class SlideShowController {
 
 	@Autowired

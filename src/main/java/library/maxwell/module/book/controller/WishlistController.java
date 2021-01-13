@@ -24,7 +24,7 @@ import library.maxwell.module.book.service.WishlistService;
 
 @RestController
 @RequestMapping("/wishlist")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class WishlistController {
 	@Autowired
 	WishlistService service;

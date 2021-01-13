@@ -13,6 +13,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	
 	List<BookEntity> findByTitleLike(String title);	
 	
+	BookEntity findByTitle(String title);
+	
 	@Query(value = "SELECT * FROM book WHERE status IS true", nativeQuery = true)
 	List<BookEntity> findActiveBook();
 	
@@ -50,5 +52,11 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	
 	@Query(value="SELECT COUNT(author_id) FROM `book` WHERE author_id=?",nativeQuery = true)
 	Integer count(Integer id);
+	
+	@Query(value="SELECT COUNT(category_id) FROM book WHERE category_id = ?", nativeQuery = true)
+	Integer countCategory(Integer categoryId);
+	
+	@Query(value="SELECT status FROM book WHERE title = ?", nativeQuery = true)
+	Boolean existsByStatusTitle(String title);
 	
 }

@@ -21,7 +21,7 @@ import library.maxwell.module.book.service.BorrowedBookService;
 import library.maxwell.module.invoice.dto.StatusMessageDto;
 import library.maxwell.module.user.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 @RestController
 @RequestMapping("/borrow")
 public class BorrowedBookController {
