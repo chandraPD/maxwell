@@ -31,4 +31,8 @@ public interface UserService {
 
 	String getName2(Integer id);
 
+    AddRoleDto addRoleUser(UserPrincipal userPrincipal, Integer id, AddRoleDto role);
+
+    AddRoleDto changeRoleUser(UserPrincipal userPrincipal, Integer id, AddRoleDto role);
+
 }
