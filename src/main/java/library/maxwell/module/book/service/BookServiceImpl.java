@@ -419,5 +419,12 @@ public class BookServiceImpl implements BookService {
 		return countCategory;
 	}
 
+	@Override
+	public ResponseEntity<?> getTitle(String title) {
+		// TODO Auto-generated method stub
+		BookEntity bookEntity = bookRepository.findByTitle(title);
+		return ResponseEntity.ok(bookEntity);
+	}
+
 	
 }
