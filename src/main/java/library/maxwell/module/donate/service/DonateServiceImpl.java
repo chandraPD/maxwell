@@ -37,43 +37,7 @@ public class DonateServiceImpl implements DonateService{
     public DonateEntity insertDonate(DonateDto dto) {
         DonateEntity donateEntity = convertToDonateEntity(dto);
         donateRepository.save(donateEntity);
-        //MENGIRIM AKTIVITAS KE LOG
-        LogEntity logEntity = new LogEntity();
-        logEntity.setAction("Post");
-        logEntity.setDateTime(LocalDateTime.now());
-        logEntity.setStatus(true);
-        logEntity.setUserEntity(null);
-        logEntity.setDescription("Melakukan Penambahan Data Pada Donate List");
-        logRepository.save(logEntity);
 
-        return donateEntity;
-    }
-
-    @Override
-    public DonateEntity updateDonate(UserPrincipal userPrincipal, DonateDto dto, Integer donateId){
-        DonateEntity donateEntity = donateRepository.findById(donateId).get();
-        UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();
-        donateEntity.setDonationType(dto.getDonationType());
-        donateEntity.setEmail(dto.getEmail());
-        donateEntity.setName(dto.getName());
-        donateEntity.setTotalBook(dto.getTotalBook());
-        donateEntity.setUserEntity(userEntity);
-        donateRepository.save(donateEntity);
-        //MENGIRIM AKTIVITAS KE LOG
-        LogEntity logEntity = new LogEntity();
-        logEntity.setAction("Put");
-        logEntity.setDateTime(LocalDateTime.now());
-        logEntity.setStatus(true);
-        logEntity.setUserEntity(userEntity);
-        logEntity.setDescription("Melakukan Update Data Pada Donate List");
-        logRepository.save(logEntity);
-        return donateEntity;
-    }
-
-    @Override
-    public DonateEntity deleteDonate(Integer donateId) {
-        DonateEntity donateEntity = donateRepository.findById(donateId).get();
-        donateRepository.delete(donateEntity);
         return donateEntity;
     }
 

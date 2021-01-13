@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/donate")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class DonateController {
     @Autowired
     private DonateServiceImpl donateService;
@@ -40,24 +40,6 @@ public class DonateController {
         return ResponseEntity.ok(statusMessageDto);
     }
 
-    @PutMapping("/{donateId}")
-    public ResponseEntity<?> updateDonate(@CurrentUser UserPrincipal userPrincipal,@PathVariable Integer donateId, @RequestBody DonateDto dto) {
-        DonateEntity donateEntity = donateService.updateDonate(userPrincipal, dto, donateId);
-        statusMessageDto.setStatus(200);
-        statusMessageDto.setMessages("Data have succesfully updated");
-        statusMessageDto.setData(donateEntity);
-        return ResponseEntity.ok(statusMessageDto);
-
-    }
-
-    @DeleteMapping("/{donateId}")
-    public ResponseEntity<?> deleteDonate(@PathVariable Integer donateId) {
-        DonateEntity donateEntity = donateService.deleteDonate(donateId);
-        statusMessageDto.setStatus(200);
-        statusMessageDto.setMessages("Data have succesfully deleted");
-        statusMessageDto.setData(donateEntity);
-        return ResponseEntity.ok(statusMessageDto);
-    }
 
     @PostMapping("/accept/{donateId}")
     public ResponseEntity<?> accept(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer donateId) {

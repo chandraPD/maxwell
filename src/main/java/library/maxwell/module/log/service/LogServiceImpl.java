@@ -111,8 +111,9 @@ public class LogServiceImpl implements LogService {
 			logDto2.setDateTime(logEntity.getDateTime());
 			logDto2.setName(userDetail.getFirstName() + " " + userDetail.getLastName());
 			logDto2.setEmail(userEntity.getEmail());
+
 			logDto2.setUserId(userId);
-			
+
 			logDto.add(logDto2);
 		
 		}

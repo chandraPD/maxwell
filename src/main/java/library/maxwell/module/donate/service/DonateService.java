@@ -10,8 +10,6 @@ import java.util.List;
 public interface DonateService {
     List<DonateEntity> getAllDonate();
     DonateEntity insertDonate(DonateDto dto);
-    DonateEntity updateDonate(UserPrincipal userPrincipal, DonateDto dto, Integer UserId);
-    DonateEntity deleteDonate(Integer UserId);
     DonateEntity accept(UserPrincipal userPrincipal, Integer donateId);
     DonateEntity reject(UserPrincipal userPrincipal, Integer donateId);
 }
