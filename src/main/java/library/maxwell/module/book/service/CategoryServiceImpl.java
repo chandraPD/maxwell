@@ -48,16 +48,8 @@ public class CategoryServiceImpl implements CategoryService {
 	public ResponseEntity<?> getByCategory(String category) {
 		// TODO Auto-generated method stub
 		CategoryEntity categoryEntity = categoryRepository.findByCategory(category);
-		
-		if(categoryEntity == null) {
-			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
-			result.setStatus(HttpStatus.BAD_REQUEST.value());
-			result.setMessage("Data Not Found!");
-			result.setData(categoryEntity);
-			return ResponseEntity.badRequest().body(result);
-		} else {
 			return ResponseEntity.ok(categoryEntity);
-		}
+		
 	}
 	
 	@Override
@@ -93,19 +85,32 @@ public class CategoryServiceImpl implements CategoryService {
 	public ResponseEntity<?> addCategory(UserPrincipal userPrincipal, CategoryDto dto) {
 		// TODO Auto-generated method stub
 		CategoryEntity categoryEntity = convertToCategoryEntity(dto);
+		CategoryEntity categoryExist = categoryRepository.findByCategory(dto.getCategory());
 		LogEntity logEntity = new LogEntity();
 		UserEntity userEntity = userRepository.findByUserId(userPrincipal.getId());
 		LocalDateTime now = LocalDateTime.now();
 		
 		Boolean existsByCategory = categoryRepository.existsByCategory(dto.getCategory());
+		Boolean existsByStatus = categoryRepository.existsByCategoryAndStatusTrue(dto.getCategory());
 		System.out.println(existsByCategory);
-		if(existsByCategory) {
+		if(existsByCategory == true && existsByStatus == true) {
 			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
 			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			result.setMessage("Category already exist!");
 			result.setData(categoryEntity);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-		} else {
+		} else if(existsByCategory == true && existsByStatus == false) {
+			categoryExist.setStatus(true);
+			categoryRepository.save(categoryExist);
+			logEntity.setAction("Post");
+			logEntity.setDateTime(now);
+			logEntity.setDescription("Menambahkan Category: " + dto.getCategory());
+			logEntity.setStatus(true);
+			logEntity.setUserEntity(userEntity);
+			logRepository.save(logEntity);
+			return ResponseEntity.ok(categoryExist);
+		}
+		else {
 			categoryRepository.save(categoryEntity);
 			logEntity.setAction("Post");
 			logEntity.setDateTime(now);
@@ -165,6 +170,7 @@ public class CategoryServiceImpl implements CategoryService {
 		categoryEntity.setCategory(dto.getCategory());
 		return categoryEntity;
 	}
+
 
 
 
