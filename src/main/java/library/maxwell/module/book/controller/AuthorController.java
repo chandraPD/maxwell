@@ -2,6 +2,7 @@ package library.maxwell.module.book.controller;
 
 import java.util.List;
 
+import jdk.internal.org.jline.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,13 +100,14 @@ public class AuthorController {
 
 	@GetMapping("/getAuthor/{author}")
 	public ResponseEntity<?> author(@PathVariable String author) {
-		String author2 = authorService.author(author);
+
+		StatusMessageDto author2 = authorService.author(author);
 		return ResponseEntity.ok(author2);
 	}
 
 	@GetMapping("/getCount/{id}")
 	public ResponseEntity<?> author(@PathVariable Integer id) {
-		Integer author2 = service.getCount(id);
+		StatusMessageDto author2 = service.getCount(id);
 		return ResponseEntity.ok(author2);
 	}
 

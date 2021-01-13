@@ -2,6 +2,7 @@ package library.maxwell.module.book.service;
 
 
 
+import library.maxwell.module.book.dto.StatusMessageDto;
 import org.springframework.http.ResponseEntity;
 
 import library.maxwell.config.security.auth.UserPrincipal;
@@ -26,6 +27,6 @@ public interface BookService {
 	ResponseEntity<?> getBookByCategoryAndYear(Integer categoryId, String yearBook);
 	ResponseEntity<?> getBookByYear(String yearBook);
 	ResponseEntity<?> getYear();
-	Integer getCount(Integer id);
+	StatusMessageDto getCount(Integer id);
 	Integer getCountCategory(Integer categoryId);
 }
