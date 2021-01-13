@@ -9,14 +9,14 @@ import org.springframework.stereotype.Repository;
 import library.maxwell.module.book.entity.WishlistEntity;
 
 @Repository
-public interface WishlistRepository extends JpaRepository<WishlistEntity, Integer>{
-	Boolean existsByBookEntityBookIdAndUserEntityUserId(Integer id,Integer id2);
-	
-	@Query(value="Select status from wishlist where book_id=? AND user_id=?",nativeQuery = true)
-	Boolean findStatus(Integer id,Integer id2);
-	
-	@Query(value="Select * from wishlist where book_id=? And user_id=?",nativeQuery=true)
-	WishlistEntity getEntities(Integer Id,Integer id2);
-	
+public interface WishlistRepository extends JpaRepository<WishlistEntity, Integer> {
+	Boolean existsByBookEntityBookIdAndUserEntityUserId(Integer id, Integer id2);
+
+	@Query(value = "Select status from wishlist where book_id=? AND user_id=?", nativeQuery = true)
+	Boolean findStatus(Integer id, Integer id2);
+
+	@Query(value = "Select * from wishlist where book_id=? And user_id=?", nativeQuery = true)
+	WishlistEntity getEntities(Integer Id, Integer id2);
+
 	List<WishlistEntity> findAllByStatusIsTrueAndUserEntityUserId(Integer id);
 }

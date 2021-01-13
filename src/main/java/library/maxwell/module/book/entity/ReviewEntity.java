@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="review")
+@Table(name = "review")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,21 +24,21 @@ public class ReviewEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer Id;
-	
-	@Column(name="rate")
+
+	@Column(name = "rate")
 	private Double rate;
-	
-	@Column(name="comment")
+
+	@Column(name = "comment")
 	private String comment;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "book_id", referencedColumnName = "book_id")
 	private BookEntity bookEntity;
-	
+
 	@ManyToOne
-	@JoinColumn(name= "user_id")
+	@JoinColumn(name = "user_id")
 	private UserEntity userEntity;
-	
-	@Column(name = "status",unique = false, length= 20 )
+
+	@Column(name = "status", unique = false, length = 20)
 	private boolean status;
 }

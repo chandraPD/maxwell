@@ -24,16 +24,16 @@ public class WishlistEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "wishlist_id")
 	private Integer wishlistId;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "book_id", referencedColumnName = "book_id")
 	private BookEntity bookEntity;
-	
+
 	@ManyToOne
-	@JoinColumn(name= "user_id")
+	@JoinColumn(name = "user_id")
 	private UserEntity userEntity;
-	
-	@Column(name = "status",unique = false, length= 20 )
-	private Boolean status=true;
+
+	@Column(name = "status", unique = false, length = 20)
+	private Boolean status = true;
 
 }
