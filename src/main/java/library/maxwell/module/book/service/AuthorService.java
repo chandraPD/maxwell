@@ -8,11 +8,18 @@ import library.maxwell.module.book.entity.AuthorEntity;
 
 public interface AuthorService {
 	List<AuthorEntity> findAll();
-	AuthorEntity post(UserPrincipal userPrincipal,AuthorDto dto);
+
+	AuthorEntity post(UserPrincipal userPrincipal, AuthorDto dto);
+
 	AuthorEntity getId(Integer id);
-	AuthorEntity update(UserPrincipal userPrincipal,Integer id,AuthorDto dto);
-	AuthorEntity delete(UserPrincipal userPrincipal,Integer id);
+
+	AuthorEntity update(UserPrincipal userPrincipal, Integer id, AuthorDto dto);
+
+	AuthorEntity delete(UserPrincipal userPrincipal, Integer id);
+
 	String author(String author);
-	AuthorEntity post2(UserPrincipal userPrincipal,AuthorDto dto);
-	AuthorEntity update2(UserPrincipal userPrincipal,AuthorDto dto,Integer id);
+
+	AuthorEntity post2(UserPrincipal userPrincipal, AuthorDto dto);
+
+	AuthorEntity update2(UserPrincipal userPrincipal, AuthorDto dto, Integer id);
 }
