@@ -20,6 +20,10 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 	@Query(value = "SELECT * FROM category WHERE status IS false", nativeQuery = true)
 	List<CategoryEntity> findInactiveCategory();
 	
+	
 	Boolean existsByCategory(String category);
+	
+	@Query(value = "SELECT status FROM category WHERE category = ?", nativeQuery = true)
+	Boolean existsByCategoryAndStatusTrue(String category);
 	
 }
