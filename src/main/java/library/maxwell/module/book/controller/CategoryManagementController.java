@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import library.maxwell.config.security.auth.CurrentUser;
 import library.maxwell.config.security.auth.UserPrincipal;
 import library.maxwell.module.book.dto.CategoryDto;
+import library.maxwell.module.book.service.BookService;
 import library.maxwell.module.book.service.CategoryService;
 
 @RestController
@@ -24,6 +25,9 @@ public class CategoryManagementController {
 		
 	@Autowired
 	CategoryService categoryService;
+	
+	@Autowired
+	BookService bookService;
 	
 	@GetMapping("/get-all")
 	public ResponseEntity<?> getCategory() {
@@ -64,5 +68,12 @@ public class CategoryManagementController {
 	public ResponseEntity<?> deleteCategory(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id) {
 		return categoryService.deleteCategory(userPrincipal, id);
 	}
+	
+	@GetMapping("/count-category/{categoryId}")
+	public ResponseEntity<?> countCategory(@PathVariable Integer categoryId) {
+		Integer countCategory = bookService.getCountCategory(categoryId);
+		return ResponseEntity.ok(countCategory);
+	}
+	
 	
 }

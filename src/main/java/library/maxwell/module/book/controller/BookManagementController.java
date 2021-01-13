@@ -91,11 +91,7 @@ public class BookManagementController {
 	public ResponseEntity<?> getRecommendedDetail(@PathVariable Integer categoryId, @PathVariable Integer bookId) {
 		return bookService.getRecommendedDetail(categoryId, bookId);
 	}
-	
-//	@GetMapping("/get-by-author/{author}")
-//	public ResponseEntity<?> getByAuthor(@PathVariable String author) {
-//		return bookService.findByAuthor(author);
-//	}
+
 	
 	@PostMapping("/add-book")
 	public ResponseEntity<?> addBook(@CurrentUser UserPrincipal userPrincipal,@RequestBody BookDto dto) {
