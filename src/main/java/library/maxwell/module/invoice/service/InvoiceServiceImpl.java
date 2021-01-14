@@ -96,18 +96,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 		List<InvoiceEntity> invoiceEntity = invoiceRepository.findAllByStatusIsTrueOrderByInvoiceIdDesc();
 		List<InvoiceDto> invoiceDtos = new ArrayList<>();
 
-		if (invoiceEntity.isEmpty()) {
-			result.setStatus(HttpStatus.BAD_REQUEST.value());
-			result.setMessage("Data belum ada");
-			result.setData(null);
-		} else {
-			for (InvoiceEntity row : invoiceEntity) {
-				invoiceDtos.add(convertToInvoiceDto(row));
-			}
-			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data Invoice telah ditemukan");
-			result.setData(invoiceDtos);
+		for (InvoiceEntity row : invoiceEntity) {
+			invoiceDtos.add(convertToInvoiceDto(row));
 		}
+		result.setStatus(HttpStatus.OK.value());
+		result.setMessage("Data Invoice telah ditemukan");
+		result.setData(invoiceDtos);
 		return result;
 	}
 
