@@ -182,16 +182,18 @@ public class BookServiceImpl implements BookService {
 		CategoryEntity categoryEntity = categoryRepository.findById(dto.getCategoryId()).get();
 		AuthorEntity authorEntity = authorRepository.findById(dto.getAuthorId()).get();
 		
-		Boolean existsByTitle = bookRepository.existsByTitle(dto.getTitle());
-		Boolean existsByStatus = bookRepository.existsByStatusTitle(dto.getTitle());
-		
-		if (existsByTitle == true && existsByStatus && true) {
+//		Boolean existsByTitle = bookRepository.existsByTitle(dto.getTitle());
+//		Boolean existsByStatus = bookRepository.existsByStatusTitle(dto.getTitle());
+//
+
+
+		if (bookExists == null) {
 			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
 			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			result.setMessage("Book already exist!");
 			result.setData(null);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-		} else if(existsByTitle == true && existsByStatus == false) { 
+		} else if(bookExists.getStatus() == false) {
 			bookExists.setStatus(true);
 			bookExists.setAuthorEntity(authorEntity);
 			bookExists.setCategoryEntity(categoryEntity);
