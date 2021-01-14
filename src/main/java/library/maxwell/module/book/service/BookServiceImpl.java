@@ -346,15 +346,15 @@ public class BookServiceImpl implements BookService {
 		Integer yearFull = Integer.parseInt(LocalDate.now().format(getYearFull));
 		
 		// mencari nomor terakhir dari book code
-		String lastBookCode = bookRepository.getLastBookCode(yearFull);
+//		String lastBookCode = bookRepository.getLastBookCode(yearFull);
 		String seq;
 		
-		if(lastBookCode == null) {
+//		if(lastBookCode == null) {
 			seq = String.format("%04d", 1);
-		} else {
-			Integer number = Integer.parseInt(lastBookCode.substring(4, 7)) + 1;
-			seq = String.format("%04d", number);
-		}
+//		} else {
+//			Integer number = Integer.parseInt(lastBookCode.substring(4, 7)) + 1;
+//			seq = String.format("%04d", number);
+//		}
 		
 		String bookCode = "B" + year + seq;
 		bookEntity.setBookCode(bookCode);
