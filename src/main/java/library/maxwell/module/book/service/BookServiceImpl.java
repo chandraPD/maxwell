@@ -409,8 +409,8 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public StatusMessageDto getCount(Integer id) {
 		StatusMessageDto result = new StatusMessageDto();
-		Integer count=bookRepository.count(id);
-		if(!count.equals(0)){
+		Integer count=bookRepository.countBookEntityByAuthorEntityAuthorId(id);
+		if(count != 0){
 			result.setStatus(HttpStatus.OK.value());
 			result.setMessage("Data berhasil ditemukan");
 			result.setData(count);
