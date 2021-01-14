@@ -155,7 +155,7 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-	public ResponseEntity<?> getBookByYear(String yearBook) {
+	public ResponseEntity<?> getBookByYear(Integer yearBook) {
 		// TODO Auto-generated method stub
 		List<BookEntity> bookEntities = bookRepository.getBookByYear(yearBook);
 		StatusMessageDto<BookEntity> result = new StatusMessageDto<>();

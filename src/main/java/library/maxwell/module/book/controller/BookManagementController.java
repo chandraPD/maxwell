@@ -67,7 +67,7 @@ public class BookManagementController {
 	}
 	
 	@GetMapping("/get-by-year/{yearBook}")
-	public ResponseEntity<?> getByYear(@PathVariable String yearBook) {
+	public ResponseEntity<?> getByYear(@PathVariable Integer yearBook) {
 		return bookService.getBookByYear(yearBook);
 	}
 	

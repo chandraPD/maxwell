@@ -39,18 +39,18 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	@Query(value = "SELECT * FROM book WHERE category_id = ? AND status IS true", nativeQuery = true)
 	List<BookEntity> getBookByCategory(Integer categoryId);
 	
-	@Query(value = "SELECT * FROM book WHERE category_id = ?1 AND YEAR(publish_date) = ?2 AND status IS true", nativeQuery = true)
+	@Query(value = "SELECT * FROM book WHERE category_id = ?1 AND EXTRACT(YEAR from publish_date) = ?2 AND status IS true", nativeQuery = true)
 	List<BookEntity> getBookByCategoryAndYear(Integer categoryId, String yearBook);
 	
-	@Query(value = "SELECT * FROM book WHERE YEAR(publish_date) = ? AND status IS true", nativeQuery = true)
-	List<BookEntity> getBookByYear(String yearBook);
+	@Query(value = "SELECT * FROM book WHERE EXTRACT(YEAR from publish_date) = ? AND status IS true", nativeQuery = true)
+	List<BookEntity> getBookByYear(Integer yearBook);
 	
-	@Query(value = "SELECT DISTINCT YEAR(publish_date) as year FROM book ORDER BY publish_date DESC", nativeQuery = true)
+	@Query(value = "SELECT DISTINCT EXTRACT(YEAR from publish_date) as tahun FROM book ORDER BY tahun DESC", nativeQuery = true)
 	List<String> getYear();
 	
 	Boolean existsByTitle(String title);
 	
-	@Query(value="SELECT COUNT(author_id) FROM `book` WHERE author_id=?",nativeQuery = true)
+	@Query(value="SELECT COUNT(author_id) FROM book WHERE author_id=?",nativeQuery = true)
 	Integer count(Integer id);
 
 	Integer countBookEntityByAuthorEntityAuthorId(Integer id);
