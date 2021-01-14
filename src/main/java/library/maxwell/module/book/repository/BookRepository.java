@@ -60,5 +60,4 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	
 	@Query(value="SELECT status FROM book WHERE title = ?", nativeQuery = true)
 	Boolean existsByStatusTitle(String title);
-	
 }
