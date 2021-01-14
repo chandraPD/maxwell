@@ -51,7 +51,7 @@ public class TopUpManagement {
 	@GetMapping("/getAll")
 	public ResponseEntity<?> getAll(@CurrentUser UserPrincipal userprincipal) {
 		Integer id = userprincipal.getId();
-		String role = user.getRole(id).toString();		
+		String role = user.getRole(id);
 		if (role.equals("ROLE_ADMIN")) {
 			List<HistoryBalanceEntity> historyBalanceEntities = service.getAll();
 			return ResponseEntity.ok(historyBalanceEntities);
