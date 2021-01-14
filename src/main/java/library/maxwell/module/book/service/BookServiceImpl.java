@@ -186,14 +186,16 @@ public class BookServiceImpl implements BookService {
 //		Boolean existsByStatus = bookRepository.existsByStatusTitle(dto.getTitle());
 //
 
-
+		System.out.println(1);
 		if (bookExists != null) {
+			System.out.println(2);
 			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
 			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			result.setMessage("Book already exist!");
 			result.setData(null);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
 		} else if(!bookExists.getStatus().booleanValue()) {
+			System.out.println(3);
 			bookExists.setStatus(true);
 			bookExists.setAuthorEntity(authorEntity);
 			bookExists.setCategoryEntity(categoryEntity);
@@ -222,6 +224,7 @@ public class BookServiceImpl implements BookService {
 		}
 		else {
 
+			System.out.println(4);
 			bookEntity.setAuthorEntity(authorEntity);
 			bookEntity.setQty(0);
 			bookEntity.setCategoryEntity(categoryEntity);
@@ -375,6 +378,7 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setQty(dto.getQty());
 		bookEntity.setPublishDate(dto.getPublishDate());
 //		bookEntity.setAuthor(dto.getAuthor());
+		System.out.println(5);
 		return bookEntity;
 	}
 	
