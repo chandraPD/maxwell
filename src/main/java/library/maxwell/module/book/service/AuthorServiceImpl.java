@@ -101,20 +101,13 @@ public class AuthorServiceImpl implements AuthorService {
 	}
 
 	@Override
-	public StatusMessageDto<?> author(String author) {
-		String authorName = repo.findByStatusIsTrueAndAuthorNameIs(author).getAuthorName();
-		StatusMessageDto result = new StatusMessageDto<>();
-
-		if(authorName.equalsIgnoreCase("")){
-			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data berhasil ditemukan");
-			result.setData(authorName);
+	public String author(String author) {
+		AuthorEntity authorEntity = repo.findByStatusIsTrueAndAuthorNameIs(author);
+		if(authorEntity != null){
+			return authorEntity.getAuthorName();
 		}else{
-			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Data gagal ditemukan");
-			result.setData(authorName);
+			return "";
 		}
-		return result;
 	}
 
 	@Override

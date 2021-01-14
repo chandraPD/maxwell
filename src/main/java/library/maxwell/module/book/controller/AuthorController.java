@@ -99,13 +99,13 @@ public class AuthorController {
 	@GetMapping("/getAuthor/{author}")
 	public ResponseEntity<?> author(@PathVariable String author) {
 
-		StatusMessageDto author2 = authorService.author(author);
+		String author2 = authorService.author(author);
 		return ResponseEntity.ok(author2);
 	}
 
 	@GetMapping("/getCount/{id}")
 	public ResponseEntity<?> author(@PathVariable Integer id) {
-		StatusMessageDto author2 = service.getCount(id);
+		Integer author2 = service.getCount(id);
 		return ResponseEntity.ok(author2);
 	}
 

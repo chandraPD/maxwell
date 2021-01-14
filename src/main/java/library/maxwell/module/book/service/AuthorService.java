@@ -18,7 +18,7 @@ public interface AuthorService {
 
 	AuthorEntity delete(UserPrincipal userPrincipal, Integer id);
 
-	StatusMessageDto author(String author);
+	String author(String author);
 
 	AuthorEntity post2(UserPrincipal userPrincipal, AuthorDto dto);
 
