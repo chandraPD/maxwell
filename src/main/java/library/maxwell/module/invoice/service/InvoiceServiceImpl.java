@@ -108,7 +108,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public StatusMessageDto<?> getById(Integer invoiceId) {
 		// TODO Auto-generated method stub
-		InvoiceEntity invoiceEntity = invoiceRepository.getById(invoiceId);
+		InvoiceEntity invoiceEntity = invoiceRepository.findByInvoiceId(invoiceId);
 		StatusMessageDto<InvoiceDto> result = new StatusMessageDto<>();
 		if (invoiceEntity != null) {
 
