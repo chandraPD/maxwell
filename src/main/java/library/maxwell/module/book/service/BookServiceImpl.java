@@ -186,10 +186,8 @@ public class BookServiceImpl implements BookService {
 //		Boolean existsByStatus = bookRepository.existsByStatusTitle(dto.getTitle());
 //
 
-		System.out.println(1);
 		if (bookExists != null) {
 			if(!bookExists.getStatus()) {
-				System.out.println(3);
 				bookExists.setStatus(true);
 				bookExists.setAuthorEntity(authorEntity);
 				bookExists.setCategoryEntity(categoryEntity);
@@ -225,9 +223,7 @@ public class BookServiceImpl implements BookService {
 			}
 		} else {
 
-			System.out.println(4);
 			bookEntity.setAuthorEntity(authorEntity);
-			bookEntity.setQty(0);
 			bookEntity.setCategoryEntity(categoryEntity);
 			bookEntity.setCreatedByEntity(createdByEntity);
 			bookEntity.setUpdatedByEntity(updatedByEntity);
@@ -350,15 +346,15 @@ public class BookServiceImpl implements BookService {
 		Integer yearFull = Integer.parseInt(LocalDate.now().format(getYearFull));
 		
 		// mencari nomor terakhir dari book code
-//		String lastBookCode = bookRepository.getLastBookCode(yearFull);
+		String lastBookCode = bookRepository.getLastBookCode(yearFull);
 		String seq;
 		
-//		if(lastBookCode == null) {
+		if(lastBookCode == null) {
 			seq = String.format("%04d", 1);
-//		} else {
-//			Integer number = Integer.parseInt(lastBookCode.substring(4, 7)) + 1;
-//			seq = String.format("%04d", number);
-//		}
+		} else {
+			Integer number = Integer.parseInt(lastBookCode.substring(4, 7)) + 1;
+			seq = String.format("%04d", number);
+		}
 		
 		String bookCode = "B" + year + seq;
 		bookEntity.setBookCode(bookCode);
@@ -379,7 +375,6 @@ public class BookServiceImpl implements BookService {
 		bookEntity.setQty(dto.getQty());
 		bookEntity.setPublishDate(dto.getPublishDate());
 //		bookEntity.setAuthor(dto.getAuthor());
-		System.out.println(5);
 		return bookEntity;
 	}
 	

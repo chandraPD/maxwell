@@ -3,6 +3,7 @@ package library.maxwell.module.topup.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -174,7 +175,10 @@ public class HistoryBalanceImp implements HistoryBalanceService {
 	public Boolean getPass(UserPrincipal userPrincipal, HistoryBalanceDto dto) {
 		Integer id = userPrincipal.getId();
 		String rawPassword = dto.getPassword();
-		String encodedPassword = repo3.findPasswordByUserId(id).toString();
+//		String encodedPassword = repo3.findPasswordByUserId(id).toString();
+		UserEntity user = repo3.findByUserId(id);
+		String encodedPassword = user.getPassword();
+
 		boolean isPasswordMatch = passwordEncoder.matches(rawPassword, encodedPassword);
 		return isPasswordMatch;
 	}
