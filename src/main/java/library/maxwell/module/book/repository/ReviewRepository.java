@@ -18,7 +18,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 	@Query(value = "Select status from review where book_id=? AND user_id=?", nativeQuery = true)
 	Boolean findStatus(Integer id, Integer id2);
 
-	@Query(value = "SELECT AVG(rate) FROM `review` WHERE book_id=? AND Status is True", nativeQuery = true)
+	@Query(value = "SELECT AVG(rate) FROM review WHERE book_id=? AND Status is True", nativeQuery = true)
 	Double findRate(Integer id);
 
 	@Query(value = "Select * from review where book_id=? And user_id=?", nativeQuery = true)
