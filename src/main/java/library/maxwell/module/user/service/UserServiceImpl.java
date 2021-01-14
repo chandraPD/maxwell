@@ -258,5 +258,44 @@ public class UserServiceImpl implements UserService {
         return userManageDtos;
     }
 
+    @Override
+    public AddRoleDto addRoleUser(UserPrincipal userPrincipal, Integer id, AddRoleDto role) {
+
+        LevelEntity levelEntity = levelRepository.findByName(LevelName.valueOf(role.getRole()))
+                .get();
+
+        UserEntity userEntity = userRepository.findByUserId(id);
+
+        Set<LevelEntity> roles = userEntity.getRoles();
+        roles.add(levelEntity);
+
+        userEntity.setRoles(roles);
+
+        saveUser(userEntity);
+
+        return role;
+
+    }
+
+    @Override
+    public AddRoleDto changeRoleUser(UserPrincipal userPrincipal, Integer id, AddRoleDto role) {
+
+        LevelEntity levelEntity = levelRepository.findByName(LevelName.valueOf(role.getRole()))
+                .get();
+        UserEntity userEntity = userRepository.findByUserId(id);
+
+        Set<LevelEntity> roles = userEntity.getRoles();
+
+        if(roles.contains(levelEntity)) {
+            userEntity.setActiveRole(levelEntity.getName().toString());
+        } else {
+            return null;
+        }
+
+        saveUser(userEntity);
+
+        return role;
+    }
+
 
 }
