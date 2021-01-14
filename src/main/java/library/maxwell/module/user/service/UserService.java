@@ -35,4 +35,8 @@ public interface UserService {
 
     AddRoleDto changeRoleUser(UserPrincipal userPrincipal, Integer id, AddRoleDto role);
 
+    ChangePasswordDto changePassword(UserPrincipal userPrincipal, ChangePasswordDto changePasswordDto);
+
+    ForgotPasswordDto forgotPassword(ForgotPasswordDto forgotPasswordDto);
+
 }

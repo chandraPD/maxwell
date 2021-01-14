@@ -19,14 +19,14 @@ public class StatusMessageDto<T> {
 	
 	private T data;
 	
-	public static <T>StatusMessageDto error(String message) {
+	public static <T> StatusMessageDto error(String message) {
 	      return StatusMessageDto.builder()
 	          .status(HttpStatus.BAD_GATEWAY.value())
 	          .message(message)
 	          .build();
 	    }
 
-	  public static <T>StatusMessageDto success(String message, T data) {
+	  public static <T> StatusMessageDto success(String message, T data) {
 	    return StatusMessageDto.builder()
 	        .status(HttpStatus.OK.value())
 	        .message(message)
