@@ -119,7 +119,7 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public ResponseEntity<?> findByTitle(String title) {
 		// TODO Auto-generated method stub
-		List<BookEntity> bookEntities = bookRepository.findByTitleLike( "%" + title + "%");
+		List<BookEntity> bookEntities = bookRepository.findByTitleLikeIgnoreCase( "%" + title + "%");
 		return ResponseEntity.ok(bookEntities);			
 	}
 	
@@ -174,7 +174,7 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		Integer userId = userPrincipal.getId();
 		BookEntity bookEntity = convertToBookEntity(dto);
-		BookEntity bookExists = bookRepository.findByTitle(dto.getTitle());
+		BookEntity bookExists = bookRepository.findByTitleAndAuthorEntity_AuthorId(dto.getTitle(), dto.getAuthorId());
 		LogEntity logEntity = new LogEntity();
 		LocalDateTime now = LocalDateTime.now();
 		UserEntity createdByEntity = userRepository.findById(userId).get();
@@ -184,13 +184,18 @@ public class BookServiceImpl implements BookService {
 		
 		Boolean existsByTitle = bookRepository.existsByTitle(dto.getTitle());
 		Boolean existsByStatus = bookRepository.existsByStatusTitle(dto.getTitle());
+		Integer getAuthorId = bookRepository.getAuthorIdByTitle(dto.getTitle());
 		
-		if (existsByTitle == true && existsByStatus && true) {
+		System.out.println(existsByTitle);
+		System.out.println(getAuthorId);
+		System.out.println(dto.getAuthorId());
+		
+		if (existsByTitle == true && getAuthorId == dto.getAuthorId()) {
 			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
-			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
 			result.setMessage("Book already exist!");
 			result.setData(null);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
 		} else if(existsByTitle == true && existsByStatus == false) { 
 			bookExists.setStatus(true);
 			bookExists.setAuthorEntity(authorEntity);
@@ -420,9 +425,9 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public ResponseEntity<?> getTitle(String title) {
+	public ResponseEntity<?> getTitle(String title, Integer authorId) {
 		// TODO Auto-generated method stub
-		BookEntity bookEntity = bookRepository.findByTitle(title);
+		BookEntity bookEntity = bookRepository.findByTitleAndAuthorEntity_AuthorId(title, authorId);
 		return ResponseEntity.ok(bookEntity);
 	}
 

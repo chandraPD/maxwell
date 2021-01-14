@@ -28,5 +28,5 @@ public interface BookService {
 	ResponseEntity<?> getYear();
 	Integer getCount(Integer id);
 	Integer getCountCategory(Integer categoryId);
-	ResponseEntity<?> getTitle(String title);
+	ResponseEntity<?> getTitle(String title, Integer authorId);
 }

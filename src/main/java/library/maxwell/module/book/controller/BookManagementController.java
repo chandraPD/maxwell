@@ -51,9 +51,9 @@ public class BookManagementController {
 		return bookService.findByTitle(title);
 	}
 	
-	@GetMapping("/get-title-fix/{title}")
-	public ResponseEntity<?> getTitleFix(@PathVariable String title) {
-		return bookService.getTitle(title);
+	@GetMapping("/get-title-fix/{title}/{authorId}")
+	public ResponseEntity<?> getTitleFix(@PathVariable String title, @PathVariable Integer authorId) {
+		return bookService.getTitle(title, authorId);
 	}
 	
 	@GetMapping("/get-by-category/{categoryId}")
