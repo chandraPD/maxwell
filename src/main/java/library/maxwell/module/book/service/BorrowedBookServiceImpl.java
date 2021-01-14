@@ -246,7 +246,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 
 			logRepository.save(logEntity);
 
-			result.setMessage("Berhasil, harap menaljutkan proses pembayaran");
+			result.setMessage("Berhasil, harap melanjutkan proses pembayaran");
 			result.setStatus(HttpStatus.OK.value());
 			result.setData(borrowedBookEntity);
 		}
@@ -376,7 +376,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		InvoiceDetailEntity lastData = invoiceDetailRepository.findTopByBorrowedBookEntity_BorrowedBookIdOrderByInvoiceDetailIdDesc(borrowedBookId);
 		if(lastData.getInvoiceEntity().getStatusInvoice().equalsIgnoreCase("Waiting For Payment")){
 			result.setStatus(HttpStatus.BAD_REQUEST.value());
-			result.setMessage("This Invoice has not been paid");
+			result.setMessage("Invoice belum dibayarkan oleh peminjam");
 			result.setData(null);
 			return result;
 		}
@@ -397,7 +397,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		logRepository.save(logEntity);
 
 		result.setStatus(HttpStatus.OK.value());
-		result.setMessage("Rent has been Accepted!");
+		result.setMessage("Permintaan atas peminjaman telah diterima!");
 		result.setData(borrowedBookEntity);
         return result;
 
@@ -450,7 +450,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			invoiceRepository.save(invoiceEntity);
 
 			result.setStatus(HttpStatus.OK.value());
-			result.setMessage("Rent has been Canceled, and balance has been add to user");
+			result.setMessage("Peminjaman telah dibatalkan, dan uang telah dikembalikan peminjam");
 			result.setData(null);
             return result;
 		}
@@ -493,7 +493,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 
 		List<InvoiceDetailDto> late = new ArrayList<>();
 		int countOnTime = 0;
-		double grandTotal = 0.0;
+		double totalDendaBuku = 0.0;
 		LocalDateTime now = LocalDateTime.now();
 		for (ReturnBookDto e: dtos) {
 
@@ -517,9 +517,9 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			if(diffDays > 0){
 				InvoiceDetailDto dto = new InvoiceDetailDto();
 				dto.setLate(diffDays);
-				dto.setType("Denda Keterlambatan sebanayak "+diffDays + " Hari");
+				dto.setType("Denda Keterlambatan sebanyak "+diffDays + " Hari");
 				double total = diffDays * 2000;
-				grandTotal = grandTotal+total;
+				totalDendaBuku = totalDendaBuku+total;
 				dto.setTotal(total);
 				dto.setBorrowedBookEntity(borrowedBookEntity);
 				late.add(dto);
@@ -536,7 +536,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 					InvoiceDetailDto dto = new InvoiceDetailDto();
 					dto.setType(dendaDto.getType());
 					dto.setTotal(dendaDto.getTotal());
-					grandTotal = grandTotal+dendaDto.getTotal();
+					totalDendaBuku = totalDendaBuku+dendaDto.getTotal();
 					dto.setBorrowedBookEntity(borrowedBookEntity);
 					late.add(dto);
 					countDenda++;
@@ -547,11 +547,11 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 			if(role.equalsIgnoreCase("ROLE_ADMIN")){
 				borrowedBookEntity.setReturnedDate(now);
 				borrowedBookEntity.setTakenByEntity(userEntity);
-
 //				Update status buku menjadi Available (karena buku telah diterima oleh Librarian)
 				BookDetailEntity bookDetailEntity =  borrowedBookEntity.getBookDetailEntity();
 				bookDetailEntity.setStatusBookDetail("Available");
 				bookDetailRepository.save(bookDetailEntity);
+				borrowedBookEntity.setGrandTotal(borrowedBookEntity.getGrandTotal()+totalDendaBuku);
 
 				BookEntity bookEntity = bookDetailEntity.getBookEntity();
 				bookEntity.setQty(bookEntity.getQty()+1);
@@ -570,7 +570,7 @@ public class BorrowedBookServiceImpl implements BorrowedBookService {
 		if(!late.isEmpty()){
 //			add Invoice if role = ROLE_ADMIN
 			if(role.equalsIgnoreCase("ROLE_ADMIN")){
-				InvoiceEntity invoiceEntity = invoiceService.addInvoice(grandTotal,"Denda","Waiting For Payment", borrower);
+				InvoiceEntity invoiceEntity = invoiceService.addInvoice(totalDendaBuku,"Denda","Waiting For Payment", borrower);
 				InvoiceDetailEntity invoiceDetailEntity = invoiceDetailService.addInvoiceDetails(invoiceEntity, late);
 			}
 		}else if ( countOnTime >= 1){
