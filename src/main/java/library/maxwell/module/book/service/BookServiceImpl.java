@@ -119,7 +119,7 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public ResponseEntity<?> findByTitle(String title) {
 		// TODO Auto-generated method stub
-		List<BookEntity> bookEntities = bookRepository.findByTitleLike( "%" + title + "%");
+		List<BookEntity> bookEntities = bookRepository.findByTitleLikeIgnoreCase( "%" + title + "%");
 		return ResponseEntity.ok(bookEntities);			
 	}
 	
@@ -174,7 +174,7 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		Integer userId = userPrincipal.getId();
 		BookEntity bookEntity = convertToBookEntity(dto);
-		BookEntity bookExists = bookRepository.findByTitle(dto.getTitle());
+		BookEntity bookExists = bookRepository.findByTitleAndAuthorEntity_AuthorId(dto.getTitle(), dto.getAuthorId());
 		LogEntity logEntity = new LogEntity();
 		LocalDateTime now = LocalDateTime.now();
 		UserEntity createdByEntity = userRepository.findById(userId).get();
@@ -182,60 +182,63 @@ public class BookServiceImpl implements BookService {
 		CategoryEntity categoryEntity = categoryRepository.findById(dto.getCategoryId()).get();
 		AuthorEntity authorEntity = authorRepository.findById(dto.getAuthorId()).get();
 		
-//		Boolean existsByTitle = bookRepository.existsByTitle(dto.getTitle());
-//		Boolean existsByStatus = bookRepository.existsByStatusTitle(dto.getTitle());
-//
+		Boolean existsByTitle = bookRepository.existsByTitle(dto.getTitle());
+		Boolean existsByStatus = bookRepository.existsByStatusTitle(dto.getTitle());
+		Integer getAuthorId = bookRepository.getAuthorIdByTitle(dto.getTitle());
 
-		if (bookExists != null) {
-			if(!bookExists.getStatus()) {
-				bookExists.setStatus(true);
-				bookExists.setAuthorEntity(authorEntity);
-				bookExists.setCategoryEntity(categoryEntity);
-				bookExists.setDescription(dto.getDescription());
+		System.out.println(existsByTitle);
+		System.out.println(getAuthorId);
+		System.out.println(dto.getAuthorId());
 
-				byte[] imgDetail = Base64.getMimeDecoder().decode(dto.getImgDetail());
-				byte[] imgBanner = Base64.getMimeDecoder().decode(dto.getImgBanner());
-
-				Map uploadResultDetail = cloudinary.upload(imgDetail, ObjectUtils.asMap("resourcetype", "auto"));
-				bookExists.setImgDetail(uploadResultDetail.get("url").toString());
-
-				Map uploadResultBanner = cloudinary.upload(imgBanner, ObjectUtils.asMap("resourcetype", "auto"));
-				bookExists.setImgBanner(uploadResultBanner.get("url").toString());
-
-				bookExists.setPublishDate(dto.getPublishDate());
-
-				bookRepository.save(bookExists);
-				logEntity.setAction("Post");
-				logEntity.setDateTime(now);
-				logEntity.setDescription("Menambahkan Buku: " + dto.getTitle());
-				logEntity.setStatus(true);
-				logEntity.setUserEntity(createdByEntity);
-				logRepository.save(logEntity);
-
-				return ResponseEntity.ok(bookEntity);
-			}else {
-
-				StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
-				result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-				result.setMessage("Book already exist!");
-				result.setData(null);
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
-			}
-		} else {
-
-			bookEntity.setAuthorEntity(authorEntity);
-			bookEntity.setCategoryEntity(categoryEntity);
-			bookEntity.setCreatedByEntity(createdByEntity);
-			bookEntity.setUpdatedByEntity(updatedByEntity);
-			bookRepository.save(bookEntity);
-
+		if (existsByTitle == true && getAuthorId == dto.getAuthorId()) {
+			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
+			result.setStatus(HttpStatus.BAD_REQUEST.value());
+			result.setMessage("Book already exist!");
+			result.setData(null);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+		} else if(existsByTitle == true && existsByStatus == false) { 
+			bookExists.setStatus(true);
+			bookExists.setAuthorEntity(authorEntity);
+			bookExists.setCategoryEntity(categoryEntity);
+			bookExists.setDescription(dto.getDescription());
+			
+			byte[] imgDetail = Base64.getMimeDecoder().decode(dto.getImgDetail());
+			byte[] imgBanner = Base64.getMimeDecoder().decode(dto.getImgBanner());
+			
+			Map uploadResultDetail = cloudinary.upload(imgDetail, ObjectUtils.asMap("resourcetype", "auto"));
+			bookExists.setImgDetail(uploadResultDetail.get("url").toString());
+			
+			Map uploadResultBanner = cloudinary.upload(imgBanner, ObjectUtils.asMap("resourcetype", "auto"));
+			bookExists.setImgBanner(uploadResultBanner.get("url").toString());
+			
+			bookExists.setPublishDate(dto.getPublishDate());
+			
+			bookRepository.save(bookExists);
 			logEntity.setAction("Post");
 			logEntity.setDateTime(now);
 			logEntity.setDescription("Menambahkan Buku: " + dto.getTitle());
 			logEntity.setStatus(true);
 			logEntity.setUserEntity(createdByEntity);
 			logRepository.save(logEntity);
-
+			
+			return ResponseEntity.ok(bookEntity);
+		}
+		else {
+			
+			bookEntity.setAuthorEntity(authorEntity);
+			bookEntity.setQty(0);
+			bookEntity.setCategoryEntity(categoryEntity);
+			bookEntity.setCreatedByEntity(createdByEntity);
+			bookEntity.setUpdatedByEntity(updatedByEntity);
+			bookRepository.save(bookEntity);
+			
+			logEntity.setAction("Post");
+			logEntity.setDateTime(now);
+			logEntity.setDescription("Menambahkan Buku: " + dto.getTitle());
+			logEntity.setStatus(true);
+			logEntity.setUserEntity(createdByEntity);
+			logRepository.save(logEntity);
+			
 			return ResponseEntity.ok(bookEntity);
 		}
 		
@@ -421,5 +424,12 @@ public class BookServiceImpl implements BookService {
 		return countCategory;
 	}
 
-	
+	@Override
+	public ResponseEntity<?> getTitle(String title, Integer authorId) {
+		// TODO Auto-generated method stub
+		BookEntity bookEntity = bookRepository.findByTitleAndAuthorEntity_AuthorId(title, authorId);
+		return ResponseEntity.ok(bookEntity);
+	}
+
+
 }

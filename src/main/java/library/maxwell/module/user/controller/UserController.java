@@ -135,6 +135,70 @@ public class UserController {
         result.setMessages("success");
         result.setData(userManageDtos);
 
-        return ResponseEntity.ok(userManageDtos);
+        return ResponseEntity.ok(result);
+    }
+
+    //Add role
+    @PostMapping("/user/{id}/addrole/")
+    public ResponseEntity<?> addRoleUser(@CurrentUser UserPrincipal userPrincipal,
+                                         @PathVariable Integer id,
+                                         @RequestBody AddRoleDto addRoleDto) {
+        AddRoleDto userEntity = userService.addRoleUser(userPrincipal, id, addRoleDto);
+
+        result.setStatus(200);
+        result.setMessages("success");
+        result.setData(userEntity);
+        return ResponseEntity.ok(result);
+    }
+
+    //Change role
+    @PostMapping("/user/{id}/changerole/")
+    public ResponseEntity<?> changeRoleUser(@CurrentUser UserPrincipal userPrincipal,
+                                         @PathVariable Integer id,
+                                         @RequestBody AddRoleDto addRoleDto) {
+        AddRoleDto userEntity = userService.changeRoleUser(userPrincipal, id, addRoleDto);
+
+        if (userEntity == null) {
+            result.setStatus(400);
+            result.setMessages("role not registered");
+            result.setData(null);
+        } else {
+            result.setStatus(200);
+            result.setMessages("success");
+            result.setData(userEntity);
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    //Change Password
+    @PostMapping("/user/password/change")
+    public ResponseEntity<?> changePassword(@CurrentUser UserPrincipal userPrincipal,
+                                            @RequestBody ChangePasswordDto changePasswordDto) {
+        ChangePasswordDto changePassword = userService.changePassword(userPrincipal, changePasswordDto);
+
+        if (changePassword == null) {
+            result.setStatus(400);
+            result.setMessages("Old Password not match");
+            result.setData(null);
+        } else {
+            result.setStatus(200);
+            result.setMessages("Change Password Success");
+            result.setData(changePassword);
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    //Forgot Password
+    @PostMapping("/user/password/forgot")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordDto forgotPasswordDto) {
+        ForgotPasswordDto forgotPassword = userService.forgotPassword(forgotPasswordDto);
+
+        result.setStatus(200);
+        result.setMessages("Email sent to " + forgotPasswordDto.getEmail());
+        result.setData(forgotPassword);
+
+        return ResponseEntity.ok(result);
     }
 }

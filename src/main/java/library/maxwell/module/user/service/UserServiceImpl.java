@@ -51,6 +51,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private CloudinaryConfig cloudinary;
 
+    @Autowired
+    private EmailService emailService;
+
     public void saveUser(UserEntity user) {
         userRepository.save(user);
     }
@@ -256,6 +259,86 @@ public class UserServiceImpl implements UserService {
         }
 
         return userManageDtos;
+    }
+
+    @Override
+    public AddRoleDto addRoleUser(UserPrincipal userPrincipal, Integer id, AddRoleDto role) {
+
+        LevelEntity levelEntity = levelRepository.findByName(LevelName.valueOf(role.getRole()))
+                .get();
+
+        UserEntity userEntity = userRepository.findByUserId(id);
+
+        Set<LevelEntity> roles = userEntity.getRoles();
+        roles.add(levelEntity);
+
+        userEntity.setRoles(roles);
+
+        saveUser(userEntity);
+
+        return role;
+
+    }
+
+    @Override
+    public AddRoleDto changeRoleUser(UserPrincipal userPrincipal, Integer id, AddRoleDto role) {
+
+        LevelEntity levelEntity = levelRepository.findByName(LevelName.valueOf(role.getRole()))
+                .get();
+        UserEntity userEntity = userRepository.findByUserId(id);
+
+        Set<LevelEntity> roles = userEntity.getRoles();
+
+        if(roles.contains(levelEntity)) {
+            userEntity.setActiveRole(levelEntity.getName().toString());
+        } else {
+            return null;
+        }
+
+        saveUser(userEntity);
+
+        return role;
+    }
+
+    @Override
+    public ChangePasswordDto changePassword(UserPrincipal userPrincipal, ChangePasswordDto changePasswordDto) {
+
+        UserEntity loggedInUser = userRepository.findByUserId(userPrincipal.getId());
+
+        String oldPassword = changePasswordDto.getOldPassword();
+        Boolean isPasswordMatch = passwordEncoder.matches(oldPassword, loggedInUser.getPassword());
+
+        if (isPasswordMatch) {
+            String encodedPassword = passwordEncoder.encode(changePasswordDto.getNewPassword());
+            loggedInUser.setPassword(encodedPassword);
+
+            saveUser(loggedInUser);
+
+            return changePasswordDto;
+        }
+
+        return null;
+
+    }
+
+    @Override
+    public ForgotPasswordDto forgotPassword(ForgotPasswordDto forgotPasswordDto) {
+        UserEntity userEntity = userRepository.findByEmail(forgotPasswordDto.getEmail())
+                .orElseThrow(() -> new RuntimeException());
+
+        UUID randomUUID = UUID.randomUUID();
+        String generatedPassword = (randomUUID.toString()).substring(0,11).replace("-", "");
+
+        String encodedPassword = passwordEncoder.encode(generatedPassword);
+        userEntity.setPassword(encodedPassword);
+        saveUser(userEntity);
+
+        //Send email
+        emailService.sendMail(forgotPasswordDto.getEmail(),
+                "New Password for Maxwell Library",
+                "Please login with your new password : " + generatedPassword);
+
+        return forgotPasswordDto;
     }
 
 
