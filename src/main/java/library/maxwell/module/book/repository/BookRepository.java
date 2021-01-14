@@ -52,6 +52,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 	
 	@Query(value="SELECT COUNT(author_id) FROM `book` WHERE author_id=?",nativeQuery = true)
 	Integer count(Integer id);
+
+	Integer countBookEntityByAuthorEntityAuthorId(Integer id);
 	
 	@Query(value="SELECT COUNT(category_id) FROM book WHERE category_id = ?", nativeQuery = true)
 	Integer countCategory(Integer categoryId);
