@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     String findPasswordByUserId(Integer id);
 
     
-    @Query(value="SELECT user_entity.* FROM user_entity INNER JOIN user_akses ON user_entity.user_id=user_akses.user_id WHERE level_id=?",nativeQuery = true)
+    @Query(value="SELECT user_entity.* FROM user_entity INNER JOIN user_akses ON user_entity.user_id=user_akses.user_id WHERE user_akses.level_id=?",nativeQuery = true)
     List<UserEntity> findUser(Integer id);
     
     UserEntity findActiveRoleByUserId(Integer id);
