@@ -187,7 +187,7 @@ public class BookServiceImpl implements BookService {
 //
 
 
-		if (bookExists == null) {
+		if (bookExists != null) {
 			StatusMessageDto<CategoryEntity> result = new StatusMessageDto<>();
 			result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			result.setMessage("Book already exist!");
